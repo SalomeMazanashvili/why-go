@@ -21,6 +21,10 @@ export const metadata: Metadata = {
 
 const locales = ['en', 'ka']
 
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
+
 export default async function LocaleLayout({
   children,
   params: { locale },

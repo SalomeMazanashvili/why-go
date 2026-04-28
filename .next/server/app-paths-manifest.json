@@ -1,6 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/[locale]/tours/page": "app/[locale]/tours/page.js",
   "/[locale]/tips/page": "app/[locale]/tips/page.js",
+  "/[locale]/tours/page": "app/[locale]/tours/page.js",
   "/[locale]/page": "app/[locale]/page.js"
 }
