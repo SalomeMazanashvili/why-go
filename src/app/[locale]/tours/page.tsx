@@ -13,7 +13,7 @@ export default function ToursPage({ params: { locale } }: { params: { locale: st
   const loc = locale as Locale
   const [activeTag, setActiveTag] = useState<string | null>(null)
 
-  const tags = [...new Set(STATIC_TOURS.map(t => t.tag_en))]
+  const tags = Array.from(new Set(STATIC_TOURS.map(t => t.tag_en)))
   const filtered = activeTag ? STATIC_TOURS.filter(t => t.tag_en === activeTag) : STATIC_TOURS
 
   return (
