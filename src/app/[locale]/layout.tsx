@@ -14,6 +14,8 @@ const montserrat = Montserrat({
   display: 'swap',
 })
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: { template: '%s | Whygo', default: 'Whygo — Experience + Development Travel' },
   description: 'Boutique tours built around language, sport, and culinary skills.',
