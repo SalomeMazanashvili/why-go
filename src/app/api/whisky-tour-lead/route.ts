@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error('[whisky-tour-lead] supabase insert error', error)
-      return NextResponse.json({ error: 'db_error', code: error.code, message: error.message, details: error.details }, { status: 500 })
+      throw error
     }
 
     sendNotificationEmail({
