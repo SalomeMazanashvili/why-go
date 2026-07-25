@@ -36,3 +36,24 @@ ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read tours" ON tours FOR SELECT USING (is_active = true);
 CREATE POLICY "Public read news" ON news FOR SELECT USING (is_published = true);
 CREATE POLICY "Anyone insert contact" ON contact_submissions FOR INSERT WITH CHECK (true);
+
+-- Admin-managed content (editable text keyed by slug)
+CREATE TABLE IF NOT EXISTS site_content (
+  key TEXT PRIMARY KEY,
+  value_en TEXT,
+  value_ka TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Admin-managed branding / theme settings (colors, font sizes, etc.)
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE site_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read site_content" ON site_content FOR SELECT USING (true);
+CREATE POLICY "Public read site_settings" ON site_settings FOR SELECT USING (true);

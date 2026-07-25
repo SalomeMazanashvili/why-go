@@ -1,8 +1,11 @@
 node_modules
 .next
+.vercel
+.DS_Store
+.env
 .env.local
 .env.local.vercel
 .env*.local
-.vercel
+.env.*.local
 tsconfig.tsbuildinfo
 *.tsbuildinfo

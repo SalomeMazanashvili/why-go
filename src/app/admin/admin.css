@@ -1,0 +1,57 @@
+.admin-input {
+  background-color: #111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.admin-input:focus {
+  border-color: #FFCC00;
+}
+.admin-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  display: block;
+  margin-bottom: 6px;
+}
+.admin-btn {
+  background: #FFCC00;
+  color: #000;
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.admin-btn:hover { background: #ffdb3d; }
+.admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.admin-btn-ghost:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+  background: transparent;
+}
+.admin-btn-danger {
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(248,113,113,0.4);
+}
+.admin-btn-danger:hover { background: rgba(248,113,113,0.1); }
+.admin-card {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 24px;
+}
