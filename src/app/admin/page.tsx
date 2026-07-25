@@ -43,6 +43,7 @@ const CARDS = [
   { href: '/admin/branding', label: 'Branding', key: null, desc: 'Colors & typography' },
   { href: '/admin/news', label: 'News', key: 'news' as const, desc: 'Blog articles' },
   { href: '/admin/contacts', label: 'Contacts', key: 'contacts' as const, desc: 'Contact submissions' },
+  { href: '/admin/admins', label: 'Admins', key: null, desc: 'Manage admin accounts' },
 ]
 
 export default async function AdminHome() {

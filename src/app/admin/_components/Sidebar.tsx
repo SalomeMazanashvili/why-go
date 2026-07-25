@@ -11,6 +11,7 @@ const LINKS = [
   { href: '/admin/branding', label: 'Branding' },
   { href: '/admin/news', label: 'News' },
   { href: '/admin/contacts', label: 'Contacts' },
+  { href: '/admin/admins', label: 'Admins' },
 ]
 
 export default function Sidebar() {

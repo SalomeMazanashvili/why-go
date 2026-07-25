@@ -7,6 +7,7 @@ export default function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const from = searchParams.get('from') || '/admin'
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -19,7 +20,7 @@ export default function LoginForm() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -39,6 +40,19 @@ export default function LoginForm() {
     <form onSubmit={submit} className="space-y-4">
       <div>
         <label className="text-[10px] font-bold tracking-widest uppercase text-white/50 block mb-2">
+          Email
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoFocus
+          className="w-full bg-[#111] border border-white/10 text-white text-sm px-4 py-3 focus:outline-none focus:border-[#FFCC00] transition-colors"
+          placeholder="you@example.com"
+        />
+      </div>
+      <div>
+        <label className="text-[10px] font-bold tracking-widest uppercase text-white/50 block mb-2">
           Password
         </label>
         <input
@@ -46,7 +60,6 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          autoFocus
           className="w-full bg-[#111] border border-white/10 text-white text-sm px-4 py-3 focus:outline-none focus:border-[#FFCC00] transition-colors"
           placeholder="••••••••"
         />
@@ -63,6 +76,9 @@ export default function LoginForm() {
       >
         {loading ? '…' : 'Sign in'}
       </button>
+      <p className="text-[10px] text-white/30 text-center pt-2">
+        Root recovery: leave email empty and use the ADMIN_PASSWORD env value.
+      </p>
     </form>
   )
 }

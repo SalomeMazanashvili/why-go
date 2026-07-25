@@ -57,3 +57,17 @@ ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Public read site_content" ON site_content FOR SELECT USING (true);
 CREATE POLICY "Public read site_settings" ON site_settings FOR SELECT USING (true);
+
+-- Admin users. Passwords are scrypt-hashed by the app before insert.
+-- Accessed only via the service-role key from admin API routes.
+CREATE TABLE IF NOT EXISTS admins (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  last_login_at TIMESTAMPTZ
+);
+
+ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
+-- No public policies; service role bypasses RLS.
