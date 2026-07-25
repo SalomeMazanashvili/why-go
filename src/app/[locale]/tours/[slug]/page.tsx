@@ -1,16 +1,19 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { STATIC_TOURS } from '@/types'
 import type { Locale } from '@/types'
 import { getTourTitle, getTourSubtitle, getTourDescription, getTourTag, formatPrice } from '@/types'
+import { listTours } from '@/lib/tours'
 
-export default function TourDetailPage({
+export const dynamic = 'force-dynamic'
+
+export default async function TourDetailPage({
   params: { locale, slug },
 }: {
   params: { locale: string; slug: string }
 }) {
-  const tour = STATIC_TOURS.find((t) => t.slug === slug)
+  const tours = await listTours()
+  const tour = tours.find((t) => t.slug === slug)
   if (!tour) notFound()
   const loc = locale as Locale
 
