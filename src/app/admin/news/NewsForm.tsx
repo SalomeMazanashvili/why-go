@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import ImageUploader from '../_components/ImageUploader'
 import type { AdminNews } from '@/lib/news'
 
 interface Props {
@@ -119,8 +120,11 @@ export default function NewsForm({ initial, mode }: Props) {
             />
           </div>
           <div className="md:col-span-2">
-            <label className="admin-label">Cover image URL</label>
-            <input className="admin-input" value={item.cover_image ?? ''} onChange={(e) => update('cover_image', e.target.value)} />
+            <ImageUploader
+              value={item.cover_image ?? ''}
+              onChange={(url) => update('cover_image', url)}
+              folder="news"
+            />
           </div>
           <label className="flex items-center gap-3 mt-2">
             <input

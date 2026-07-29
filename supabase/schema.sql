@@ -71,3 +71,13 @@ CREATE TABLE IF NOT EXISTS admins (
 
 ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
 -- No public policies; service role bypasses RLS.
+
+-- Storage bucket for admin-uploaded images (tour + news covers).
+-- Public read; writes only via service role (used by /api/admin/upload).
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('uploads', 'uploads', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public read uploads" ON storage.objects;
+CREATE POLICY "Public read uploads" ON storage.objects
+  FOR SELECT USING (bucket_id = 'uploads');
