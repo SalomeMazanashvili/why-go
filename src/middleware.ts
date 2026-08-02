@@ -1,11 +1,8 @@
 import createMiddleware from 'next-intl/middleware'
 import { NextRequest, NextResponse } from 'next/server'
+import { routing } from './i18n/routing'
 
-const intlMiddleware = createMiddleware({
-  locales: ['en', 'ka'],
-  defaultLocale: 'en',
-  localePrefix: 'always',
-})
+const intlMiddleware = createMiddleware(routing)
 
 export const ADMIN_COOKIE = 'whygo_admin_session'
 
