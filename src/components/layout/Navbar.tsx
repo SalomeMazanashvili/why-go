@@ -32,9 +32,12 @@ export default function Navbar({ locale }: { locale: string }) {
     { href: `/${locale}/contact`, label: t('contact') },
   ]
 
+  const isHome = pathname === `/${locale}` || pathname === '/' || pathname === `/${locale}/`
+  const hasBackground = !isHome || scrolled
+
   return (
     <>
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-black/95 backdrop-blur-sm' : ''}`}>
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${hasBackground ? 'bg-black/95 backdrop-blur-sm' : ''}`}>
         <div className="flex items-center justify-between px-6 md:px-10 py-5">
           <Link href={`/${locale}`} className="text-xl font-black tracking-tight text-white">
             WHY<span className="text-yellow-400">GO</span>
