@@ -3,6 +3,7 @@ import type { Tour, Locale } from '@/types'
 import { getTourTitle } from '@/types'
 
 export default function MarqueeStrip({ tours, locale }: { tours: Tour[]; locale: Locale }) {
+  if (tours.length === 0) return null
   const items = [...tours, ...tours]
   return (
     <div className="bg-yellow-400 overflow-hidden py-4">

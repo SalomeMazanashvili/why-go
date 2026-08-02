@@ -8,6 +8,7 @@ import { getTourTitle, getTourSubtitle, getTourTag, formatPrice } from '@/types'
 
 export default function ToursGrid({ tours, locale }: { tours: Tour[]; locale: Locale }) {
   const t = useTranslations('tours')
+  if (tours.length === 0) return null
 
   return (
     <section className="bg-white py-20 px-6 md:px-10">

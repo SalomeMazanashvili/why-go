@@ -1,5 +1,5 @@
 import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
-import { STATIC_TOURS, type Tour } from '@/types'
+import type { Tour } from '@/types'
 
 const TOUR_COLUMNS =
   'id, slug, title_en, subtitle_en, description_en, tag_en, title_ka, subtitle_ka, description_ka, tag_ka, destination, price_from, currency, duration_days, cover_image, is_featured, sort_order'
@@ -27,30 +27,42 @@ function normalize(row: any): Tour {
 }
 
 export async function listTours(): Promise<Tour[]> {
-  if (!hasAdminSupabase()) return STATIC_TOURS
+  if (!hasAdminSupabase()) {
+    console.warn('[tours] Supabase not configured — returning empty list')
+    return []
+  }
   try {
     const s = getAdminSupabase()
     const { data, error } = await s
       .from('tours')
       .select(TOUR_COLUMNS)
       .order('sort_order', { ascending: true })
-    if (error || !data || data.length === 0) return STATIC_TOURS
-    return data.map(normalize)
-  } catch {
-    return STATIC_TOURS
+    if (error) {
+      console.error('[tours] listTours query failed', error)
+      return []
+    }
+    return (data ?? []).map(normalize)
+  } catch (err) {
+    console.error('[tours] listTours threw', err)
+    return []
   }
 }
 
 export async function getTourById(id: string): Promise<Tour | null> {
   if (!hasAdminSupabase()) {
-    return STATIC_TOURS.find((t) => t.id === id) ?? null
+    console.warn('[tours] Supabase not configured — cannot fetch tour', id)
+    return null
   }
   try {
     const s = getAdminSupabase()
-    const { data } = await s.from('tours').select(TOUR_COLUMNS).eq('id', id).maybeSingle()
-    if (data) return normalize(data)
-  } catch {
-    // fall through
+    const { data, error } = await s.from('tours').select(TOUR_COLUMNS).eq('id', id).maybeSingle()
+    if (error) {
+      console.error('[tours] getTourById query failed', id, error)
+      return null
+    }
+    return data ? normalize(data) : null
+  } catch (err) {
+    console.error('[tours] getTourById threw', id, err)
+    return null
   }
-  return STATIC_TOURS.find((t) => t.id === id) ?? null
 }

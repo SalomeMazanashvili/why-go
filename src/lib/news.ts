@@ -1,5 +1,5 @@
 import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
-import { STATIC_NEWS, type News } from '@/types'
+import type { News } from '@/types'
 
 export type AdminNews = News & {
   content_en?: string
@@ -31,37 +31,43 @@ function normalize(row: any): AdminNews {
   }
 }
 
-function fromStatic(): AdminNews[] {
-  return STATIC_NEWS.map((n) => ({ ...n, content_en: '', content_ka: '', is_published: true }))
-}
-
 export async function listNews(): Promise<AdminNews[]> {
-  if (!hasAdminSupabase()) return fromStatic()
+  if (!hasAdminSupabase()) {
+    console.warn('[news] Supabase not configured — returning empty list')
+    return []
+  }
   try {
     const s = getAdminSupabase()
     const { data, error } = await s
       .from('news')
       .select(COLUMNS)
       .order('published_at', { ascending: false })
-    if (error || !data || data.length === 0) return fromStatic()
-    return data.map(normalize)
-  } catch {
-    return fromStatic()
+    if (error) {
+      console.error('[news] listNews query failed', error)
+      return []
+    }
+    return (data ?? []).map(normalize)
+  } catch (err) {
+    console.error('[news] listNews threw', err)
+    return []
   }
 }
 
 export async function getNewsById(id: string): Promise<AdminNews | null> {
   if (!hasAdminSupabase()) {
-    const s = STATIC_NEWS.find((n) => n.id === id)
-    return s ? { ...s, content_en: '', content_ka: '', is_published: true } : null
+    console.warn('[news] Supabase not configured — cannot fetch article', id)
+    return null
   }
   try {
     const s = getAdminSupabase()
-    const { data } = await s.from('news').select(COLUMNS).eq('id', id).maybeSingle()
-    if (data) return normalize(data)
-  } catch {
-    // fall through
+    const { data, error } = await s.from('news').select(COLUMNS).eq('id', id).maybeSingle()
+    if (error) {
+      console.error('[news] getNewsById query failed', id, error)
+      return null
+    }
+    return data ? normalize(data) : null
+  } catch (err) {
+    console.error('[news] getNewsById threw', id, err)
+    return null
   }
-  const s = STATIC_NEWS.find((n) => n.id === id)
-  return s ? { ...s, content_en: '', content_ka: '', is_published: true } : null
 }

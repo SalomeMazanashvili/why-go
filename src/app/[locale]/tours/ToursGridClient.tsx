@@ -20,6 +20,24 @@ export default function ToursGridClient({ tours, locale }: Props) {
   const tags = Array.from(new Set(tours.map((tour) => tour.tag_en).filter(Boolean)))
   const filtered = activeTag ? tours.filter((tour) => tour.tag_en === activeTag) : tours
 
+  if (tours.length === 0) {
+    return (
+      <section className="bg-white min-h-[60vh] flex items-center justify-center px-6 md:px-10 py-24">
+        <div className="text-center max-w-md">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">
+            {t('section_tag')}
+          </p>
+          <h2 className="font-black text-3xl md:text-4xl text-black leading-tight tracking-tight mb-4">
+            No tours available yet
+          </h2>
+          <p className="text-sm text-black/60">
+            New signature tours are being finalised. Please check back soon.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <>
       <div className="bg-black/90 border-t border-white/10 px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[69px] z-30 backdrop-blur-sm">

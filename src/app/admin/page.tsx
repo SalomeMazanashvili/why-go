@@ -1,19 +1,12 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/adminAuth'
 import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
-import { STATIC_TOURS, STATIC_NEWS } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
 async function getCounts() {
-  const fallback = {
-    tours: STATIC_TOURS.length,
-    news: STATIC_NEWS.length,
-    contacts: 0,
-    unread: 0,
-    supabase: false,
-  }
-  if (!hasAdminSupabase()) return fallback
+  const empty = { tours: 0, news: 0, contacts: 0, unread: 0, supabase: false }
+  if (!hasAdminSupabase()) return empty
   try {
     const s = getAdminSupabase()
     const [tours, news, contacts, unread] = await Promise.all([
@@ -26,14 +19,15 @@ async function getCounts() {
         .eq('status', 'new'),
     ])
     return {
-      tours: tours.count ?? fallback.tours,
-      news: news.count ?? fallback.news,
+      tours: tours.count ?? 0,
+      news: news.count ?? 0,
       contacts: contacts.count ?? 0,
       unread: unread.count ?? 0,
       supabase: true,
     }
-  } catch {
-    return fallback
+  } catch (err) {
+    console.error('[admin/dashboard] getCounts failed', err)
+    return empty
   }
 }
 
@@ -57,7 +51,7 @@ export default async function AdminHome() {
         <p className="text-white/40 text-sm mt-2">
           {counts.supabase
             ? 'Connected to Supabase.'
-            : 'Supabase not configured — showing static data. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to enable writes.'}
+            : 'Supabase not configured — counts unavailable. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.'}
         </p>
       </header>
 
