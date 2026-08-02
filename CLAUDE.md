@@ -20,7 +20,7 @@ Two products:
 
 - Next.js (App Router) + TypeScript strict
 - Tailwind CSS
-- Payload CMS 3 on Supabase Postgres — **decided, do not propose alternatives**
+- Custom admin panel at `src/app/admin` — extend it. **Do NOT install Payload or any other CMS.**
 - next-intl · Vercel · Resend · Cloudflare Turnstile
 
 ---
