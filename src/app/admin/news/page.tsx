@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/adminAuth'
-import { listNews } from '@/lib/news'
+import { listNewsForAdmin } from '@/lib/news'
 import { hasAdminSupabase } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
@@ -15,7 +15,7 @@ function formatDate(iso: string) {
 
 export default async function NewsAdminPage() {
   requireAdmin()
-  const items = await listNews()
+  const items = await listNewsForAdmin()
   const connected = hasAdminSupabase()
 
   return (

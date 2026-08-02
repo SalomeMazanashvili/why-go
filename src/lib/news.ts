@@ -26,11 +26,14 @@ function normalize(row: any): AdminNews {
     author: row.author ?? 'Whygo Team',
     reading_time_min: row.reading_time_min ?? 5,
     is_featured: Boolean(row.is_featured),
-    is_published: row.is_published ?? true,
+    // Safer default: an article missing an explicit is_published value is
+    // treated as a draft, so it never accidentally leaks to the public site.
+    is_published: row.is_published ?? false,
     published_at: row.published_at ?? new Date().toISOString(),
   }
 }
 
+// Public-facing list. Only ever returns published articles.
 export async function listNews(): Promise<AdminNews[]> {
   if (!hasAdminSupabase()) {
     console.warn('[news] Supabase not configured — returning empty list')
@@ -41,6 +44,7 @@ export async function listNews(): Promise<AdminNews[]> {
     const { data, error } = await s
       .from('news')
       .select(COLUMNS)
+      .eq('is_published', true)
       .order('published_at', { ascending: false })
     if (error) {
       console.error('[news] listNews query failed', error)
@@ -53,6 +57,32 @@ export async function listNews(): Promise<AdminNews[]> {
   }
 }
 
+// Admin-only list. Returns every article — drafts included — so the admin
+// panel can manage unpublished work. Never call this from public pages.
+export async function listNewsForAdmin(): Promise<AdminNews[]> {
+  if (!hasAdminSupabase()) {
+    console.warn('[news] Supabase not configured — returning empty list')
+    return []
+  }
+  try {
+    const s = getAdminSupabase()
+    const { data, error } = await s
+      .from('news')
+      .select(COLUMNS)
+      .order('published_at', { ascending: false })
+    if (error) {
+      console.error('[news] listNewsForAdmin query failed', error)
+      return []
+    }
+    return (data ?? []).map(normalize)
+  } catch (err) {
+    console.error('[news] listNewsForAdmin threw', err)
+    return []
+  }
+}
+
+// Admin-only lookup by id. Loads drafts so the admin can open them for
+// editing. Public routes should not call this.
 export async function getNewsById(id: string): Promise<AdminNews | null> {
   if (!hasAdminSupabase()) {
     console.warn('[news] Supabase not configured — cannot fetch article', id)
