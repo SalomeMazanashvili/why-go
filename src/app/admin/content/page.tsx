@@ -12,7 +12,7 @@ const GROUPS: { label: string; keys: string[] }[] = [
 ]
 
 export default async function ContentAdminPage() {
-  requireAdmin()
+  await requireAdmin()
   const content = await loadSiteContent()
   const connected = hasAdminSupabase()
 

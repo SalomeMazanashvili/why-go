@@ -6,7 +6,7 @@ import BrandingEditor from './BrandingEditor'
 export const dynamic = 'force-dynamic'
 
 export default async function BrandingAdminPage() {
-  requireAdmin()
+  await requireAdmin()
   const settings = await loadSiteSettings()
   const connected = hasAdminSupabase()
 

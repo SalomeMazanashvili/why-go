@@ -41,7 +41,7 @@ const CARDS = [
 ]
 
 export default async function AdminHome() {
-  requireAdmin()
+  await requireAdmin()
   const counts = await getCounts()
   return (
     <div className="p-8 lg:p-12">

@@ -3,7 +3,7 @@ import { isAdminAuthenticated, hashPassword } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
 export async function POST(req: NextRequest) {
-  if (!isAdminAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
     const body = await req.json()

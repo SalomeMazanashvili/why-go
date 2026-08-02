@@ -7,7 +7,7 @@ import { formatPrice } from '@/types'
 export const dynamic = 'force-dynamic'
 
 export default async function ToursAdminPage() {
-  requireAdmin()
+  await requireAdmin()
   const tours = await listTours()
   const connected = hasAdminSupabase()
 

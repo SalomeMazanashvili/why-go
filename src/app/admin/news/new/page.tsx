@@ -4,8 +4,8 @@ import NewsForm from '../NewsForm'
 
 export const dynamic = 'force-dynamic'
 
-export default function NewNewsPage() {
-  requireAdmin()
+export default async function NewNewsPage() {
+  await requireAdmin()
   return (
     <div className="p-8 lg:p-12 max-w-4xl">
       <header className="mb-8">

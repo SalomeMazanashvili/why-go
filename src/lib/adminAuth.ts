@@ -135,17 +135,17 @@ export async function authenticate(emailInput: string, password: string): Promis
 
 // ----- request-time helpers -----
 
-export function currentAdminId(): string | null {
-  const value = cookies().get(ADMIN_COOKIE)?.value
+export async function currentAdminId(): Promise<string | null> {
+  const value = (await cookies()).get(ADMIN_COOKIE)?.value
   return getSessionAdminId(value)
 }
 
-export function isAdminAuthenticated(): boolean {
-  return currentAdminId() !== null
+export async function isAdminAuthenticated(): Promise<boolean> {
+  return (await currentAdminId()) !== null
 }
 
-export function requireAdmin() {
-  if (!isAdminAuthenticated()) {
+export async function requireAdmin(): Promise<void> {
+  if (!(await isAdminAuthenticated())) {
     redirect('/admin/login')
   }
 }
