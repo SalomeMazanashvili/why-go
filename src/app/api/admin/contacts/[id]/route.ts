@@ -4,10 +4,11 @@ import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
 const ALLOWED_STATUS = new Set(['new', 'replied', 'archived'])
 
-interface Ctx { params: { id: string } }
+interface Ctx { params: Promise<{ id: string }> }
 
-export async function PATCH(req: NextRequest, { params }: Ctx) {
-  if (!isAdminAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function PATCH(req: NextRequest, props: Ctx) {
+  const params = await props.params;
+  if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
     const body = await req.json()
@@ -25,8 +26,9 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: Ctx) {
-  if (!isAdminAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function DELETE(_req: NextRequest, props: Ctx) {
+  const params = await props.params;
+  if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
     const s = getAdminSupabase()

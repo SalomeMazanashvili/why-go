@@ -7,11 +7,12 @@ import TourForm from '../TourForm'
 export const dynamic = 'force-dynamic'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default async function EditTourPage({ params }: Params) {
-  requireAdmin()
+export default async function EditTourPage(props: Params) {
+  const params = await props.params;
+  await requireAdmin()
   const tour = await getTourById(params.id)
   if (!tour) notFound()
   return (

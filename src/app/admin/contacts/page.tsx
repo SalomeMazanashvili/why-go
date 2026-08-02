@@ -14,11 +14,12 @@ const FILTERS: { value: 'all' | ContactStatus; label: string }[] = [
 ]
 
 interface SearchParams {
-  searchParams: { status?: string }
+  searchParams: Promise<{ status?: string }>
 }
 
-export default async function ContactsAdminPage({ searchParams }: SearchParams) {
-  requireAdmin()
+export default async function ContactsAdminPage(props: SearchParams) {
+  const searchParams = await props.searchParams;
+  await requireAdmin()
   const raw = searchParams?.status
   const status = (['all', 'new', 'replied', 'archived'].includes(raw ?? '')
     ? (raw as 'all' | ContactStatus)

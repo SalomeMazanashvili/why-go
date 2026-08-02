@@ -7,10 +7,10 @@ import NewAdminForm from './NewAdminForm'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminsPage() {
-  requireAdmin()
+  await requireAdmin()
   const admins = await listAdmins()
   const connected = hasAdminSupabase()
-  const meId = currentAdminId()
+  const meId = await currentAdminId()
   const meLabel = meId === ENV_ADMIN_ID ? `${ENV_ADMIN_EMAIL} (env)` : meId ?? ''
 
   return (

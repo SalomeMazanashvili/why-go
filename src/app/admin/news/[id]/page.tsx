@@ -7,11 +7,12 @@ import NewsForm from '../NewsForm'
 export const dynamic = 'force-dynamic'
 
 interface Params {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default async function EditNewsPage({ params }: Params) {
-  requireAdmin()
+export default async function EditNewsPage(props: Params) {
+  const params = await props.params;
+  await requireAdmin()
   const item = await getNewsById(params.id)
   if (!item) notFound()
   return (

@@ -9,27 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.3",
-    "react": "^18",
-    "react-dom": "^18",
-    "@supabase/supabase-js": "^2.43.2",
-    "@supabase/ssr": "^0.3.0",
-    "next-intl": "^3.14.0",
-    "framer-motion": "^11.2.0",
-    "clsx": "^2.1.1",
-    "react-hook-form": "^7.51.5",
     "@hookform/resolvers": "^3.6.0",
+    "@supabase/ssr": "^0.3.0",
+    "@supabase/supabase-js": "^2.43.2",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.2.0",
+    "next": "^15.5.22",
+    "next-intl": "^3.26.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-hook-form": "^7.51.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3"
+    "eslint-config-next": "^15.5.22",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }

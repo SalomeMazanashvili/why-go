@@ -6,7 +6,13 @@ import { listNews } from '@/lib/news'
 
 export const dynamic = 'force-dynamic'
 
-export default async function TipsPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function TipsPage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const loc = locale as Locale
   const articles = await listNews()
 

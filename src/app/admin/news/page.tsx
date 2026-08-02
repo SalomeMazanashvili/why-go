@@ -14,7 +14,7 @@ function formatDate(iso: string) {
 }
 
 export default async function NewsAdminPage() {
-  requireAdmin()
+  await requireAdmin()
   const items = await listNewsForAdmin()
   const connected = hasAdminSupabase()
 

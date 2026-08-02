@@ -10,7 +10,13 @@ import ContactSection from '@/components/sections/ContactSection'
 
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage({ params: { locale } }: { params: { locale: string } }) {
+export default async function HomePage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const [tours, news] = await Promise.all([listTours(), listNews()])
   return (
     <>

@@ -4,8 +4,8 @@ import TourForm from '../TourForm'
 
 export const dynamic = 'force-dynamic'
 
-export default function NewTourPage() {
-  requireAdmin()
+export default async function NewTourPage() {
+  await requireAdmin()
   return (
     <div className="p-8 lg:p-12 max-w-4xl">
       <header className="mb-8">

@@ -1,4 +1,10 @@
-export default function AboutPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function AboutPage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   return (
     <section className="pt-36 pb-20 px-6 md:px-10 bg-black min-h-screen">
       <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-4">Our Philosophy</p>
