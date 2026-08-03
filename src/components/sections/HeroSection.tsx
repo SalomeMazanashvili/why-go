@@ -1,7 +1,7 @@
 'use client'
 import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/types'
 
 export default function HeroSection({ locale }: { locale: Locale }) {
@@ -57,11 +57,11 @@ export default function HeroSection({ locale }: { locale: Locale }) {
         </motion.p>
 
         <motion.div variants={item} className="mt-8 flex flex-wrap gap-4">
-          <Link href={`/${locale}/tours`}
+          <Link href="/tours"
             className="inline-block bg-yellow-400 text-black font-black text-[11px] tracking-widest uppercase px-8 py-4 hover:bg-yellow-300 transition-colors">
             {t('cta_primary')} →
           </Link>
-          <Link href={`/${locale}/about`}
+          <Link href="/about"
             className="inline-block border-2 border-white/25 text-white font-black text-[11px] tracking-widest uppercase px-8 py-4 hover:border-yellow-400 hover:text-yellow-400 transition-colors">
             {t('cta_secondary')}
           </Link>

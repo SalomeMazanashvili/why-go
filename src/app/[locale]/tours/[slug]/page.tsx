@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/types'
 import { getTourTitle, getTourSubtitle, getTourDescription, getTourTag, formatPrice } from '@/types'
 import { listTours } from '@/lib/tours'
@@ -38,7 +38,7 @@ export default async function TourDetailPage(
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
         <div className="relative z-10 px-6 md:px-10 pb-12 w-full">
           <Link
-            href={`/${locale}/tours`}
+            href="/tours"
             className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 hover:text-white transition-colors inline-block mb-4"
           >
             ← All Tours
@@ -96,13 +96,13 @@ export default async function TourDetailPage(
             </div>
             <div className="mt-8 space-y-3">
               <Link
-                href={`/${locale}/contact`}
+                href="/contact"
                 className="block w-full text-center bg-yellow-400 text-black font-black text-[11px] tracking-widest uppercase py-4 hover:bg-yellow-300 transition-colors"
               >
                 Book This Tour →
               </Link>
               <Link
-                href={`/${locale}/contact`}
+                href="/contact"
                 className="block w-full text-center border border-white/20 text-white font-black text-[11px] tracking-widest uppercase py-4 hover:border-yellow-400 hover:text-yellow-400 transition-colors"
               >
                 Enquire

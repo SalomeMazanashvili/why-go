@@ -1,11 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
 
-export default function Navbar({ locale }: { locale: string }) {
+export default function Navbar({ locale: _locale }: { locale: string }) {
   const t = useTranslations('nav')
   const currentLocale = useLocale()
   const pathname = usePathname()
@@ -21,25 +20,24 @@ export default function Navbar({ locale }: { locale: string }) {
 
   const switchLocale = () => {
     const next = currentLocale === 'en' ? 'ka' : 'en'
-    const stripped = pathname.replace(/^\/(en|ka)/, '') || '/'
-    router.push(`/${next}${stripped}`)
+    router.replace(pathname, { locale: next })
   }
 
   const navLinks = [
-    { href: `/${locale}/tours`, label: t('tours') },
-    { href: `/${locale}/about`, label: t('about') },
-    { href: `/${locale}/tips`, label: t('tips') },
-    { href: `/${locale}/contact`, label: t('contact') },
+    { href: '/tours', label: t('tours') },
+    { href: '/about', label: t('about') },
+    { href: '/tips', label: t('tips') },
+    { href: '/contact', label: t('contact') },
   ]
 
-  const isHome = pathname === `/${locale}` || pathname === '/' || pathname === `/${locale}/`
+  const isHome = pathname === '/'
   const hasBackground = !isHome || scrolled
 
   return (
     <>
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${hasBackground ? 'bg-black/95 backdrop-blur-sm' : ''}`}>
         <div className="flex items-center justify-between px-6 md:px-10 py-5">
-          <Link href={`/${locale}`} className="text-xl font-black tracking-tight text-white">
+          <Link href="/" className="text-xl font-black tracking-tight text-white">
             WHY<span className="text-yellow-400">GO</span>
           </Link>
 

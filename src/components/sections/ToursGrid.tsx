@@ -1,6 +1,6 @@
 'use client'
-import Link from 'next/link'
 import Image from 'next/image'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import type { Tour, Locale } from '@/types'
@@ -20,7 +20,7 @@ export default function ToursGrid({ tours, locale }: { tours: Tour[]; locale: Lo
             {t('section_title_1')}<br />{t('section_title_2')}
           </h2>
         </div>
-        <Link href={`/${locale}/tours`}
+        <Link href="/tours"
           className="text-[11px] font-bold tracking-widest uppercase text-black border-b-2 border-yellow-400 pb-0.5 hover:text-yellow-600 transition-colors">
           {t('view_all')}
         </Link>
@@ -31,7 +31,7 @@ export default function ToursGrid({ tours, locale }: { tours: Tour[]; locale: Lo
           <motion.div key={tour.id}
             initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.08 }}>
-            <Link href={`/${locale}/tours/${tour.slug}`} className="group block relative overflow-hidden bg-black">
+            <Link href={`/tours/${tour.slug}`} className="group block relative overflow-hidden bg-black">
               <div className="relative aspect-[3/4] overflow-hidden">
                 <Image
                   src={tour.cover_image ?? ''}

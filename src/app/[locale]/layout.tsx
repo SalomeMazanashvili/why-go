@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Montserrat } from 'next/font/google'
+import { Noto_Sans_Georgian } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -7,9 +7,12 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import '../globals.css'
 
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  variable: '--font-montserrat',
+// Georgian-first: Noto Sans Georgian is the primary family. Latin characters
+// (product names, English `/en/*` routes) fall through the CSS font cascade
+// to the system sans-serif — see `sans` in tailwind.config.ts.
+const notoSansGeorgian = Noto_Sans_Georgian({
+  subsets: ['georgian'],
+  variable: '--font-georgian',
   weight: ['400', '700', '900'],
   display: 'swap',
 })
@@ -47,13 +50,7 @@ export default async function LocaleLayout(
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={montserrat.variable}>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=FiraGO:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang={locale} className={notoSansGeorgian.variable}>
       <body className="font-sans bg-black text-white antialiased">
         <NextIntlClientProvider messages={messages}>
           <Navbar locale={locale} />
