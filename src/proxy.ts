@@ -6,7 +6,7 @@ const intlMiddleware = createMiddleware(routing)
 
 export const ADMIN_COOKIE = 'whygo_admin_session'
 
-export default function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   if (pathname.startsWith('/admin')) {
