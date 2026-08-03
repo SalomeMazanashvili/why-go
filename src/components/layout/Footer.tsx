@@ -1,10 +1,9 @@
 'use client'
-import Link from 'next/link'
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 export default function Footer() {
   const t = useTranslations('nav')
-  const locale = useLocale()
 
   return (
     <footer className="bg-black border-t border-white/10 px-6 md:px-10 py-10">
@@ -17,7 +16,7 @@ export default function Footer() {
         </div>
         <nav className="flex gap-6 flex-wrap">
           {[['tours', t('tours')], ['about', t('about')], ['tips', t('tips')], ['contact', t('contact')]].map(([path, label]) => (
-            <Link key={path} href={`/${locale}/${path}`}
+            <Link key={path} href={`/${path}`}
               className="text-[10px] tracking-widest uppercase text-white/30 hover:text-yellow-400 transition-colors">
               {label}
             </Link>

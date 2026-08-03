@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import type { Locale, Tour } from '@/types'
@@ -60,7 +60,7 @@ export default function ToursGridClient({ tours, locale }: Props) {
               <motion.div key={tour.id} layout initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}>
-                <Link href={`/${locale}/tours/${tour.slug}`} className="group block relative overflow-hidden bg-black">
+                <Link href={`/tours/${tour.slug}`} className="group block relative overflow-hidden bg-black">
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {tour.cover_image && (
                       <Image src={tour.cover_image} alt={getTourTitle(tour, loc)} fill

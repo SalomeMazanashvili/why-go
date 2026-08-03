@@ -1,10 +1,10 @@
 import { defineRouting } from 'next-intl/routing'
 
-// Values must stay identical to the previous inline config in middleware.ts.
-// WHY-76 explicitly forbids a behaviour change: same locales, same default,
-// same prefix strategy. The Georgian-at-root flip is WHY-62.
+// WHY-62: Georgian is the default locale. Under `as-needed`, Georgian is
+// served unprefixed (/, /tours, /tips) and English at /en/*. Language toggle
+// preserves the current path.
 export const routing = defineRouting({
   locales: ['en', 'ka'],
-  defaultLocale: 'en',
-  localePrefix: 'always',
+  defaultLocale: 'ka',
+  localePrefix: 'as-needed',
 })

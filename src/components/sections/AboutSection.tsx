@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import type { Locale } from '@/types'
@@ -25,7 +25,7 @@ export default function AboutSection({ locale }: { locale: Locale }) {
             {t('title_1')}<br />{t('title_2')}<br />{t('title_3')}
           </h2>
           <p className="mt-6 text-sm leading-relaxed text-white/55 max-w-sm">{t('body')}</p>
-          <Link href={`/${locale}/about`}
+          <Link href="/about"
             className="inline-block mt-8 bg-yellow-400 text-black font-black text-[11px] tracking-widest uppercase px-8 py-4 hover:bg-yellow-300 transition-colors">
             {t('cta')} →
           </Link>

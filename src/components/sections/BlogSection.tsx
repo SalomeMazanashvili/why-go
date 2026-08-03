@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import type { News, Locale } from '@/types'
@@ -21,7 +21,7 @@ export default function BlogSection({ news, locale }: { news: News[]; locale: Lo
             {t('section_title_1')}<br />{t('section_title_2')}
           </h2>
         </div>
-        <Link href={`/${locale}/tips`}
+        <Link href="/tips"
           className="text-[11px] font-bold tracking-widest uppercase text-black border-b-2 border-yellow-400 pb-0.5 hover:text-yellow-600 transition-colors">
           {t('view_all')}
         </Link>
@@ -30,7 +30,7 @@ export default function BlogSection({ news, locale }: { news: News[]; locale: Lo
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-0.5">
         <motion.div className="lg:col-span-3 group bg-black overflow-hidden"
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <Link href={`/${locale}/tips/${featured.slug}`}>
+          <Link href={`/tips/${featured.slug}`}>
             <div className="relative aspect-[16/10] overflow-hidden">
               <Image src={featured.cover_image ?? ''} alt={getNewsTitle(featured, locale)} fill
                 className="object-cover opacity-70 group-hover:scale-[1.04] group-hover:opacity-90 transition-all duration-700"
@@ -54,7 +54,7 @@ export default function BlogSection({ news, locale }: { news: News[]; locale: Lo
           {rest.map((article, i) => (
             <motion.div key={article.id} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <Link href={`/${locale}/tips/${article.slug}`}
+              <Link href={`/tips/${article.slug}`}
                 className="block bg-gray-50 p-6 hover:bg-yellow-50 transition-colors">
                 <p className="text-[9px] font-bold tracking-widest uppercase text-black/40 mb-2">{article.tag_en}</p>
                 <h4 className="font-bold text-base text-black leading-snug tracking-tight">{getNewsTitle(article, locale)}</h4>

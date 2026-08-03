@@ -1,7 +1,7 @@
 import type { Locale } from '@/types'
 import { getNewsTitle, getNewsExcerpt } from '@/types'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { listNews } from '@/lib/news'
 
 export const dynamic = 'force-dynamic'
@@ -40,7 +40,7 @@ export default async function TipsPage(props: { params: Promise<{ locale: string
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
         {articles.map(article => (
-          <Link key={article.id} href={`/${locale}/tips/${article.slug}`} className="group block bg-black overflow-hidden">
+          <Link key={article.id} href={`/tips/${article.slug}`} className="group block bg-black overflow-hidden">
             <div className="relative aspect-[16/10] overflow-hidden">
               <Image src={article.cover_image ?? ''} alt={getNewsTitle(article, loc)} fill
                 className="object-cover opacity-70 group-hover:opacity-90 group-hover:scale-[1.04] transition-all duration-700"
