@@ -30,7 +30,7 @@ export default function LoginForm() {
       }
       router.push(from)
       router.refresh()
-    } catch (err) {
+    } catch {
       setError('Network error')
       setLoading(false)
     }

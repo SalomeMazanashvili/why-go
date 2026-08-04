@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/types'
 
-export default function HeroSection({ locale }: { locale: Locale }) {
+export default function HeroSection({ locale: _locale }: { locale: Locale }) {
   const t = useTranslations('hero')
 
   const stagger = {

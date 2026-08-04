@@ -11,7 +11,7 @@ const STATS = [
   { num: '∞', key: 'stat_experiences' as const },
 ]
 
-export default function AboutSection({ locale }: { locale: Locale }) {
+export default function AboutSection({ locale: _locale }: { locale: Locale }) {
   const t = useTranslations('about')
 
   return (
