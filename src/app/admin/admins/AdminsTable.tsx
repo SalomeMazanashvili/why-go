@@ -28,7 +28,7 @@ export default function AdminsTable({ initial, currentId }: Props) {
   const [rows, setRows] = useState(initial)
   const [pending, setPending] = useState<string | null>(null)
 
-  const patch = async (id: string, body: Record<string, any>, action: string) => {
+  const patch = async (id: string, body: Record<string, unknown>, action: string) => {
     setPending(id + ':' + action)
     try {
       const res = await fetch(`/api/admin/admins/${id}`, {

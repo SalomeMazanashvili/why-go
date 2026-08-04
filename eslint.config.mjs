@@ -14,13 +14,6 @@ export default [
       // ticket if we ever want strict HTML entities.
       'react/no-unescaped-entities': 'off',
 
-      // WHY-77 triage: normalize(row: any) in Supabase adapters (lib and
-      // /api/admin/*) is deliberate — the supabase-js client returns
-      // untyped rows and we shape them into our own types. Dropping this
-      // rule requires generating types with `supabase gen types`, tracked
-      // as a follow-up.
-      '@typescript-eslint/no-explicit-any': 'off',
-
       // Standard convention: underscore-prefixed identifiers are
       // intentionally unused. Applies to args, destructured vars, and
       // catch bindings.
@@ -32,6 +25,18 @@ export default [
           caughtErrorsIgnorePattern: '^_',
         },
       ],
+    },
+  },
+  {
+    // Scoped disable: normalize(row: any) in Supabase adapters and
+    // pickPayload(body: any) in admin API routes are deliberate. The
+    // supabase-js client returns untyped rows and JSON request bodies
+    // are untyped by definition. Rest of the codebase keeps the rule on
+    // so new `any` usage outside these paths still gets caught. Full
+    // fix (Supabase codegen + zod-parse bodies) tracked in WHY-80.
+    files: ['src/lib/**', 'src/app/api/**'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   {
