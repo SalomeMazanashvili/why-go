@@ -1,36 +1,70 @@
+import type { Metadata } from 'next'
 import type { Locale } from '@/types'
 import { getNewsTitle, getNewsExcerpt } from '@/types'
 import Image from 'next/image'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { listNews } from '@/lib/news'
+import { breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 
 export const revalidate = 3600
+
+export async function generateMetadata(
+  props: { params: Promise<{ locale: string }> },
+): Promise<Metadata> {
+  const { locale } = await props.params
+  const loc = (locale === 'en' ? 'en' : 'ka') as 'en' | 'ka'
+  const t = await getTranslations({ locale, namespace: 'nav' })
+  const canonical = canonicalFor(loc, '/tips')
+  return {
+    title: t('tips'),
+    description: 'TODO: 140-160 char Georgian meta description for tips (founders to write).',
+    alternates: { canonical },
+    openGraph: { url: canonical },
+  }
+}
 
 export default async function TipsPage(props: { params: Promise<{ locale: string }> }) {
   const { locale } = await props.params
   setRequestLocale(locale)
 
   const loc = locale as Locale
-  const articles = await listNews()
+  const [articles, tNav] = await Promise.all([
+    listNews(),
+    getTranslations({ locale, namespace: 'nav' }),
+  ])
+  const crumbs = breadcrumbJsonLd(loc as 'en' | 'ka', loc === 'ka' ? 'მთავარი' : 'Home', [
+    { name: tNav('tips'), path: '/tips' },
+  ])
 
   if (articles.length === 0) {
     return (
-      <section className="pt-36 pb-20 px-6 md:px-10 bg-white min-h-screen">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">Travel Intelligence</p>
-        <h1 className="font-black uppercase text-black leading-none tracking-tight mb-8"
-          style={{ fontSize: 'clamp(48px,8vw,80px)', letterSpacing: '-0.04em' }}>
-          TIPS &amp;<br />STORIES
-        </h1>
-        <p className="text-sm text-black/60 max-w-md">
-          No articles yet. Check back soon.
-        </p>
-      </section>
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
+        />
+        <section className="pt-36 pb-20 px-6 md:px-10 bg-white min-h-screen">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">Travel Intelligence</p>
+          <h1 className="font-black uppercase text-black leading-none tracking-tight mb-8"
+            style={{ fontSize: 'clamp(48px,8vw,80px)', letterSpacing: '-0.04em' }}>
+            TIPS &amp;<br />STORIES
+          </h1>
+          <p className="text-sm text-black/60 max-w-md">
+            No articles yet. Check back soon.
+          </p>
+        </section>
+      </>
     )
   }
 
   return (
-    <section className="pt-36 pb-20 px-6 md:px-10 bg-white min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
+      />
+      <section className="pt-36 pb-20 px-6 md:px-10 bg-white min-h-screen">
       <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">Travel Intelligence</p>
       <h1 className="font-black uppercase text-black leading-none tracking-tight mb-16"
         style={{ fontSize: 'clamp(48px,8vw,80px)', letterSpacing: '-0.04em' }}>
@@ -53,5 +87,6 @@ export default async function TipsPage(props: { params: Promise<{ locale: string
         ))}
       </div>
     </section>
+    </>
   )
 }
