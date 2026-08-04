@@ -1,23 +1,27 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/types'
 import { getTourTitle, getTourSubtitle, getTourDescription, getTourTag, formatPrice } from '@/types'
 import { listTours } from '@/lib/tours'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
+// Empty `generateStaticParams` + default `dynamicParams: true` = ISR
+// on-demand: nothing prerendered at build (so CI needs no env), each
+// slug renders on first request and caches for `revalidate` seconds.
+// Admin publish/edit triggers revalidatePath('/', 'layout') to bust.
+export async function generateStaticParams() {
+  return []
+}
 
 export default async function TourDetailPage(
   props: {
     params: Promise<{ locale: string; slug: string }>
   }
 ) {
-  const params = await props.params;
-
-  const {
-    locale,
-    slug
-  } = params;
+  const { locale, slug } = await props.params
+  setRequestLocale(locale)
 
   const tours = await listTours()
   const tour = tours.find((t) => t.slug === slug)

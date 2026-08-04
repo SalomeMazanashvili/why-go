@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
+import { getMessages, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -32,8 +32,6 @@ const firago = localFont({
   ],
 })
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: { template: '%s | Whygo', default: 'Whygo — Experience + Development Travel' },
   description: 'Boutique tours built around language, sport, and culinary skills.',
@@ -62,6 +60,9 @@ export default async function LocaleLayout(
   } = props;
 
   if (!locales.includes(locale)) notFound()
+  // Required by next-intl for statically-rendered routes; without this,
+  // rendering silently falls back to dynamic and WHY-74 achieves nothing.
+  setRequestLocale(locale)
   const messages = await getMessages()
 
   return (

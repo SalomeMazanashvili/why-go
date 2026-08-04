@@ -1,17 +1,15 @@
 import type { Locale } from '@/types'
 import { getNewsTitle, getNewsExcerpt } from '@/types'
 import Image from 'next/image'
+import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { listNews } from '@/lib/news'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 export default async function TipsPage(props: { params: Promise<{ locale: string }> }) {
-  const params = await props.params;
-
-  const {
-    locale
-  } = params;
+  const { locale } = await props.params
+  setRequestLocale(locale)
 
   const loc = locale as Locale
   const articles = await listNews()

@@ -1,15 +1,12 @@
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { listTours } from '@/lib/tours'
 import ToursGridClient from './ToursGridClient'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 export default async function ToursPage(props: { params: Promise<{ locale: string }> }) {
-  const params = await props.params;
-
-  const {
-    locale
-  } = params;
+  const { locale } = await props.params
+  setRequestLocale(locale)
 
   const [tours, t] = await Promise.all([
     listTours(),

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
@@ -30,6 +31,7 @@ export async function POST(req: NextRequest) {
     const s = getAdminSupabase()
     const { data, error } = await s.from('news').insert(payload).select('id').single()
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, id: data?.id })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Server error'

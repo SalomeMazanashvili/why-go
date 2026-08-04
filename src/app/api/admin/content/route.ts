@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
@@ -26,6 +27,7 @@ export async function PUT(req: NextRequest) {
     const s = getAdminSupabase()
     const { error } = await s.from('site_content').upsert(rows, { onConflict: 'key' })
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, count: rows.length })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Server error'

@@ -1,4 +1,9 @@
-export default async function AboutPage(_props: { params: Promise<{ locale: string }> }) {
+import { setRequestLocale } from 'next-intl/server'
+
+export default async function AboutPage(props: { params: Promise<{ locale: string }> }) {
+  const { locale } = await props.params
+  setRequestLocale(locale)
+
   return (
     <section className="pt-36 pb-20 px-6 md:px-10 bg-black min-h-screen">
       <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-4">Our Philosophy</p>
