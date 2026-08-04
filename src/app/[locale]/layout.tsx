@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Noto_Sans_Georgian } from 'next/font/google'
+import localFont from 'next/font/local'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -7,14 +7,29 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import '../globals.css'
 
-// Georgian-first: Noto Sans Georgian is the primary family. Latin characters
-// (product names, English `/en/*` routes) fall through the CSS font cascade
-// to the system sans-serif — see `sans` in tailwind.config.ts.
-const notoSansGeorgian = Noto_Sans_Georgian({
-  subsets: ['georgian'],
-  variable: '--font-georgian',
-  weight: ['400', '700', '900'],
+// Self-hosted via @fontsource/firago. The `latin` subset files carry both
+// Latin and Georgian glyphs (~2.5k in cmap incl. full Mkhedruli) — one
+// download covers both scripts for the whole public site.
+const firago = localFont({
+  variable: '--font-firago',
   display: 'swap',
+  src: [
+    {
+      path: '../../../node_modules/@fontsource/firago/files/firago-latin-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../../node_modules/@fontsource/firago/files/firago-latin-700-normal.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../../../node_modules/@fontsource/firago/files/firago-latin-900-normal.woff2',
+      weight: '900',
+      style: 'normal',
+    },
+  ],
 })
 
 export const dynamic = 'force-dynamic'
@@ -50,7 +65,7 @@ export default async function LocaleLayout(
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={notoSansGeorgian.variable}>
+    <html lang={locale} className={firago.variable}>
       <body className="font-sans bg-black text-white antialiased">
         <NextIntlClientProvider messages={messages}>
           <Navbar locale={locale} />

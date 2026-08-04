@@ -15,22 +15,22 @@ const config: Config = {
         'brand-gray': '#111111',
       },
       fontFamily: {
-        // Character-cascade: Georgian glyphs render via Noto Sans Georgian;
-        // Latin glyphs fall through to the system sans-serif. Keeps the site
-        // Georgian-first without pulling a second webfont for Latin.
+        // FiraGO covers both Latin and Georgian in a single font file
+        // (self-hosted via @fontsource/firago, loaded in [locale]/layout.tsx).
+        // System-ui fallbacks are for the brief FOUT window under
+        // display: 'swap' before the woff2 arrives.
         sans: [
-          'var(--font-georgian)',
+          'var(--font-firago)',
           'system-ui',
           '-apple-system',
           'Segoe UI',
           'Roboto',
           'sans-serif',
         ],
-        // `font-firago` classes stay as an alias so existing markup keeps
-        // rendering Georgian. Nothing loads FiraGO now; the alias points at
-        // the same Noto Sans Georgian variable.
+        // Alias — historical markup uses `font-firago`; keep it pointing at
+        // the same family so existing classes stay meaningful.
         firago: [
-          'var(--font-georgian)',
+          'var(--font-firago)',
           'system-ui',
           '-apple-system',
           'sans-serif',
