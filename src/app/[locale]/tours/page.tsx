@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { listTours } from '@/lib/tours'
-import { breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
+import { DEFAULT_OG_IMAGES, breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 import ToursGridClient from './ToursGridClient'
 
 export const revalidate = 3600
@@ -17,7 +17,7 @@ export async function generateMetadata(
     title: t('tours'),
     description: 'TODO: 140-160 char Georgian meta description for tours listing (founders to write).',
     alternates: { canonical },
-    openGraph: { url: canonical },
+    openGraph: { url: canonical, images: DEFAULT_OG_IMAGES },
   }
 }
 

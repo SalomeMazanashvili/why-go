@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { listNews } from '@/lib/news'
-import { breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
+import { DEFAULT_OG_IMAGES, breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 
 export const revalidate = 3600
 
@@ -20,7 +20,7 @@ export async function generateMetadata(
     title: t('tips'),
     description: 'TODO: 140-160 char Georgian meta description for tips (founders to write).',
     alternates: { canonical },
-    openGraph: { url: canonical },
+    openGraph: { url: canonical, images: DEFAULT_OG_IMAGES },
   }
 }
 

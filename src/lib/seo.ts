@@ -3,6 +3,20 @@
 export const SITE_URL = 'https://whygo.ge'
 export const SITE_NAME = 'Why Go'
 
+// Default OG images every page includes. Next 16's metadata merge replaces
+// `openGraph` objects entirely when a child sets one, so file-convention
+// image inheritance is unreliable across the [locale] → page boundary.
+// Referencing this constant from each generateMetadata guarantees an
+// og:image tag on every route.
+export const DEFAULT_OG_IMAGES = [
+  {
+    url: '/opengraph-image',
+    width: 1200,
+    height: 630,
+    alt: 'Why Go — boutique tours built around real skills',
+  },
+]
+
 // Build an absolute canonical URL for a given locale + path. Under
 // next-intl `localePrefix: 'as-needed'`, Georgian (default) is served
 // unprefixed and English at `/en/*`.
