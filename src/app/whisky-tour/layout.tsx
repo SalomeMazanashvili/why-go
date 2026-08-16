@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Bebas_Neue, DM_Sans, Playfair_Display } from 'next/font/google'
+import { SITE_URL } from '@/lib/seo'
 import '../globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -22,10 +23,15 @@ const playfair = Playfair_Display({
   display: 'swap',
 })
 
+// WHY-69: legacy English-only landing page — same noindex treatment as
+// /en/*. `follow: true` preserves any internal link signal back to the
+// Georgian tree; kept out of sitemap.ts entirely.
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'Whisky Tour | WhyGo',
   description:
     'An exclusive guided whisky tour — expert guides, authentic distilleries, unforgettable tastings.',
+  robots: { index: false, follow: true },
 }
 
 export default function WhiskyTourLayout({ children }: { children: React.ReactNode }) {

@@ -1,10 +1,17 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/types'
 import { getTourTitle, getTourSubtitle, getTourDescription, getTourTag, formatPrice } from '@/types'
 import { listTours } from '@/lib/tours'
+import {
+  breadcrumbJsonLd,
+  canonicalFor,
+  jsonLdScript,
+  touristTripJsonLd,
+} from '@/lib/seo'
 
 export const revalidate = 3600
 // Empty `generateStaticParams` + default `dynamicParams: true` = ISR
@@ -15,6 +22,35 @@ export async function generateStaticParams() {
   return []
 }
 
+export async function generateMetadata(
+  props: { params: Promise<{ locale: string; slug: string }> },
+): Promise<Metadata> {
+  const { locale, slug } = await props.params
+  const loc = (locale === 'en' ? 'en' : 'ka') as 'en' | 'ka'
+  const tours = await listTours()
+  const tour = tours.find((t) => t.slug === slug)
+  if (!tour) {
+    // notFound() is called by the page; return minimal metadata.
+    return { title: 'Not found' }
+  }
+  const title = getTourTitle(tour, loc as Locale)
+  const description =
+    getTourDescription(tour, loc as Locale) || getTourSubtitle(tour, loc as Locale) || ''
+  const canonical = canonicalFor(loc, `/tours/${slug}`)
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: 'article',
+      images: tour.cover_image ? [{ url: tour.cover_image }] : undefined,
+    },
+  }
+}
+
 export default async function TourDetailPage(
   props: {
     params: Promise<{ locale: string; slug: string }>
@@ -23,13 +59,40 @@ export default async function TourDetailPage(
   const { locale, slug } = await props.params
   setRequestLocale(locale)
 
-  const tours = await listTours()
+  const [tours, tNav] = await Promise.all([
+    listTours(),
+    getTranslations({ locale, namespace: 'nav' }),
+  ])
   const tour = tours.find((t) => t.slug === slug)
   if (!tour) notFound()
   const loc = locale as Locale
 
+  const crumbs = breadcrumbJsonLd(loc as 'en' | 'ka', loc === 'ka' ? 'მთავარი' : 'Home', [
+    { name: tNav('tours'), path: '/tours' },
+    { name: getTourTitle(tour, loc), path: `/tours/${slug}` },
+  ])
+  const trip = touristTripJsonLd({
+    locale: loc as 'en' | 'ka',
+    slug,
+    name: getTourTitle(tour, loc),
+    description:
+      getTourDescription(tour, loc) || getTourSubtitle(tour, loc) || getTourTitle(tour, loc),
+    coverImage: tour.cover_image,
+    destination: tour.destination,
+    priceFrom: tour.price_from,
+    currency: tour.currency,
+  })
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(trip) }}
+      />
       <section className="relative h-[85vh] flex items-end overflow-hidden">
         <Image
           src={tour.cover_image ?? ''}
