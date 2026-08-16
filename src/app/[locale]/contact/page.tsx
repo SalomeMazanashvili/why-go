@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import type { Locale } from '@/types'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { listTours } from '@/lib/tours'
-import { breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
+import { DEFAULT_OG_IMAGES, breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 import ContactSection from '@/components/sections/ContactSection'
 
 export const revalidate = 3600
@@ -18,7 +18,7 @@ export async function generateMetadata(
     title: t('contact'),
     description: 'TODO: 140-160 char Georgian meta description for contact (founders to write).',
     alternates: { canonical },
-    openGraph: { url: canonical },
+    openGraph: { url: canonical, images: DEFAULT_OG_IMAGES },
   }
 }
 

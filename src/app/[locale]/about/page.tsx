@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
+import { DEFAULT_OG_IMAGES, breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 
 export async function generateMetadata(
   props: { params: Promise<{ locale: string }> },
@@ -13,7 +13,7 @@ export async function generateMetadata(
     title: t('about'),
     description: 'TODO: 140-160 char Georgian meta description for about (founders to write).',
     alternates: { canonical },
-    openGraph: { url: canonical },
+    openGraph: { url: canonical, images: DEFAULT_OG_IMAGES },
   }
 }
 
