@@ -81,3 +81,36 @@ ON CONFLICT (id) DO NOTHING;
 DROP POLICY IF EXISTS "Public read uploads" ON storage.objects;
 CREATE POLICY "Public read uploads" ON storage.objects
   FOR SELECT USING (bucket_id = 'uploads');
+
+-- WHY-63: tour needs a public-facing credential string for the guide/expert
+-- (never a real name — one expert cannot be publicly associated with the
+-- company). Georgian only, per CLAUDE.md.
+ALTER TABLE tours ADD COLUMN IF NOT EXISTS expert_credential_ka TEXT;
+
+-- WHY-63: destinations collection. Standalone (no FKs into it yet — services,
+-- transfer_routes, guides will reference this in PR C). SEO fields added
+-- up-front because WHY-69 requires unique per-page metadata and destination
+-- hubs are the main organic-ranking target; adding these later means a
+-- migration plus manual backfill of any live rows.
+CREATE TABLE IF NOT EXISTS destinations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  name_en TEXT NOT NULL,
+  name_ka TEXT,
+  country TEXT,
+  description_en TEXT,
+  description_ka TEXT,
+  seo_title_ka TEXT,
+  seo_description_ka TEXT,
+  cover_image TEXT,
+  is_published BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE destinations ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read destinations" ON destinations;
+CREATE POLICY "Public read destinations" ON destinations
+  FOR SELECT USING (is_published = true);

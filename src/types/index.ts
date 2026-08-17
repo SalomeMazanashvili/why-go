@@ -18,6 +18,24 @@ export interface Tour {
   cover_image: string | null
   is_featured: boolean
   sort_order: number
+  // Public-facing guide credential (e.g. "სერტიფიცირებული გიდი"). Never a
+  // real name — one expert must not be publicly tied to the company.
+  expert_credential_ka: string
+}
+
+export interface Destination {
+  id: string
+  slug: string
+  name_en: string
+  name_ka: string
+  country: string
+  description_en: string
+  description_ka: string
+  seo_title_ka: string
+  seo_description_ka: string
+  cover_image: string | null
+  is_published: boolean
+  sort_order: number
 }
 
 export interface News {
@@ -43,6 +61,8 @@ export function getTourDescription(t: Tour, l: Locale) { return l === 'ka' && t.
 export function getTourTag(t: Tour, l: Locale) { return l === 'ka' && t.tag_ka ? t.tag_ka : t.tag_en }
 export function getNewsTitle(n: News, l: Locale) { return l === 'ka' && n.title_ka ? n.title_ka : n.title_en }
 export function getNewsExcerpt(n: News, l: Locale) { return l === 'ka' && n.excerpt_ka ? n.excerpt_ka : n.excerpt_en }
+export function getDestinationName(d: Destination, l: Locale) { return l === 'ka' && d.name_ka ? d.name_ka : d.name_en }
+export function getDestinationDescription(d: Destination, l: Locale) { return l === 'ka' && d.description_ka ? d.description_ka : d.description_en }
 
 export function formatPrice(amount: number | null, currency: string): string {
   if (!amount) return 'POA'
