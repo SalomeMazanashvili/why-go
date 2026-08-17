@@ -5,11 +5,13 @@ import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
 const WRITABLE = [
   'slug',
-  'title_en', 'subtitle_en', 'description_en', 'tag_en',
-  'title_ka', 'subtitle_ka', 'description_ka', 'tag_ka',
-  'destination', 'price_from', 'currency', 'duration_days',
-  'cover_image', 'is_featured', 'sort_order',
-  'expert_credential_ka',
+  'name_en', 'name_ka',
+  'country',
+  'description_en', 'description_ka',
+  'seo_title_ka', 'seo_description_ka',
+  'cover_image',
+  'is_published',
+  'sort_order',
 ] as const
 
 function pickPayload(body: any) {
@@ -26,11 +28,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const payload = pickPayload(body)
-    if (!payload.slug || !payload.title_en || !payload.destination) {
-      return NextResponse.json({ error: 'slug, title_en and destination are required' }, { status: 400 })
+    if (!payload.slug || !payload.name_en) {
+      return NextResponse.json({ error: 'slug and name_en are required' }, { status: 400 })
     }
     const s = getAdminSupabase()
-    const { data, error } = await s.from('tours').insert(payload).select('id').single()
+    const { data, error } = await s.from('destinations').insert(payload).select('id').single()
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, id: data?.id })

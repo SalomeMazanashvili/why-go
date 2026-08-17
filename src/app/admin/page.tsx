@@ -33,6 +33,7 @@ async function getCounts() {
 
 const CARDS = [
   { href: '/admin/tours', label: 'Tours', key: 'tours' as const, desc: 'Manage tour packages' },
+  { href: '/admin/destinations', label: 'Destinations', key: null, desc: 'Manage destination hubs' },
   { href: '/admin/content', label: 'Content', key: null, desc: 'Edit hero, about, footer text' },
   { href: '/admin/branding', label: 'Branding', key: null, desc: 'Colors & typography' },
   { href: '/admin/news', label: 'News', key: 'news' as const, desc: 'Blog articles' },

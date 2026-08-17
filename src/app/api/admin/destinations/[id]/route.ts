@@ -5,11 +5,13 @@ import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
 const WRITABLE = [
   'slug',
-  'title_en', 'subtitle_en', 'description_en', 'tag_en',
-  'title_ka', 'subtitle_ka', 'description_ka', 'tag_ka',
-  'destination', 'price_from', 'currency', 'duration_days',
-  'cover_image', 'is_featured', 'sort_order',
-  'expert_credential_ka',
+  'name_en', 'name_ka',
+  'country',
+  'description_en', 'description_ka',
+  'seo_title_ka', 'seo_description_ka',
+  'cover_image',
+  'is_published',
+  'sort_order',
 ] as const
 
 function pickPayload(body: any) {
@@ -24,14 +26,14 @@ function pickPayload(body: any) {
 interface Ctx { params: Promise<{ id: string }> }
 
 export async function PUT(req: NextRequest, props: Ctx) {
-  const params = await props.params;
+  const params = await props.params
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
     const body = await req.json()
     const payload = pickPayload(body)
     const s = getAdminSupabase()
-    const { error } = await s.from('tours').update(payload).eq('id', params.id)
+    const { error } = await s.from('destinations').update(payload).eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
@@ -42,12 +44,12 @@ export async function PUT(req: NextRequest, props: Ctx) {
 }
 
 export async function DELETE(_req: NextRequest, props: Ctx) {
-  const params = await props.params;
+  const params = await props.params
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
     const s = getAdminSupabase()
-    const { error } = await s.from('tours').delete().eq('id', params.id)
+    const { error } = await s.from('destinations').delete().eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })

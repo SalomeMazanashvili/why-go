@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test:rls": "bash scripts/test-rls.sh"
   },
   "dependencies": {
     "@fontsource/firago": "^5.3.0",

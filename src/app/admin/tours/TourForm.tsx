@@ -24,6 +24,7 @@ const emptyTour: Tour = {
   cover_image: '',
   is_featured: false,
   sort_order: 0,
+  expert_credential_ka: '',
 }
 
 export default function TourForm({ initial, mode }: Props) {
@@ -197,6 +198,18 @@ export default function TourForm({ initial, mode }: Props) {
             value={tour.description_ka}
             onChange={(e) => update('description_ka', e.target.value)}
           />
+        </div>
+        <div>
+          <label className="admin-label">Expert credential (public-facing)</label>
+          <input
+            className="admin-input"
+            value={tour.expert_credential_ka}
+            onChange={(e) => update('expert_credential_ka', e.target.value)}
+            placeholder="e.g. სერტიფიცირებული გიდი"
+          />
+          <p className="text-[10px] text-white/40 mt-1">
+            Credential string, never an expert&apos;s real name. One expert must not be publicly tied to the company.
+          </p>
         </div>
       </section>
 

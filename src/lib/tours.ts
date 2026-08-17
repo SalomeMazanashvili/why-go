@@ -2,7 +2,7 @@ import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
 import type { Tour } from '@/types'
 
 const TOUR_COLUMNS =
-  'id, slug, title_en, subtitle_en, description_en, tag_en, title_ka, subtitle_ka, description_ka, tag_ka, destination, price_from, currency, duration_days, cover_image, is_featured, sort_order'
+  'id, slug, title_en, subtitle_en, description_en, tag_en, title_ka, subtitle_ka, description_ka, tag_ka, destination, price_from, currency, duration_days, cover_image, is_featured, sort_order, expert_credential_ka'
 
 function normalize(row: any): Tour {
   return {
@@ -23,6 +23,7 @@ function normalize(row: any): Tour {
     cover_image: row.cover_image ?? null,
     is_featured: Boolean(row.is_featured),
     sort_order: row.sort_order ?? 0,
+    expert_credential_ka: row.expert_credential_ka ?? '',
   }
 }
 
