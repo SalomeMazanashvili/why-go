@@ -114,3 +114,54 @@ ALTER TABLE destinations ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Public read destinations" ON destinations;
 CREATE POLICY "Public read destinations" ON destinations
   FOR SELECT USING (is_published = true);
+
+-- WHY-63 PR B: service_categories — taxonomy for the experience layer
+-- (transfers, day trips, cooking classes, water activities, etc.). Standalone;
+-- services in PR C reference this via category_id.
+CREATE TABLE IF NOT EXISTS service_categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  name_en TEXT NOT NULL,
+  name_ka TEXT,
+  description_en TEXT,
+  description_ka TEXT,
+  icon TEXT,
+  is_published BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE service_categories ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read service_categories" ON service_categories;
+CREATE POLICY "Public read service_categories" ON service_categories
+  FOR SELECT USING (is_published = true);
+
+-- WHY-63 PR B: guides — real named Georgian-speaking guides for the experience
+-- layer. NOTE: The Oktoberfest tour expert must NEVER be added here — that
+-- credential lives in tours.expert_credential_ka and stays anonymous per
+-- CLAUDE.md. Only add guides who have consented to public identity.
+CREATE TABLE IF NOT EXISTS guides (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  name_en TEXT NOT NULL,
+  name_ka TEXT,
+  bio_en TEXT,
+  bio_ka TEXT,
+  photo TEXT,
+  languages TEXT,
+  destinations_covered TEXT,
+  specialties_en TEXT,
+  specialties_ka TEXT,
+  is_published BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE guides ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read guides" ON guides;
+CREATE POLICY "Public read guides" ON guides
+  FOR SELECT USING (is_published = true);

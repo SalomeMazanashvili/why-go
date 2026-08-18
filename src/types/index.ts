@@ -38,6 +38,34 @@ export interface Destination {
   sort_order: number
 }
 
+export interface ServiceCategory {
+  id: string
+  slug: string
+  name_en: string
+  name_ka: string
+  description_en: string
+  description_ka: string
+  icon: string
+  is_published: boolean
+  sort_order: number
+}
+
+export interface Guide {
+  id: string
+  slug: string
+  name_en: string
+  name_ka: string
+  bio_en: string
+  bio_ka: string
+  photo: string | null
+  languages: string
+  destinations_covered: string
+  specialties_en: string
+  specialties_ka: string
+  is_published: boolean
+  sort_order: number
+}
+
 export interface News {
   id: string
   slug: string
@@ -63,6 +91,11 @@ export function getNewsTitle(n: News, l: Locale) { return l === 'ka' && n.title_
 export function getNewsExcerpt(n: News, l: Locale) { return l === 'ka' && n.excerpt_ka ? n.excerpt_ka : n.excerpt_en }
 export function getDestinationName(d: Destination, l: Locale) { return l === 'ka' && d.name_ka ? d.name_ka : d.name_en }
 export function getDestinationDescription(d: Destination, l: Locale) { return l === 'ka' && d.description_ka ? d.description_ka : d.description_en }
+export function getCategoryName(c: ServiceCategory, l: Locale) { return l === 'ka' && c.name_ka ? c.name_ka : c.name_en }
+export function getCategoryDescription(c: ServiceCategory, l: Locale) { return l === 'ka' && c.description_ka ? c.description_ka : c.description_en }
+export function getGuideName(g: Guide, l: Locale) { return l === 'ka' && g.name_ka ? g.name_ka : g.name_en }
+export function getGuideBio(g: Guide, l: Locale) { return l === 'ka' && g.bio_ka ? g.bio_ka : g.bio_en }
+export function getGuideSpecialties(g: Guide, l: Locale) { return l === 'ka' && g.specialties_ka ? g.specialties_ka : g.specialties_en }
 
 export function formatPrice(amount: number | null, currency: string): string {
   if (!amount) return 'POA'
