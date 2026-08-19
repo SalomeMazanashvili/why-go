@@ -301,3 +301,15 @@ CREATE TABLE IF NOT EXISTS destination_contacts (
 ALTER TABLE destination_contacts ENABLE ROW LEVEL SECURITY;
 
 CREATE INDEX IF NOT EXISTS destination_contacts_destination_id_idx ON destination_contacts(destination_id);
+
+-- WHY-66 PR B: rate_limits — per-IP throttle for /api/inquiries. Keys are
+-- namespaced like "inquiries:<ip>". Anon has no policy so RLS default-deny
+-- applies; the throttle runs exclusively via the service role from the
+-- inquiry submission handler. Small race is acceptable for a spam limiter.
+CREATE TABLE IF NOT EXISTS rate_limits (
+  key TEXT PRIMARY KEY,
+  count INT NOT NULL DEFAULT 1,
+  window_start TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE rate_limits ENABLE ROW LEVEL SECURITY;
