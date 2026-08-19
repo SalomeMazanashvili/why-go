@@ -9,6 +9,8 @@ const LINKS = [
   { href: '/admin/tours', label: 'Tours' },
   { href: '/admin/destinations', label: 'Destinations' },
   { href: '/admin/service-categories', label: 'Categories' },
+  { href: '/admin/services', label: 'Services' },
+  { href: '/admin/transfer-routes', label: 'Transfers' },
   { href: '/admin/guides', label: 'Guides' },
   { href: '/admin/content', label: 'Content' },
   { href: '/admin/branding', label: 'Branding' },

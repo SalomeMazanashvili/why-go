@@ -74,6 +74,8 @@ expect_empty_array "news where is_published=false"    "news?is_published=eq.fals
 expect_empty_array "destinations where is_published=false" "destinations?is_published=eq.false&select=id"
 expect_empty_array "service_categories where is_published=false" "service_categories?is_published=eq.false&select=id"
 expect_empty_array "guides where is_published=false" "guides?is_published=eq.false&select=id"
+expect_empty_array "services where is_published=false" "services?is_published=eq.false&select=id"
+expect_empty_array "transfer_routes where is_published=false" "transfer_routes?is_published=eq.false&select=id"
 echo ""
 echo "2. Private tables must not be readable by anon:"
 expect_forbidden_or_empty "contact_submissions SELECT" "contact_submissions?select=id"
