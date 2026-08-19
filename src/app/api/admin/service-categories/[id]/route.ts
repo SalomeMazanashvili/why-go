@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
+import { countServicesByCategory } from '@/lib/services'
 
 const WRITABLE = [
   'slug',
@@ -46,6 +47,14 @@ export async function DELETE(_req: NextRequest, props: Ctx) {
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
+    // Preflight: service_categories FK into services with ON DELETE RESTRICT.
+    const serviceCount = await countServicesByCategory(params.id)
+    if (serviceCount > 0) {
+      return NextResponse.json(
+        { error: `Cannot delete: referenced by ${serviceCount} service${serviceCount === 1 ? '' : 's'}. Reassign them to another category first.` },
+        { status: 409 },
+      )
+    }
     const s = getAdminSupabase()
     const { error } = await s.from('service_categories').delete().eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

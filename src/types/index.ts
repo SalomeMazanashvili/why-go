@@ -66,6 +66,52 @@ export interface Guide {
   sort_order: number
 }
 
+export interface Service {
+  id: string
+  slug: string
+  destination_id: string | null
+  category_id: string | null
+  name_en: string
+  name_ka: string
+  short_description_en: string
+  short_description_ka: string
+  description_en: string
+  description_ka: string
+  seo_title_ka: string
+  seo_description_ka: string
+  price_from: number | null
+  currency: string
+  duration_hours: number | null
+  min_group_size: number | null
+  max_group_size: number | null
+  cover_image: string | null
+  is_published: boolean
+  is_featured: boolean
+  sort_order: number
+}
+
+export interface TransferRoute {
+  id: string
+  slug: string
+  from_destination_id: string | null
+  to_destination_id: string | null
+  from_name_en: string
+  from_name_ka: string
+  to_name_en: string
+  to_name_ka: string
+  description_en: string
+  description_ka: string
+  seo_title_ka: string
+  seo_description_ka: string
+  price_from: number | null
+  currency: string
+  duration_minutes: number | null
+  vehicle_type: string
+  max_passengers: number | null
+  is_published: boolean
+  sort_order: number
+}
+
 export interface News {
   id: string
   slug: string
@@ -96,6 +142,12 @@ export function getCategoryDescription(c: ServiceCategory, l: Locale) { return l
 export function getGuideName(g: Guide, l: Locale) { return l === 'ka' && g.name_ka ? g.name_ka : g.name_en }
 export function getGuideBio(g: Guide, l: Locale) { return l === 'ka' && g.bio_ka ? g.bio_ka : g.bio_en }
 export function getGuideSpecialties(g: Guide, l: Locale) { return l === 'ka' && g.specialties_ka ? g.specialties_ka : g.specialties_en }
+export function getServiceName(s: Service, l: Locale) { return l === 'ka' && s.name_ka ? s.name_ka : s.name_en }
+export function getServiceShortDescription(s: Service, l: Locale) { return l === 'ka' && s.short_description_ka ? s.short_description_ka : s.short_description_en }
+export function getServiceDescription(s: Service, l: Locale) { return l === 'ka' && s.description_ka ? s.description_ka : s.description_en }
+export function getTransferRouteFrom(r: TransferRoute, l: Locale) { return l === 'ka' && r.from_name_ka ? r.from_name_ka : r.from_name_en }
+export function getTransferRouteTo(r: TransferRoute, l: Locale) { return l === 'ka' && r.to_name_ka ? r.to_name_ka : r.to_name_en }
+export function getTransferRouteDescription(r: TransferRoute, l: Locale) { return l === 'ka' && r.description_ka ? r.description_ka : r.description_en }
 
 export function formatPrice(amount: number | null, currency: string): string {
   if (!amount) return 'POA'

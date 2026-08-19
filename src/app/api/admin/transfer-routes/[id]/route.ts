@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
-import { countServicesByDestination } from '@/lib/services'
-import { countTransferRoutesByDestination } from '@/lib/transferRoutes'
 
 const WRITABLE = [
   'slug',
-  'name_en', 'name_ka',
-  'country',
+  'from_destination_id', 'to_destination_id',
+  'from_name_en', 'from_name_ka',
+  'to_name_en', 'to_name_ka',
   'description_en', 'description_ka',
   'seo_title_ka', 'seo_description_ka',
-  'cover_image',
+  'price_from', 'currency',
+  'duration_minutes',
+  'vehicle_type', 'max_passengers',
   'is_published',
   'sort_order',
 ] as const
@@ -35,7 +36,7 @@ export async function PUT(req: NextRequest, props: Ctx) {
     const body = await req.json()
     const payload = pickPayload(body)
     const s = getAdminSupabase()
-    const { error } = await s.from('destinations').update(payload).eq('id', params.id)
+    const { error } = await s.from('transfer_routes').update(payload).eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })
@@ -50,23 +51,8 @@ export async function DELETE(_req: NextRequest, props: Ctx) {
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!hasAdminSupabase()) return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 })
   try {
-    // Preflight: destinations FK into services + transfer_routes with ON DELETE RESTRICT.
-    // Count references first so we can return exact numbers instead of a bare Postgres 23503.
-    const [serviceCount, routeCount] = await Promise.all([
-      countServicesByDestination(params.id),
-      countTransferRoutesByDestination(params.id),
-    ])
-    if (serviceCount + routeCount > 0) {
-      const parts: string[] = []
-      if (serviceCount > 0) parts.push(`${serviceCount} service${serviceCount === 1 ? '' : 's'}`)
-      if (routeCount > 0) parts.push(`${routeCount} transfer route${routeCount === 1 ? '' : 's'}`)
-      return NextResponse.json(
-        { error: `Cannot delete: referenced by ${parts.join(' and ')}. Remove or reassign them first.` },
-        { status: 409 },
-      )
-    }
     const s = getAdminSupabase()
-    const { error } = await s.from('destinations').delete().eq('id', params.id)
+    const { error } = await s.from('transfer_routes').delete().eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     revalidatePath('/', 'layout')
     return NextResponse.json({ success: true })

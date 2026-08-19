@@ -165,3 +165,75 @@ ALTER TABLE guides ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Public read guides" ON guides;
 CREATE POLICY "Public read guides" ON guides
   FOR SELECT USING (is_published = true);
+
+-- WHY-63 PR C: services — the experience-layer products (transfers, day
+-- trips, cooking classes, food tours, water activities). Sold to Georgians
+-- who booked their own trip; this is the growth product. Each service
+-- belongs to a destination hub and a category. FKs use ON DELETE RESTRICT
+-- so a destination or category cannot be silently deleted while services
+-- still reference it — the admin has to unlink first.
+CREATE TABLE IF NOT EXISTS services (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  destination_id UUID REFERENCES destinations(id) ON DELETE RESTRICT,
+  category_id UUID REFERENCES service_categories(id) ON DELETE RESTRICT,
+  name_en TEXT NOT NULL,
+  name_ka TEXT,
+  short_description_en TEXT,
+  short_description_ka TEXT,
+  description_en TEXT,
+  description_ka TEXT,
+  seo_title_ka TEXT,
+  seo_description_ka TEXT,
+  price_from NUMERIC(10,2),
+  currency TEXT DEFAULT 'GEL',
+  duration_hours NUMERIC(4,1),
+  min_group_size INT,
+  max_group_size INT,
+  cover_image TEXT,
+  is_published BOOLEAN DEFAULT false,
+  is_featured BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read services" ON services;
+CREATE POLICY "Public read services" ON services
+  FOR SELECT USING (is_published = true);
+
+-- WHY-63 PR C: transfer_routes — point-to-point transfer products.
+-- Both endpoints FK to destinations (RESTRICT). Programmatic pages built
+-- on top of this table need 300+ words of unique Georgian content per
+-- CLAUDE.md — do not publish empty routes.
+CREATE TABLE IF NOT EXISTS transfer_routes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  from_destination_id UUID REFERENCES destinations(id) ON DELETE RESTRICT,
+  to_destination_id UUID REFERENCES destinations(id) ON DELETE RESTRICT,
+  from_name_en TEXT NOT NULL,
+  from_name_ka TEXT,
+  to_name_en TEXT NOT NULL,
+  to_name_ka TEXT,
+  description_en TEXT,
+  description_ka TEXT,
+  seo_title_ka TEXT,
+  seo_description_ka TEXT,
+  price_from NUMERIC(10,2),
+  currency TEXT DEFAULT 'GEL',
+  duration_minutes INT,
+  vehicle_type TEXT,
+  max_passengers INT,
+  is_published BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE transfer_routes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read transfer_routes" ON transfer_routes;
+CREATE POLICY "Public read transfer_routes" ON transfer_routes
+  FOR SELECT USING (is_published = true);
