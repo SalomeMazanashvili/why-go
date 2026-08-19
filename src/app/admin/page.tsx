@@ -38,6 +38,7 @@ const CARDS = [
   { href: '/admin/services', label: 'Services', key: null, desc: 'Experience-layer products' },
   { href: '/admin/transfer-routes', label: 'Transfers', key: null, desc: 'Point-to-point transfers' },
   { href: '/admin/guides', label: 'Guides', key: null, desc: 'Named experience-layer guides' },
+  { href: '/admin/destination-contacts', label: 'Contact routing', key: null, desc: 'Driver + guide routing for WhatsApp' },
   { href: '/admin/content', label: 'Content', key: null, desc: 'Edit hero, about, footer text' },
   { href: '/admin/branding', label: 'Branding', key: null, desc: 'Colors & typography' },
   { href: '/admin/news', label: 'News', key: 'news' as const, desc: 'Blog articles' },

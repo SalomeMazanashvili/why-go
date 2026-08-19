@@ -80,12 +80,16 @@ echo ""
 echo "2. Private tables must not be readable by anon:"
 expect_forbidden_or_empty "contact_submissions SELECT" "contact_submissions?select=id"
 expect_forbidden_or_empty "admins SELECT"              "admins?select=id"
+expect_forbidden_or_empty "inquiries SELECT"           "inquiries?select=id"
+expect_forbidden_or_empty "destination_contacts SELECT" "destination_contacts?select=id"
 echo ""
-echo "3. Contact form INSERT must work for anon:"
+echo "3. Public inserts must work for anon:"
 # Marker email so this row can be identified + deleted later by an admin
 MARKER_EMAIL="rls-test-$(date +%s)@whygo.test"
 expect_created "contact_submissions INSERT" "contact_submissions" \
   "{\"full_name\":\"RLS Test\",\"email\":\"$MARKER_EMAIL\",\"message\":\"Automated RLS test — safe to delete\"}"
+expect_created "inquiries INSERT" "inquiries" \
+  "{\"service_type\":\"transfer\",\"name\":\"RLS Test\",\"phone\":\"+995555000000\"}"
 echo ""
 
 if [ "$FAIL" -eq 0 ]; then
