@@ -112,6 +112,45 @@ export interface TransferRoute {
   sort_order: number
 }
 
+export type InquiryServiceType = 'transfer' | 'day_trip' | 'guide' | 'experience'
+export type InquiryStatus = 'new' | 'contacted' | 'confirmed' | 'declined'
+export type InquiryPaymentMethod = 'cash' | 'iban'
+export type InquiryPaymentStatus = 'awaiting' | 'received' | 'not_applicable'
+export type DestinationContactType = 'driver' | 'guide'
+
+export interface Inquiry {
+  id: string
+  service_type: InquiryServiceType
+  service_id: string | null
+  destination_id: string | null
+  travel_date: string | null
+  travel_time: string | null
+  passengers: number | null
+  luggage_pieces: number | null
+  pickup_from: string
+  pickup_to: string
+  interests: string[]
+  payment_method: InquiryPaymentMethod | null
+  payment_status: InquiryPaymentStatus
+  status: InquiryStatus
+  name: string
+  phone: string
+  email: string
+  notes: string
+  language: string
+  created_at: string
+}
+
+export interface DestinationContact {
+  id: string
+  destination_id: string
+  contact_type: DestinationContactType
+  name: string
+  phone_e164: string
+  whatsapp_e164: string
+  notes: string
+}
+
 export interface News {
   id: string
   slug: string

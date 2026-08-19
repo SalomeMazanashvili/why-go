@@ -12,6 +12,7 @@ const LINKS = [
   { href: '/admin/services', label: 'Services' },
   { href: '/admin/transfer-routes', label: 'Transfers' },
   { href: '/admin/guides', label: 'Guides' },
+  { href: '/admin/destination-contacts', label: 'Contact routing' },
   { href: '/admin/content', label: 'Content' },
   { href: '/admin/branding', label: 'Branding' },
   { href: '/admin/news', label: 'News' },

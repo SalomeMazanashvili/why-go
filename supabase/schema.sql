@@ -237,3 +237,67 @@ ALTER TABLE transfer_routes ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Public read transfer_routes" ON transfer_routes;
 CREATE POLICY "Public read transfer_routes" ON transfer_routes
   FOR SELECT USING (is_published = true);
+
+-- WHY-66 PR A: inquiries — service booking requests from the public forms
+-- (transfers, day trips, guides, experiences). Anon can INSERT only; no
+-- SELECT/UPDATE/DELETE policy so default-deny applies to reads. Admin
+-- routes use the service role and bypass RLS. Service and destination FKs
+-- are ON DELETE SET NULL because inquiries are historical records — if a
+-- service or destination is discontinued and deleted, past inquiries must
+-- survive with a null reference rather than block the delete (opposite of
+-- the RESTRICT policy used for editorial content in WHY-63 PR C).
+CREATE TABLE IF NOT EXISTS inquiries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  service_type TEXT NOT NULL CHECK (service_type IN ('transfer', 'day_trip', 'guide', 'experience')),
+  service_id UUID REFERENCES services(id) ON DELETE SET NULL,
+  destination_id UUID REFERENCES destinations(id) ON DELETE SET NULL,
+  travel_date DATE,
+  travel_time TIME,
+  passengers INT,
+  luggage_pieces INT,
+  pickup_from TEXT,
+  pickup_to TEXT,
+  interests TEXT[],
+  payment_method TEXT CHECK (payment_method IN ('cash', 'iban')),
+  payment_status TEXT NOT NULL DEFAULT 'not_applicable' CHECK (payment_status IN ('awaiting', 'received', 'not_applicable')),
+  status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'confirmed', 'declined')),
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT,
+  notes TEXT,
+  language TEXT DEFAULT 'ka',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anon insert inquiries" ON inquiries;
+CREATE POLICY "Anon insert inquiries" ON inquiries FOR INSERT WITH CHECK (true);
+
+CREATE INDEX IF NOT EXISTS inquiries_status_idx ON inquiries(status);
+CREATE INDEX IF NOT EXISTS inquiries_created_at_idx ON inquiries(created_at DESC);
+CREATE INDEX IF NOT EXISTS inquiries_destination_id_idx ON inquiries(destination_id);
+
+-- WHY-66 PR A: destination_contacts — admin-only routing data mapping each
+-- destination to its contracted driver and/or guide. Powers the WhatsApp
+-- copy block in the inquiry admin surface (PR C). Internal operational
+-- data — no public read policy. ON DELETE CASCADE from destinations
+-- because contact rows are worthless without the destination they route
+-- to; the destinations DELETE preflight in WHY-63 PR C already blocks
+-- deletion when services or transfer_routes reference the destination.
+CREATE TABLE IF NOT EXISTS destination_contacts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  destination_id UUID NOT NULL REFERENCES destinations(id) ON DELETE CASCADE,
+  contact_type TEXT NOT NULL CHECK (contact_type IN ('driver', 'guide')),
+  name TEXT NOT NULL,
+  phone_e164 TEXT NOT NULL,
+  whatsapp_e164 TEXT,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE destination_contacts ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX IF NOT EXISTS destination_contacts_destination_id_idx ON destination_contacts(destination_id);
