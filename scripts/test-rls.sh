@@ -82,6 +82,7 @@ expect_forbidden_or_empty "contact_submissions SELECT" "contact_submissions?sele
 expect_forbidden_or_empty "admins SELECT"              "admins?select=id"
 expect_forbidden_or_empty "inquiries SELECT"           "inquiries?select=id"
 expect_forbidden_or_empty "destination_contacts SELECT" "destination_contacts?select=id"
+expect_forbidden_or_empty "rate_limits SELECT"         "rate_limits?select=key"
 echo ""
 echo "3. Public inserts must work for anon:"
 # Marker email so this row can be identified + deleted later by an admin

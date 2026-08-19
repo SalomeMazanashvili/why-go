@@ -28,5 +28,49 @@
     "submit": "შეტყობინების გაგზავნა", "reply_note": "ვპასუხობთ 24 საათის განმავლობაში",
     "success": "შეტყობინება გაიგზავნა!", "error": "შეცდომა. სცადეთ ხელახლა."
   },
-  "footer": { "tagline": "გამოცდილება + განვითარება", "rights": "ყველა უფლება დაცულია", "domain": "whygo.ge" }
+  "footer": { "tagline": "გამოცდილება + განვითარება", "rights": "ყველა უფლება დაცულია", "domain": "whygo.ge" },
+  "inquiry": {
+    "shared": {
+      "name": "TODO: Georgian copy needed",
+      "phone": "TODO: Georgian copy needed",
+      "email": "TODO: Georgian copy needed",
+      "notes": "TODO: Georgian copy needed",
+      "submit": "TODO: Georgian copy needed",
+      "sending": "TODO: Georgian copy needed",
+      "reply_note": "პასუხს მოგცემთ 24 საათის განმავლობაში",
+      "success_title": "TODO: Georgian copy needed",
+      "success_body": "TODO: Georgian copy needed",
+      "error_generic": "TODO: Georgian copy needed",
+      "error_rate_limited": "TODO: Georgian copy needed",
+      "error_turnstile": "TODO: Georgian copy needed",
+      "error_required": "TODO: Georgian copy needed",
+      "error_phone_format": "TODO: Georgian copy needed",
+      "error_email_format": "TODO: Georgian copy needed"
+    },
+    "transactional": {
+      "heading": "TODO: Georgian copy needed",
+      "pickup_from": "TODO: Georgian copy needed",
+      "pickup_to": "TODO: Georgian copy needed",
+      "travel_date": "TODO: Georgian copy needed",
+      "travel_time": "TODO: Georgian copy needed",
+      "passengers": "TODO: Georgian copy needed",
+      "luggage_pieces": "TODO: Georgian copy needed",
+      "payment_method": "TODO: Georgian copy needed",
+      "payment_cash": "TODO: Georgian copy needed",
+      "payment_iban": "TODO: Georgian copy needed"
+    },
+    "consultative": {
+      "heading": "TODO: Georgian copy needed",
+      "destination": "TODO: Georgian copy needed",
+      "date_from": "TODO: Georgian copy needed",
+      "date_to": "TODO: Georgian copy needed",
+      "travellers": "TODO: Georgian copy needed",
+      "interests": "TODO: Georgian copy needed",
+      "interest_food": "TODO: Georgian copy needed",
+      "interest_history": "TODO: Georgian copy needed",
+      "interest_wine": "TODO: Georgian copy needed",
+      "interest_nature": "TODO: Georgian copy needed",
+      "interest_family": "TODO: Georgian copy needed"
+    }
+  }
 }

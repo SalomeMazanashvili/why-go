@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/admin/transfer-routes', label: 'Transfers' },
   { href: '/admin/guides', label: 'Guides' },
   { href: '/admin/destination-contacts', label: 'Contact routing' },
+  { href: '/admin/preview/inquiries', label: 'Preview forms' },
   { href: '/admin/content', label: 'Content' },
   { href: '/admin/branding', label: 'Branding' },
   { href: '/admin/news', label: 'News' },

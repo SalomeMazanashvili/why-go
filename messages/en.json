@@ -28,5 +28,49 @@
     "submit": "Send Message", "reply_note": "We reply within 24 hours",
     "success": "Message sent! We'll be in touch soon.", "error": "Something went wrong. Please try again."
   },
-  "footer": { "tagline": "Experience + Development", "rights": "All rights reserved", "domain": "whygo.ge" }
+  "footer": { "tagline": "Experience + Development", "rights": "All rights reserved", "domain": "whygo.ge" },
+  "inquiry": {
+    "shared": {
+      "name": "Full name",
+      "phone": "Phone number",
+      "email": "Email (optional)",
+      "notes": "Anything else we should know?",
+      "submit": "Send request",
+      "sending": "Sending…",
+      "reply_note": "We'll respond within 24 hours",
+      "success_title": "Request received",
+      "success_body": "We'll be in touch within 24 hours to confirm the details.",
+      "error_generic": "Something went wrong. Please try again.",
+      "error_rate_limited": "Too many requests from your network. Please try again in a minute.",
+      "error_turnstile": "Please complete the human check before submitting.",
+      "error_required": "This field is required.",
+      "error_phone_format": "Enter a valid phone number.",
+      "error_email_format": "Enter a valid email address."
+    },
+    "transactional": {
+      "heading": "Book a transfer or day trip",
+      "pickup_from": "Pickup location",
+      "pickup_to": "Drop-off location",
+      "travel_date": "Date",
+      "travel_time": "Time",
+      "passengers": "Passengers",
+      "luggage_pieces": "Luggage pieces",
+      "payment_method": "Payment method",
+      "payment_cash": "Cash on arrival",
+      "payment_iban": "Bank transfer (IBAN)"
+    },
+    "consultative": {
+      "heading": "Book a guide or experience",
+      "destination": "Destination",
+      "date_from": "From",
+      "date_to": "To",
+      "travellers": "Travellers",
+      "interests": "Interests",
+      "interest_food": "Food",
+      "interest_history": "History",
+      "interest_wine": "Wine",
+      "interest_nature": "Nature",
+      "interest_family": "Family friendly"
+    }
+  }
 }
