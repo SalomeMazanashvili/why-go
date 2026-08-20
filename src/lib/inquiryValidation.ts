@@ -1,11 +1,25 @@
 import { z } from 'zod'
 
-// E.164 international phone format. Accepts any leading `+` followed by
-// 7-15 digits — covers Georgian (+995), German (+49), etc.
+// Georgians typically enter local numbers without the +995 country code
+// (e.g. "551 71 03 03"). Accept lax input, normalize to E.164 in one place
+// so admin views + WhatsApp wa.me links always get a valid international
+// number regardless of how the customer typed it.
+export function normalizePhone(input: string): string {
+  const stripped = input.replace(/[\s\-().]/g, '')
+  if (!stripped) return ''
+  if (stripped.startsWith('+')) return stripped
+  if (stripped.startsWith('995')) return '+' + stripped
+  // Bare digit strings default to Georgian (+995) since the target audience
+  // is Georgian travellers. Foreign customers must include the leading +.
+  if (/^\d{7,15}$/.test(stripped)) return '+995' + stripped
+  return input
+}
+
 const phoneSchema = z
   .string()
   .trim()
-  .regex(/^\+[0-9]{7,15}$/, 'error_phone_format')
+  .transform(normalizePhone)
+  .refine((v) => /^\+[0-9]{7,15}$/.test(v), { message: 'error_phone_format' })
 
 const emailSchema = z
   .string()
