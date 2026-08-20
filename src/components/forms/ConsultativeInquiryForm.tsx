@@ -293,7 +293,7 @@ export function ConsultativeInquiryForm({
           label={t('shared.phone')}
           required
           error={errors.phone}
-          helpText="+995..."
+          helpText="e.g. 551 71 03 03"
         >
           {({ id, describedBy, invalid }) => (
             <input
