@@ -5,11 +5,11 @@ import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
 export const dynamic = 'force-dynamic'
 
 async function getCounts() {
-  const empty = { tours: 0, news: 0, contacts: 0, unread: 0, supabase: false }
+  const empty = { tours: 0, news: 0, contacts: 0, unread: 0, inquiriesNew: 0, supabase: false }
   if (!hasAdminSupabase()) return empty
   try {
     const s = getAdminSupabase()
-    const [tours, news, contacts, unread] = await Promise.all([
+    const [tours, news, contacts, unread, inquiriesNew] = await Promise.all([
       s.from('tours').select('id', { count: 'exact', head: true }),
       s.from('news').select('id', { count: 'exact', head: true }),
       s.from('contact_submissions').select('id', { count: 'exact', head: true }),
@@ -17,12 +17,14 @@ async function getCounts() {
         .from('contact_submissions')
         .select('id', { count: 'exact', head: true })
         .eq('status', 'new'),
+      s.from('inquiries').select('id', { count: 'exact', head: true }).eq('status', 'new'),
     ])
     return {
       tours: tours.count ?? 0,
       news: news.count ?? 0,
       contacts: contacts.count ?? 0,
       unread: unread.count ?? 0,
+      inquiriesNew: inquiriesNew.count ?? 0,
       supabase: true,
     }
   } catch (err) {
@@ -32,6 +34,7 @@ async function getCounts() {
 }
 
 const CARDS = [
+  { href: '/admin/inquiries', label: 'Inquiries', key: null, desc: 'Booking requests + WhatsApp routing' },
   { href: '/admin/tours', label: 'Tours', key: 'tours' as const, desc: 'Manage tour packages' },
   { href: '/admin/destinations', label: 'Destinations', key: null, desc: 'Manage destination hubs' },
   { href: '/admin/service-categories', label: 'Categories', key: null, desc: 'Experience-layer taxonomy' },
@@ -61,10 +64,11 @@ export default async function AdminHome() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <StatCard label="New inquiries" value={counts.inquiriesNew} accent />
+        <StatCard label="New contacts" value={counts.unread} />
         <StatCard label="Tours" value={counts.tours} />
         <StatCard label="Articles" value={counts.news} />
-        <StatCard label="New contacts" value={counts.unread} accent />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
