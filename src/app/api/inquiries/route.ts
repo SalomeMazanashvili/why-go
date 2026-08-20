@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
     destination_id: d.destination_id || null,
     travel_date: 'travel_date' in d && d.travel_date ? d.travel_date : null,
     travel_time: 'travel_time' in d && d.travel_time ? d.travel_time : null,
+    travel_date_end: 'travel_date_end' in d && d.travel_date_end ? d.travel_date_end : null,
     passengers: 'passengers' in d && d.passengers != null ? d.passengers : null,
     luggage_pieces:
       'luggage_pieces' in d && d.luggage_pieces != null ? d.luggage_pieces : null,

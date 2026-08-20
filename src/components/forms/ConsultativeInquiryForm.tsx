@@ -19,7 +19,7 @@ type FormState = {
   service_id: string
   destination_id: string
   travel_date: string
-  travel_time: string
+  travel_date_end: string
   passengers: string
   interests: string[]
   name: string
@@ -35,7 +35,7 @@ function emptyState(serviceId?: string | null, destinationId?: string | null): F
     service_id: serviceId ?? '',
     destination_id: destinationId ?? '',
     travel_date: '',
-    travel_time: '',
+    travel_date_end: '',
     passengers: '2',
     interests: [],
     name: '',
@@ -94,7 +94,7 @@ export function ConsultativeInquiryForm({
       service_id: state.service_id || null,
       destination_id: state.destination_id,
       travel_date: state.travel_date || undefined,
-      travel_time: state.travel_time || undefined,
+      travel_date_end: state.travel_date_end || undefined,
       passengers: state.passengers || undefined,
       interests: state.interests,
       name: state.name,
@@ -207,7 +207,7 @@ export function ConsultativeInquiryForm({
           )}
         </FormField>
 
-        <FormField label={t('consultative.date_to')} error={errors.travel_time}>
+        <FormField label={t('consultative.date_to')} error={errors.travel_date_end}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -215,8 +215,8 @@ export function ConsultativeInquiryForm({
               aria-invalid={invalid}
               aria-describedby={describedBy}
               className={inputClass}
-              value={state.travel_time}
-              onChange={(e) => set('travel_time', e.target.value)}
+              value={state.travel_date_end}
+              onChange={(e) => set('travel_date_end', e.target.value)}
             />
           )}
         </FormField>
