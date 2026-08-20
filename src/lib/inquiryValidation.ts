@@ -56,7 +56,7 @@ export const consultativeInquirySchema = z.object({
   service_id: uuidOrNull,
   destination_id: z.string().uuid('error_required'),
   travel_date: z.string().trim().optional().or(z.literal('')),
-  travel_time: z.string().trim().optional().or(z.literal('')),
+  travel_date_end: z.string().trim().optional().or(z.literal('')),
   passengers: z.coerce.number().int().min(1).max(50).optional(),
   interests: z.array(z.string()).max(20).optional(),
   name: nameSchema,

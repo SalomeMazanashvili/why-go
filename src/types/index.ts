@@ -125,6 +125,7 @@ export interface Inquiry {
   destination_id: string | null
   travel_date: string | null
   travel_time: string | null
+  travel_date_end: string | null
   passengers: number | null
   luggage_pieces: number | null
   pickup_from: string

@@ -313,3 +313,9 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 );
 
 ALTER TABLE rate_limits ENABLE ROW LEVEL SECURITY;
+
+-- WHY-66 hotfix: consultative inquiries need a proper date range, not
+-- a start-date + start-time pair. travel_date holds the departure date;
+-- travel_date_end holds the return date. Transactional inquiries keep
+-- using travel_date + travel_time as before.
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS travel_date_end DATE;

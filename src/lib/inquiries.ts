@@ -2,7 +2,7 @@ import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
 import type { Inquiry, InquiryStatus, InquiryServiceType } from '@/types'
 
 const INQUIRY_COLUMNS =
-  'id, service_type, service_id, destination_id, travel_date, travel_time, passengers, luggage_pieces, pickup_from, pickup_to, interests, payment_method, payment_status, status, name, phone, email, notes, language, created_at'
+  'id, service_type, service_id, destination_id, travel_date, travel_time, travel_date_end, passengers, luggage_pieces, pickup_from, pickup_to, interests, payment_method, payment_status, status, name, phone, email, notes, language, created_at'
 
 function normalize(row: any): Inquiry {
   return {
@@ -12,6 +12,7 @@ function normalize(row: any): Inquiry {
     destination_id: row.destination_id ?? null,
     travel_date: row.travel_date ?? null,
     travel_time: row.travel_time ?? null,
+    travel_date_end: row.travel_date_end ?? null,
     passengers: row.passengers ?? null,
     luggage_pieces: row.luggage_pieces ?? null,
     pickup_from: row.pickup_from ?? '',
