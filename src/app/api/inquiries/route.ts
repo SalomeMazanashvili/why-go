@@ -80,12 +80,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Insert failed' }, { status: 500 })
   }
 
-  // Fire-and-forget email dispatch — a slow SMTP or missing config must not
-  // block the customer response. Errors are logged inside dispatchInquiryEmails.
+  // Await email dispatch. Earlier fire-and-forget pattern was unreliable on
+  // Vercel serverless: the function terminates when the response is returned,
+  // and unresolved promises (including the outbound fetch to Resend) get
+  // cancelled mid-flight. Vercel's External APIs panel showed the fetch was
+  // initiated, but Resend never received the request. Awaiting adds ~500-
+  // 1500ms to the form response but guarantees delivery. Wrapped in try/catch
+  // so a Resend outage still returns 201 — the row is persisted regardless.
   const inquiry = data as Inquiry
-  dispatchInquiryEmails(inquiry).catch((err) =>
-    console.error('[api/inquiries] email dispatch threw', err),
-  )
+  try {
+    await dispatchInquiryEmails(inquiry)
+  } catch (err) {
+    console.error('[api/inquiries] email dispatch threw', err)
+  }
 
   return NextResponse.json({ success: true, id: inquiry.id }, { status: 201 })
 }
