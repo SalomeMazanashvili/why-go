@@ -6,7 +6,7 @@ import { ImageResponse } from 'next/og'
 // follow-up ticket (checks in a subsetted FiraGO TTF).
 
 export const runtime = 'edge'
-export const alt = 'Why Go — boutique tours built around real skills'
+export const alt = 'WHYGO — boutique tours built around real skills'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 

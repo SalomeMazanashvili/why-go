@@ -1,4 +1,4 @@
-# CLAUDE.md — Why Go
+# CLAUDE.md — WHYGO
 
 Project instructions for Claude Code. Read before any task.
 
@@ -6,7 +6,7 @@ Project instructions for Claude Code. Read before any task.
 
 ## What this is
 
-Website for **Why Go**, a Georgian travel brand run by two founders in Tbilisi.
+Website for **WHYGO**, a Georgian travel brand run by two founders in Tbilisi.
 
 **Customers are Georgian travellers going abroad.** Not international tourists, not visitors to Georgia. Every decision follows from this.
 

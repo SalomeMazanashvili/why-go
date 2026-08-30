@@ -15,7 +15,7 @@ const montserrat = Montserrat({
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Whygo Admin',
+  title: 'WHYGO Admin',
   robots: { index: false, follow: false },
 }
 

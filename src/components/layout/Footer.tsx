@@ -23,7 +23,7 @@ export default function Footer() {
           ))}
         </nav>
         <p className="text-[10px] tracking-wide text-white/20">
-          © {new Date().getFullYear()} Whygo · whygo.ge
+          © {new Date().getFullYear()} WHYGO · whygo.ge
         </p>
       </div>
     </footer>

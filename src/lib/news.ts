@@ -23,7 +23,7 @@ function normalize(row: any): AdminNews {
     content_ka: row.content_ka ?? '',
     tag_ka: row.tag_ka ?? '',
     cover_image: row.cover_image ?? null,
-    author: row.author ?? 'Whygo Team',
+    author: row.author ?? 'WHYGO Team',
     reading_time_min: row.reading_time_min ?? 5,
     is_featured: Boolean(row.is_featured),
     // Safer default: an article missing an explicit is_published value is

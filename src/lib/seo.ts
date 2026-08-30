@@ -1,7 +1,7 @@
 // Central SEO helpers. Kept small so per-page files stay thin.
 
 export const SITE_URL = 'https://whygo.ge'
-export const SITE_NAME = 'Why Go'
+export const SITE_NAME = 'WHYGO'
 
 // Default OG images every page includes. Next 16's metadata merge replaces
 // `openGraph` objects entirely when a child sets one, so file-convention
@@ -13,7 +13,7 @@ export const DEFAULT_OG_IMAGES = [
     url: '/opengraph-image',
     width: 1200,
     height: 630,
-    alt: 'Why Go — boutique tours built around real skills',
+    alt: 'WHYGO — boutique tours built around real skills',
   },
 ]
 

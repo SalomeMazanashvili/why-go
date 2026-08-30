@@ -494,7 +494,7 @@ export default function WhiskyTourPage() {
             <p className="section-label">The Experience</p>
             <h2 className="section-title bebas">SCOTLAND<br />IN A GLASS</h2>
             <p>This is not a sightseeing trip. It's a full immersion into Scotland's most storied craft — from the earthy peat of the Highlands to the refined lowland spirits of Edinburgh's own distilleries.</p>
-            <p>WhyGo and David Velijanashvili have crafted a 5–6 day journey that takes 8–12 travellers from Tbilisi to the heart of Scotland's whisky culture — private distillery visits, rare tastings, authentic pubs, and a private dinner that brings it all together.</p>
+            <p>WHYGO and David Velijanashvili have crafted a 5–6 day journey that takes 8–12 travellers from Tbilisi to the heart of Scotland's whisky culture — private distillery visits, rare tastings, authentic pubs, and a private dinner that brings it all together.</p>
           </div>
           <div>
             <div className="stat-grid">
@@ -711,7 +711,7 @@ export default function WhiskyTourPage() {
           <a href="tel:+995598988711">+995 598 988 711</a>
           <a href="https://whygo.ge">whygo.ge</a>
         </div>
-        <div className="footer-copy">© {new Date().getFullYear()} WhyGo · Edinburgh Whisky Tour · All rights reserved</div>
+        <div className="footer-copy">© {new Date().getFullYear()} WHYGO · Edinburgh Whisky Tour · All rights reserved</div>
       </footer>
     </>
   )
