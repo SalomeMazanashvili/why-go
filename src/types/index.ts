@@ -123,6 +123,7 @@ export interface Inquiry {
   service_type: InquiryServiceType
   service_id: string | null
   destination_id: string | null
+  route_id: string | null
   travel_date: string | null
   travel_time: string | null
   travel_date_end: string | null
@@ -139,6 +140,12 @@ export interface Inquiry {
   email: string
   notes: string
   language: string
+  flight_number: string
+  return_route_id: string | null
+  return_date: string | null
+  return_time: string | null
+  return_pickup_from: string
+  return_pickup_to: string
   created_at: string
 }
 

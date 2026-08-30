@@ -10,6 +10,12 @@ interface BuildOpts {
   inquiry: Inquiry
   contact: DestinationContact | null
   destinationLabel?: string | null
+  // Pre-resolved for transfer inquiries. Server component looks up the
+  // TransferRoute via inquiry.route_id / return_route_id and passes the
+  // formatted "From → To" string. Null when the customer picked "Other"
+  // and typed the endpoints as free text (those show via pickup_from/to).
+  outboundRouteLabel?: string | null
+  returnRouteLabel?: string | null
 }
 
 // Pre-formatted message body for manual paste into WhatsApp. Contains every
@@ -17,7 +23,13 @@ interface BuildOpts {
 // English, since drivers and guides in-country typically operate in local
 // language + English; the customer's language is captured in the row for
 // admin context.
-export function buildWhatsAppMessage({ inquiry, contact, destinationLabel }: BuildOpts): string {
+export function buildWhatsAppMessage({
+  inquiry,
+  contact,
+  destinationLabel,
+  outboundRouteLabel,
+  returnRouteLabel,
+}: BuildOpts): string {
   const lines: string[] = []
   lines.push(`New booking request — ${inquiry.service_type.replace('_', ' ')}`)
   if (destinationLabel) lines.push(`Destination: ${destinationLabel}`)
@@ -28,16 +40,45 @@ export function buildWhatsAppMessage({ inquiry, contact, destinationLabel }: Bui
   if (inquiry.email) lines.push(`Email: ${inquiry.email}`)
   lines.push('')
 
+  // Outbound leg
+  if (inquiry.service_type === 'transfer' && outboundRouteLabel) {
+    lines.push(`Outbound: ${outboundRouteLabel}`)
+  } else {
+    if (inquiry.pickup_from) lines.push(`From: ${inquiry.pickup_from}`)
+    if (inquiry.pickup_to) lines.push(`To: ${inquiry.pickup_to}`)
+  }
   if (inquiry.travel_date) lines.push(`Date: ${inquiry.travel_date}`)
   if (inquiry.travel_date_end) lines.push(`Until: ${inquiry.travel_date_end}`)
   if (inquiry.travel_time) lines.push(`Time: ${inquiry.travel_time}`)
-  if (inquiry.pickup_from) lines.push(`From: ${inquiry.pickup_from}`)
-  if (inquiry.pickup_to) lines.push(`To: ${inquiry.pickup_to}`)
+  if (inquiry.flight_number) lines.push(`Flight: ${inquiry.flight_number}`)
   if (inquiry.passengers != null) lines.push(`Passengers: ${inquiry.passengers}`)
   if (inquiry.luggage_pieces != null && inquiry.luggage_pieces > 0)
     lines.push(`Luggage: ${inquiry.luggage_pieces}`)
   if (inquiry.interests.length) lines.push(`Interests: ${inquiry.interests.join(', ')}`)
   if (inquiry.payment_method) lines.push(`Payment: ${inquiry.payment_method}`)
+
+  // Return leg — one section, same driver assumption. Only for transfers
+  // and only when the customer opened the return toggle (any return field
+  // is populated).
+  const hasReturn =
+    inquiry.service_type === 'transfer' &&
+    (inquiry.return_route_id ||
+      inquiry.return_date ||
+      inquiry.return_pickup_from ||
+      inquiry.return_pickup_to)
+  if (hasReturn) {
+    lines.push('')
+    lines.push('Return journey:')
+    if (returnRouteLabel) {
+      lines.push(`  Route: ${returnRouteLabel}`)
+    } else {
+      if (inquiry.return_pickup_from) lines.push(`  From: ${inquiry.return_pickup_from}`)
+      if (inquiry.return_pickup_to) lines.push(`  To: ${inquiry.return_pickup_to}`)
+    }
+    if (inquiry.return_date) lines.push(`  Date: ${inquiry.return_date}`)
+    if (inquiry.return_time) lines.push(`  Time: ${inquiry.return_time}`)
+  }
+
   if (inquiry.notes) {
     lines.push('')
     lines.push(`Notes: ${inquiry.notes}`)

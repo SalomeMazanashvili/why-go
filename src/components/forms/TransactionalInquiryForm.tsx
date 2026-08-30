@@ -8,7 +8,9 @@ import { transactionalInquirySchema } from '@/lib/inquiryValidation'
 import type { Destination, Service, InquiryServiceType } from '@/types'
 
 interface Props {
-  serviceType: Extract<InquiryServiceType, 'transfer' | 'day_trip'>
+  // Transfers moved to TransferInquiryForm in WHY-68. This component now
+  // handles day_trip only until WHY-83 replaces it with DayTripInquiryForm.
+  serviceType: Extract<InquiryServiceType, 'day_trip'>
   serviceId?: string | null
   destinationId?: string | null
   destinations?: Destination[]

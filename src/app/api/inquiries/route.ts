@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
     service_type: d.service_type,
     service_id: d.service_id || null,
     destination_id: d.destination_id || null,
+    route_id: 'route_id' in d && d.route_id ? d.route_id : null,
     travel_date: 'travel_date' in d && d.travel_date ? d.travel_date : null,
     travel_time: 'travel_time' in d && d.travel_time ? d.travel_time : null,
     travel_date_end: 'travel_date_end' in d && d.travel_date_end ? d.travel_date_end : null,
@@ -72,6 +73,17 @@ export async function POST(req: NextRequest) {
     email: d.email || null,
     notes: d.notes || null,
     language: req.headers.get('accept-language')?.startsWith('ka') ? 'ka' : 'en',
+    // WHY-68 transfer additions. All null on non-transfer submissions and
+    // one-way transfers. Present schema fires only when the customer opens
+    // the return-journey toggle on the transfer form.
+    flight_number: 'flight_number' in d && d.flight_number ? d.flight_number : null,
+    return_route_id: 'return_route_id' in d && d.return_route_id ? d.return_route_id : null,
+    return_date: 'return_date' in d && d.return_date ? d.return_date : null,
+    return_time: 'return_time' in d && d.return_time ? d.return_time : null,
+    return_pickup_from:
+      'return_pickup_from' in d && d.return_pickup_from ? d.return_pickup_from : null,
+    return_pickup_to:
+      'return_pickup_to' in d && d.return_pickup_to ? d.return_pickup_to : null,
   }
 
   const { data, error } = await s.from('inquiries').insert(insertRow).select('*').single()
