@@ -5,11 +5,9 @@ import type { Inquiry } from '@/types'
 //      and skim these operationally). Contains every submitted field so a
 //      founder can act on it without opening the admin.
 //   2. Customer confirmation — first branded message the customer receives.
-//      Structured as a section-per-TODO template: subject, greeting,
-//      what-happens-next, contact, sign-off. Founders fill in sentences,
-//      never designing the email from scratch after the fact. The
-//      "24 saatis" promise line is the one verbatim string the ticket
-//      approved and it ships without a TODO.
+//      Sectioned layout (subject, greeting, opening, what-happens-next steps,
+//      contact block, sign-off) with founder-written Georgian in each slot.
+//      Uses თქვენ form throughout per CLAUDE.md rule 3.
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 
@@ -96,8 +94,10 @@ function founderTemplate(i: Inquiry): string {
     </div>`
 }
 
-// Customer template — every TODO string is a section for the founders to
-// fill in Georgian. Layout is fixed; only the marked strings should change.
+// Customer template — sections were TODOs during scaffold, filled by the
+// founders once Georgian copy was written. Layout is fixed; edit the strings
+// (not the markup) if wording changes. Uses თქვენ form throughout per
+// CLAUDE.md rule 3.
 function customerTemplate(i: Inquiry): string {
   return `
     <div style="background:#0a0a0a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:32px">
@@ -106,39 +106,39 @@ function customerTemplate(i: Inquiry): string {
 
         <!-- SECTION: Greeting -->
         <p style="color:#fff;font-size:16px;line-height:1.6;margin:0 0 20px">
-          TODO: Georgian greeting sentence needed (e.g. "გამარჯობა, ${escapeHtml(i.name)}")
+          გამარჯობა, ${escapeHtml(i.name)}
         </p>
 
         <!-- SECTION: Opening paragraph acknowledging the request -->
         <p style="color:#ccc;font-size:15px;line-height:1.7;margin:0 0 20px">
-          TODO: Georgian opening paragraph needed — acknowledge that we received their request, mention the service type in words if useful.
+          მადლობა! მოთხოვნა მივიღეთ და საკითხზე უკვე ვმუშაობთ.
         </p>
 
         <!-- SECTION: The 24-hour promise (founder-approved verbatim string, do NOT translate or edit) -->
         <div style="background:#111;border-left:3px solid #FFCC00;padding:16px 20px;margin:0 0 24px">
           <p style="color:#fff;font-size:15px;font-weight:bold;margin:0">
-            პასუხს მოგცემთ 24 საათის განმავლობაში
+            დაგიკავშირდებით 24 საათის განმავლობაში
           </p>
         </div>
 
         <!-- SECTION: What happens next (steps) -->
         <p style="color:#ccc;font-size:15px;line-height:1.7;margin:0 0 12px">
-          TODO: Georgian "what happens next" intro sentence needed.
+          შემდეგი ეტაპები:
         </p>
         <ol style="color:#ccc;font-size:15px;line-height:1.7;margin:0 0 24px;padding-left:20px">
-          <li style="margin-bottom:8px">TODO: Georgian step 1 needed (e.g. our team reviews availability)</li>
-          <li style="margin-bottom:8px">TODO: Georgian step 2 needed (e.g. we confirm price and details)</li>
-          <li style="margin-bottom:8px">TODO: Georgian step 3 needed (e.g. we contact you to finalise)</li>
+          <li style="margin-bottom:8px">ვამოწმებთ, არის თუ არა ხელმისაწვდომი ჩვენი მძღოლი/გიდი.</li>
+          <li style="margin-bottom:8px">ფასს და დამატებით დეტალებს შეგითანხმებთ.</li>
+          <li style="margin-bottom:8px">გამოგიგზავნით ყველა საჭირო ინფორმაციას — ვინ დაგხვდებათ, სად და როდის.</li>
         </ol>
 
         <!-- SECTION: Contact block -->
         <p style="color:#888;font-size:13px;line-height:1.6;margin:24px 0 0;border-top:1px solid #222;padding-top:20px">
-          TODO: Georgian contact block needed (phone, WhatsApp, hours).
+          თუ საკითხი გადაუდებელია, მოგვწერეთ WhatsApp-ზე ან დაგვირეკეთ ნომერზე +995 598 988 711.
         </p>
 
         <!-- SECTION: Sign-off -->
         <p style="color:#666;font-size:12px;margin:16px 0 0">
-          TODO: Georgian sign-off needed (e.g. Whygo team).
+          სალომე &amp; ბაკური, WHyGo
         </p>
       </div>
     </div>`
@@ -177,7 +177,7 @@ export async function dispatchInquiryEmails(inquiry: Inquiry): Promise<void> {
       send({
         from,
         to: [inquiry.email],
-        subject: 'TODO: Georgian subject line needed',
+        subject: 'მოთხოვნა მიღებულია - WhyGo',
         html: customerTemplate(inquiry),
       }),
     )
