@@ -41,6 +41,7 @@ Georgian is the primary language. Machine-written Georgian is grammatically plau
 - `<html lang="ka">`
 - Prices in **GEL**
 - Fonts must support Georgian script (Firago / BPG / Noto Sans Georgian). Arial Black and Montserrat do **not** — they fall back silently.
+- **All Georgian copy uses `თქვენ` (formal plural) consistently across site, emails and error messages.** Never mix `შენ` and `თქვენ` within the same product surface. When wiring founder-supplied strings, check the verb forms match the existing convention before shipping.
 
 ### 4. Security
 - Never commit secrets
