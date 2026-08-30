@@ -257,7 +257,7 @@ export function TransactionalInquiryForm({
       </div>
 
       {destinations && destinations.length > 0 && !destinationId && (
-        <FormField label="Destination" error={errors.destination_id}>
+        <FormField label={t('consultative.destination')} error={errors.destination_id}>
           {({ id, describedBy, invalid }) => (
             <select
               id={id}

@@ -138,7 +138,7 @@ function customerTemplate(i: Inquiry): string {
 
         <!-- SECTION: Sign-off -->
         <p style="color:#666;font-size:12px;margin:16px 0 0">
-          სალომე &amp; ბაკური, WHyGo
+          სალომე &amp; ბაკური, WHYGO
         </p>
       </div>
     </div>`
@@ -177,7 +177,7 @@ export async function dispatchInquiryEmails(inquiry: Inquiry): Promise<void> {
       send({
         from,
         to: [inquiry.email],
-        subject: 'მოთხოვნა მიღებულია - WhyGo',
+        subject: 'მოთხოვნა მიღებულია - WHYGO',
         html: customerTemplate(inquiry),
       }),
     )
