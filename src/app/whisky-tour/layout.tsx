@@ -28,7 +28,7 @@ const playfair = Playfair_Display({
 // Georgian tree; kept out of sitemap.ts entirely.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Whisky Tour | WhyGo',
+  title: 'Whisky Tour | WHYGO',
   description:
     'An exclusive guided whisky tour — expert guides, authentic distilleries, unforgettable tastings.',
   robots: { index: false, follow: true },

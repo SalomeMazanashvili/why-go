@@ -35,7 +35,7 @@ async function sendNotificationEmail(data: LeadData) {
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
       <div style="background:#0a0a0a;padding:24px 32px;border-bottom:3px solid #f0c419;">
         <h1 style="color:#f0c419;font-size:22px;margin:0;letter-spacing:0.1em;">NEW RESERVATION REQUEST</h1>
-        <p style="color:#888;margin:6px 0 0;font-size:13px;">Edinburgh Whisky Tour — WhyGo × David Velijanashvili</p>
+        <p style="color:#888;margin:6px 0 0;font-size:13px;">Edinburgh Whisky Tour — WHYGO × David Velijanashvili</p>
       </div>
       <div style="padding:32px;background:#ffffff;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">

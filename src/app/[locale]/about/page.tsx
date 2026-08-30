@@ -41,7 +41,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
         </h1>
         <div className="mt-16 max-w-2xl">
           <p className="text-base leading-relaxed text-white/70 mb-6">
-            Whygo was born in Tbilisi with a simple belief: travel should change you. Not just your photo album — but your skills, your language, your perspective on what you&apos;re capable of.
+            WHYGO was born in Tbilisi with a simple belief: travel should change you. Not just your photo album — but your skills, your language, your perspective on what you&apos;re capable of.
           </p>
           <p className="text-base leading-relaxed text-white/70 mb-6">
             Every tour we design pairs an unforgettable destination with a real skill — a language to learn, a dish to master, a sport to play. We call it Experience + Development.

@@ -35,8 +35,8 @@ export const CONTENT_DEFAULTS: Record<string, { en: string; ka: string }> = {
   'about.title_2': { en: 'TRIPS THAT', ka: 'ტურებს,' },
   'about.title_3': { en: 'TEACH', ka: 'რომლებიც ასწავლის' },
   'about.body': {
-    en: 'Whygo was born in Tbilisi with a simple belief: travel should change you. Every tour we design pairs an unforgettable destination with a real skill — a language to learn, a dish to master, a sport to play. We call it Experience + Development.',
-    ka: 'Whygo დაიბადა თბილისში მარტივი რწმენით: მოგზაურობამ უნდა შეგცვალოს. ყველა ტური, რომელსაც ვქმნით, შეუხამებს დაუვიწყარ დანიშნულებას რეალური უნარ-ჩვევებს — ენა, სამზარეულო, სპორტი.',
+    en: 'WHYGO was born in Tbilisi with a simple belief: travel should change you. Every tour we design pairs an unforgettable destination with a real skill — a language to learn, a dish to master, a sport to play. We call it Experience + Development.',
+    ka: 'WHYGO დაიბადა თბილისში მარტივი რწმენით: მოგზაურობამ უნდა შეგცვალოს. ყველა ტური, რომელსაც ვქმნით, შეუხამებს დაუვიწყარ დანიშნულებას რეალური უნარ-ჩვევებს — ენა, სამზარეულო, სპორტი.',
   },
   'footer.tagline': { en: 'Experience + Development', ka: 'გამოცდილება + განვითარება' },
 }

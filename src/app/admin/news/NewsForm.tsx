@@ -18,7 +18,7 @@ const empty: AdminNews = {
   title_en: '', excerpt_en: '', content_en: '', tag_en: '',
   title_ka: '', excerpt_ka: '', content_ka: '', tag_ka: '',
   cover_image: '',
-  author: 'Whygo Team',
+  author: 'WHYGO Team',
   reading_time_min: 5,
   is_featured: false,
   is_published: true,
