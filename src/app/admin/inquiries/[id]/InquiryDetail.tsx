@@ -16,12 +16,23 @@ interface Props {
   inquiry: Inquiry
   contact: DestinationContact | null
   destinationLabel: string | null
+  // Pre-resolved by the server parent (page.tsx) via getTransferRouteById.
+  // Null for non-transfer inquiries, one-way transfers (returnRouteLabel),
+  // or the "Other" free-text path (both nulls).
+  outboundRouteLabel?: string | null
+  returnRouteLabel?: string | null
 }
 
 const STATUSES: InquiryStatus[] = ['new', 'contacted', 'confirmed', 'declined']
 const PAYMENT_STATUSES: InquiryPaymentStatus[] = ['awaiting', 'received', 'not_applicable']
 
-export default function InquiryDetail({ inquiry: initial, contact, destinationLabel }: Props) {
+export default function InquiryDetail({
+  inquiry: initial,
+  contact,
+  destinationLabel,
+  outboundRouteLabel,
+  returnRouteLabel,
+}: Props) {
   const router = useRouter()
   const toast = useToast()
   const [inquiry, setInquiry] = useState<Inquiry>(initial)
@@ -29,8 +40,15 @@ export default function InquiryDetail({ inquiry: initial, contact, destinationLa
   const [deleting, setDeleting] = useState(false)
 
   const message = useMemo(
-    () => buildWhatsAppMessage({ inquiry, contact, destinationLabel }),
-    [inquiry, contact, destinationLabel],
+    () =>
+      buildWhatsAppMessage({
+        inquiry,
+        contact,
+        destinationLabel,
+        outboundRouteLabel,
+        returnRouteLabel,
+      }),
+    [inquiry, contact, destinationLabel, outboundRouteLabel, returnRouteLabel],
   )
   const link = useMemo(() => waLink(contact, message), [contact, message])
 
@@ -182,6 +200,52 @@ export default function InquiryDetail({ inquiry: initial, contact, destinationLa
         </div>
       </section>
 
+      {/* Trip section groups the transfer-specific fields (outbound + return
+          + flight) into one panel so the founder can eyeball a booking at a
+          glance. Non-transfer inquiries fall through to the generic
+          Submitted panel below. */}
+      {inquiry.service_type === 'transfer' && (
+        <section className="admin-card space-y-4">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Trip</p>
+          <div className="space-y-3">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-white/40">Outbound</p>
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+              <DetailRow
+                label="Route"
+                value={outboundRouteLabel || `${inquiry.pickup_from} → ${inquiry.pickup_to}`}
+              />
+              <DetailRow label="Date" value={inquiry.travel_date || '—'} />
+              <DetailRow label="Time" value={inquiry.travel_time || '—'} />
+              {inquiry.flight_number && (
+                <DetailRow label="Flight" value={inquiry.flight_number} />
+              )}
+            </dl>
+          </div>
+
+          {(inquiry.return_route_id ||
+            inquiry.return_date ||
+            inquiry.return_pickup_from ||
+            inquiry.return_pickup_to) && (
+            <div className="space-y-3 pt-4 border-t border-white/5">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-white/40">Return</p>
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                <DetailRow
+                  label="Route"
+                  value={
+                    returnRouteLabel ||
+                    `${inquiry.return_pickup_from} → ${inquiry.return_pickup_to}`
+                  }
+                />
+                <DetailRow label="Date" value={inquiry.return_date || '—'} />
+                {inquiry.return_time && (
+                  <DetailRow label="Time" value={inquiry.return_time} />
+                )}
+              </dl>
+            </div>
+          )}
+        </section>
+      )}
+
       <section className="admin-card space-y-3">
         <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Submitted</p>
         <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
@@ -191,19 +255,25 @@ export default function InquiryDetail({ inquiry: initial, contact, destinationLa
           <DetailRow label="Language" value={inquiry.language} />
           <DetailRow label="Destination" value={destinationLabel || '—'} />
           <DetailRow label="Type" value={inquiry.service_type.replace('_', ' ')} />
-          <DetailRow label="Travel date" value={inquiry.travel_date || '—'} />
-          {inquiry.travel_date_end && (
-            <DetailRow label="Travel end date" value={inquiry.travel_date_end} />
+          {/* Transfer-specific fields render in the Trip section above; keep
+              generic date/pickup rows only for non-transfer service types. */}
+          {inquiry.service_type !== 'transfer' && (
+            <>
+              <DetailRow label="Travel date" value={inquiry.travel_date || '—'} />
+              {inquiry.travel_date_end && (
+                <DetailRow label="Travel end date" value={inquiry.travel_date_end} />
+              )}
+              {inquiry.travel_time && <DetailRow label="Travel time" value={inquiry.travel_time} />}
+              {inquiry.pickup_from && <DetailRow label="Pickup from" value={inquiry.pickup_from} />}
+              {inquiry.pickup_to && <DetailRow label="Pickup to" value={inquiry.pickup_to} />}
+            </>
           )}
-          {inquiry.travel_time && <DetailRow label="Travel time" value={inquiry.travel_time} />}
           {inquiry.passengers != null && (
             <DetailRow label="Passengers" value={String(inquiry.passengers)} />
           )}
           {inquiry.luggage_pieces != null && inquiry.luggage_pieces > 0 && (
             <DetailRow label="Luggage" value={String(inquiry.luggage_pieces)} />
           )}
-          {inquiry.pickup_from && <DetailRow label="Pickup from" value={inquiry.pickup_from} />}
-          {inquiry.pickup_to && <DetailRow label="Pickup to" value={inquiry.pickup_to} />}
           {inquiry.interests.length > 0 && (
             <DetailRow label="Interests" value={inquiry.interests.join(', ')} />
           )}

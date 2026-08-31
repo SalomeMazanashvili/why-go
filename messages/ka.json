@@ -71,6 +71,23 @@
       "interest_wine": "ღვინო",
       "interest_nature": "ბუნება",
       "interest_family": "ოჯახური"
+    },
+    "transfer": {
+      "heading": "მოითხოვეთ ტრანსფერი",
+      "route": "TODO: Georgian copy needed",
+      "route_placeholder": "TODO: Georgian copy needed",
+      "route_other": "TODO: Georgian copy needed",
+      "pickup_from": "საიდან",
+      "pickup_to": "სად",
+      "flight_number": "TODO: Georgian copy needed",
+      "flight_number_help": "TODO: Georgian copy needed",
+      "return_toggle": "TODO: Georgian copy needed",
+      "return_route": "TODO: Georgian copy needed",
+      "return_date": "TODO: Georgian copy needed",
+      "return_time": "TODO: Georgian copy needed",
+      "return_pickup_from": "TODO: Georgian copy needed",
+      "return_pickup_to": "TODO: Georgian copy needed",
+      "not_covered": "TODO: Georgian copy needed"
     }
   }
 }

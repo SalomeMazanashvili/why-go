@@ -71,6 +71,23 @@
       "interest_wine": "Wine",
       "interest_nature": "Nature",
       "interest_family": "Family friendly"
+    },
+    "transfer": {
+      "heading": "Book a transfer",
+      "route": "Route",
+      "route_placeholder": "Choose a route",
+      "route_other": "Other — tell us where",
+      "pickup_from": "From",
+      "pickup_to": "To",
+      "flight_number": "Flight number (optional)",
+      "flight_number_help": "Helps us handle delays.",
+      "return_toggle": "Add return journey",
+      "return_route": "Return route",
+      "return_date": "Return date",
+      "return_time": "Return time",
+      "return_pickup_from": "Return from",
+      "return_pickup_to": "Return to",
+      "not_covered": "Don't see your city? Write to us."
     }
   }
 }

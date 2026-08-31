@@ -60,6 +60,11 @@ async function send(payload: {
 }
 
 function founderTemplate(i: Inquiry): string {
+  // Route labels aren't looked up here — the email dispatch happens inside
+  // POST /api/inquiries with no direct access to transfer_routes. Route IDs
+  // go through as-is; the admin panel resolves them for the WhatsApp block
+  // and detail view. Founder emails are operational alerts, not the source
+  // of truth — the admin link at the bottom leads to the fully-resolved view.
   const rows: Array<[string, string]> = [
     ['Type', i.service_type],
     ['Name', i.name],
@@ -67,17 +72,29 @@ function founderTemplate(i: Inquiry): string {
     ['Email', i.email || '—'],
     ['Destination ID', i.destination_id || '—'],
     ['Service ID', i.service_id || '—'],
+    ['Route ID', i.route_id || '—'],
     ['Date', i.travel_date || '—'],
     ['Time', i.travel_time || '—'],
     ['Passengers', i.passengers != null ? String(i.passengers) : '—'],
     ['Luggage', i.luggage_pieces != null ? String(i.luggage_pieces) : '—'],
     ['Pickup from', i.pickup_from || '—'],
     ['Pickup to', i.pickup_to || '—'],
+    ['Flight', i.flight_number || '—'],
     ['Interests', i.interests.length ? i.interests.join(', ') : '—'],
     ['Payment', i.payment_method ? `${i.payment_method} (${i.payment_status})` : '—'],
     ['Notes', i.notes || '—'],
     ['Language', i.language],
   ]
+  const hasReturn =
+    i.return_route_id || i.return_date || i.return_pickup_from || i.return_pickup_to
+  if (hasReturn) {
+    rows.push(['— Return —', ''])
+    rows.push(['Return route ID', i.return_route_id || '—'])
+    rows.push(['Return from', i.return_pickup_from || '—'])
+    rows.push(['Return to', i.return_pickup_to || '—'])
+    rows.push(['Return date', i.return_date || '—'])
+    rows.push(['Return time', i.return_time || '—'])
+  }
   const rowHtml = rows
     .map(
       ([k, v]) =>

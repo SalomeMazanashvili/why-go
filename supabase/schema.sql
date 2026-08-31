@@ -319,3 +319,22 @@ ALTER TABLE rate_limits ENABLE ROW LEVEL SECURITY;
 -- travel_date_end holds the return date. Transactional inquiries keep
 -- using travel_date + travel_time as before.
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS travel_date_end DATE;
+
+-- WHY-68 PR A: transfer form additions.
+--   route_id            outbound route from the dropdown, NULL when "Other"
+--   flight_number       free text, drivers use it to watch delays
+--   return_route_id     optional return leg (see comment thread on WHY-68)
+--   return_date/time    outbound date+time already covered; these mirror them
+--   return_pickup_*     only used when the return leg is "Other" free-text
+-- All nullable so a one-way booking has all six fields NULL. Stored inline
+-- on inquiries (not a linked row) because the booking is one thing to the
+-- customer, one WhatsApp message to one driver, one confirmation email.
+-- FKs use ON DELETE SET NULL — inquiries are historical; a discontinued
+-- route must not block deleting the row (matches WHY-66 PR A convention).
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS route_id UUID REFERENCES transfer_routes(id) ON DELETE SET NULL;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS flight_number TEXT;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_route_id UUID REFERENCES transfer_routes(id) ON DELETE SET NULL;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_date DATE;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_time TIME;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_pickup_from TEXT;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_pickup_to TEXT;
