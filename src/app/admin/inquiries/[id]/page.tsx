@@ -4,10 +4,10 @@ import { requireAdmin } from '@/lib/adminAuth'
 import { getInquiryById } from '@/lib/inquiries'
 import { getDestinationContact } from '@/lib/destinationContacts'
 import { getDestinationById } from '@/lib/destinations'
-import { getTransferRouteById } from '@/lib/transferRoutes'
+import { getPickupPointById } from '@/lib/pickupPoints'
 import { contactTypeFor } from '@/lib/whatsapp'
 import InquiryDetail from './InquiryDetail'
-import type { TransferRoute } from '@/types'
+import type { PickupPoint } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,14 +15,11 @@ interface Params {
   params: Promise<{ id: string }>
 }
 
-// Format a transfer_routes row as "From → To" using the KA label when
-// available, EN fallback otherwise. Same convention as the form + WhatsApp
+// Prefer KA label, fall back to EN. Same convention as the form + WhatsApp
 // block so a driver sees the same string everywhere.
-function formatRouteLabel(route: TransferRoute | null): string | null {
-  if (!route) return null
-  const from = route.from_name_ka || route.from_name_en
-  const to = route.to_name_ka || route.to_name_en
-  return `${from} → ${to}`
+function formatPickupLabel(point: PickupPoint | null): string | null {
+  if (!point) return null
+  return point.label_ka || point.label_en
 }
 
 export default async function InquiryDetailPage(props: Params) {
@@ -36,17 +33,18 @@ export default async function InquiryDetailPage(props: Params) {
   // admin hasn't set up destination_contacts yet — the client component
   // renders a helpful stub in that case.
   //
-  // Resolve outbound + return route rows for transfer inquiries so the
-  // detail view + WhatsApp message show real "From → To" labels instead of
-  // opaque UUIDs. Server-side fetch keeps the route data off the client
-  // bundle.
-  const [contact, destination, outboundRoute, returnRoute] = await Promise.all([
+  // Resolve outbound + return pickup point rows for transfer inquiries so
+  // the detail view + WhatsApp message show real labels instead of opaque
+  // UUIDs. Server-side fetch keeps this data off the client bundle.
+  const [contact, destination, outboundPickup, returnPickup] = await Promise.all([
     inquiry.destination_id
       ? getDestinationContact(inquiry.destination_id, contactTypeFor(inquiry.service_type))
       : Promise.resolve(null),
     inquiry.destination_id ? getDestinationById(inquiry.destination_id) : Promise.resolve(null),
-    inquiry.route_id ? getTransferRouteById(inquiry.route_id) : Promise.resolve(null),
-    inquiry.return_route_id ? getTransferRouteById(inquiry.return_route_id) : Promise.resolve(null),
+    inquiry.pickup_point_id ? getPickupPointById(inquiry.pickup_point_id) : Promise.resolve(null),
+    inquiry.return_pickup_point_id
+      ? getPickupPointById(inquiry.return_pickup_point_id)
+      : Promise.resolve(null),
   ])
 
   return (
@@ -66,8 +64,8 @@ export default async function InquiryDetailPage(props: Params) {
         inquiry={inquiry}
         contact={contact}
         destinationLabel={destination ? destination.name_ka || destination.name_en : null}
-        outboundRouteLabel={formatRouteLabel(outboundRoute)}
-        returnRouteLabel={formatRouteLabel(returnRoute)}
+        outboundPickupLabel={formatPickupLabel(outboundPickup)}
+        returnPickupLabel={formatPickupLabel(returnPickup)}
       />
     </div>
   )

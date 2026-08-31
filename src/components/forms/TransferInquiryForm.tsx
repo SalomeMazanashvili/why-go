@@ -5,21 +5,25 @@ import { useTranslations } from 'next-intl'
 import { FormField, inputClass, buttonClass } from './FormField'
 import { TurnstileWidget } from './TurnstileWidget'
 import { transferInquirySchema } from '@/lib/inquiryValidation'
-import type { Destination, TransferRoute } from '@/types'
+import type { Destination, PickupPoint } from '@/types'
 
 // Sentinel select values.
-//   ''            — nothing selected yet
+//   ''            — nothing selected
 //   '__other__'   — customer picked "Other, tell us where" → reveal free-text
-//   <UUID>        — a real transfer_routes.id
+//   <UUID>        — a real pickup_points.id
 const OTHER = '__other__'
 
 interface Props {
-  routes: TransferRoute[]
+  pickupPoints: PickupPoint[]
   destinations: Destination[]
+  // Optional: preselect a pickup point when the form is embedded on a route
+  // page. Route pages deep-link into /transfers with the pickup pre-selected
+  // (WHY-68 route-page follow-up).
+  initialPickupPointId?: string | null
 }
 
 type FormState = {
-  route_id: string
+  pickup_point_id: string
   pickup_from: string
   pickup_to: string
   travel_date: string
@@ -29,7 +33,7 @@ type FormState = {
   payment_method: 'cash' | 'iban'
   flight_number: string
   return_enabled: boolean
-  return_route_id: string
+  return_pickup_point_id: string
   return_date: string
   return_time: string
   return_pickup_from: string
@@ -40,9 +44,9 @@ type FormState = {
   notes: string
 }
 
-function emptyState(): FormState {
+function emptyState(initialPickupPointId?: string | null): FormState {
   return {
-    route_id: '',
+    pickup_point_id: initialPickupPointId ?? '',
     pickup_from: '',
     pickup_to: '',
     travel_date: '',
@@ -52,7 +56,7 @@ function emptyState(): FormState {
     payment_method: 'cash',
     flight_number: '',
     return_enabled: false,
-    return_route_id: '',
+    return_pickup_point_id: '',
     return_date: '',
     return_time: '',
     return_pickup_from: '',
@@ -64,47 +68,29 @@ function emptyState(): FormState {
   }
 }
 
-// Group routes by origin destination so the select renders one <optgroup>
-// per contracted city. Alphabetical within each group so the option order
-// is stable regardless of Supabase insertion order.
-function groupRoutesByOrigin(routes: TransferRoute[], destinations: Destination[]) {
+// Group pickup points by origin destination so the select renders one
+// <optgroup> per contracted city. Alphabetical within each group so the
+// option order is stable regardless of insertion order.
+function groupPointsByOrigin(points: PickupPoint[], destinations: Destination[]) {
   const destName = new Map(destinations.map((d) => [d.id, d.name_ka || d.name_en]))
-  const groups = new Map<string, { label: string; routes: TransferRoute[] }>()
-  for (const r of routes) {
-    if (!r.from_destination_id) continue
-    const label = destName.get(r.from_destination_id) ?? 'Other'
-    const existing = groups.get(r.from_destination_id)
-    if (existing) existing.routes.push(r)
-    else groups.set(r.from_destination_id, { label, routes: [r] })
+  const groups = new Map<string, { label: string; points: PickupPoint[] }>()
+  for (const p of points) {
+    const label = destName.get(p.destination_id) ?? 'Other'
+    const existing = groups.get(p.destination_id)
+    if (existing) existing.points.push(p)
+    else groups.set(p.destination_id, { label, points: [p] })
   }
   for (const g of groups.values()) {
-    g.routes.sort((a, b) => a.from_name_en.localeCompare(b.from_name_en))
+    g.points.sort((a, b) => (a.sort_order - b.sort_order) || a.label_en.localeCompare(b.label_en))
   }
   return Array.from(groups.values()).sort((a, b) => a.label.localeCompare(b.label))
 }
 
-// Given an outbound route, find a published route in the opposite direction
-// so the return-journey toggle can default to it. Returns undefined if no
-// reverse is published — customer keeps default '' and can pick Other.
-function findReverseRoute(
-  outbound: TransferRoute | undefined,
-  routes: TransferRoute[],
-): TransferRoute | undefined {
-  if (!outbound || !outbound.from_destination_id || !outbound.to_destination_id) return undefined
-  return routes.find(
-    (r) =>
-      r.from_destination_id === outbound.to_destination_id &&
-      r.to_destination_id === outbound.from_destination_id,
-  )
+function pointLabel(p: PickupPoint): string {
+  return p.label_ka || p.label_en
 }
 
-function routeLabel(r: TransferRoute): string {
-  const from = r.from_name_ka || r.from_name_en
-  const to = r.to_name_ka || r.to_name_en
-  return `${from} → ${to}`
-}
-
-export function TransferInquiryForm({ routes, destinations }: Props) {
+export function TransferInquiryForm({ pickupPoints, destinations, initialPickupPointId }: Props) {
   const t = useTranslations('inquiry')
   const errorLabels: Record<string, string> = {
     error_required: t('shared.error_required'),
@@ -112,17 +98,16 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
     error_email_format: t('shared.error_email_format'),
   }
 
-  const [state, setState] = useState<FormState>(emptyState)
+  const [state, setState] = useState<FormState>(() => emptyState(initialPickupPointId))
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [formError, setFormError] = useState<string | null>(null)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
-  const routeGroups = useMemo(
-    () => groupRoutesByOrigin(routes, destinations),
-    [routes, destinations],
+  const pointGroups = useMemo(
+    () => groupPointsByOrigin(pickupPoints, destinations),
+    [pickupPoints, destinations],
   )
-  const routesById = useMemo(() => new Map(routes.map((r) => [r.id, r])), [routes])
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setState((prev) => ({ ...prev, [key]: value }))
@@ -131,15 +116,17 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
     setTurnstileToken(token)
   }, [])
 
-  // Toggling the return-journey checkbox on defaults the return route to the
-  // reverse of the outbound. Toggling off wipes every return-related field so
-  // a hidden partially-filled leg can't sneak into the payload.
+  // Toggling return on auto-fills the return "From" with whatever was typed
+  // as the outbound "To". Auto-fill runs only when return_pickup_from is
+  // empty so re-opening the toggle doesn't overwrite an edit. Toggling off
+  // wipes every return field to prevent a hidden partially-filled leg from
+  // sneaking into the payload.
   const toggleReturn = (enabled: boolean) => {
     if (!enabled) {
       setState((prev) => ({
         ...prev,
         return_enabled: false,
-        return_route_id: '',
+        return_pickup_point_id: '',
         return_date: '',
         return_time: '',
         return_pickup_from: '',
@@ -147,43 +134,44 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
       }))
       return
     }
-    const outbound = state.route_id && state.route_id !== OTHER ? routesById.get(state.route_id) : undefined
-    const reverse = findReverseRoute(outbound, routes)
     setState((prev) => ({
       ...prev,
       return_enabled: true,
-      return_route_id: reverse ? reverse.id : '',
+      return_pickup_from: prev.return_pickup_from || prev.pickup_to,
     }))
   }
 
-  const outboundIsOther = state.route_id === OTHER
-  const returnIsOther = state.return_route_id === OTHER
+  const outboundIsOther = state.pickup_point_id === OTHER
+  const returnIsOther = state.return_pickup_point_id === OTHER
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)
 
-    const routeIdOrNull = state.route_id && state.route_id !== OTHER ? state.route_id : null
-    const returnRouteIdOrNull =
-      state.return_enabled && state.return_route_id && state.return_route_id !== OTHER
-        ? state.return_route_id
+    const pickupPointIdOrNull =
+      state.pickup_point_id && state.pickup_point_id !== OTHER ? state.pickup_point_id : null
+    const returnPointIdOrNull =
+      state.return_enabled &&
+      state.return_pickup_point_id &&
+      state.return_pickup_point_id !== OTHER
+        ? state.return_pickup_point_id
         : null
 
     const payload = {
       service_type: 'transfer' as const,
-      route_id: routeIdOrNull,
+      pickup_point_id: pickupPointIdOrNull,
       pickup_from: outboundIsOther ? state.pickup_from : '',
-      pickup_to: outboundIsOther ? state.pickup_to : '',
+      pickup_to: state.pickup_to,
       travel_date: state.travel_date,
       travel_time: state.travel_time,
       passengers: state.passengers,
       luggage_pieces: state.luggage_pieces,
       payment_method: state.payment_method,
       flight_number: state.flight_number || undefined,
-      return_route_id: state.return_enabled ? returnRouteIdOrNull : null,
+      return_pickup_point_id: state.return_enabled ? returnPointIdOrNull : null,
       return_date: state.return_enabled ? state.return_date : '',
       return_time: state.return_enabled ? state.return_time : '',
-      return_pickup_from: state.return_enabled && returnIsOther ? state.return_pickup_from : '',
+      return_pickup_from: state.return_enabled ? state.return_pickup_from : '',
       return_pickup_to: state.return_enabled && returnIsOther ? state.return_pickup_to : '',
       name: state.name,
       phone: state.phone,
@@ -215,7 +203,7 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
       })
       if (res.status === 201) {
         setFormStatus('success')
-        setState(emptyState())
+        setState(emptyState(initialPickupPointId))
         return
       }
       if (res.status === 429) {
@@ -257,8 +245,8 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
         {formError}
       </div>
 
-      {/* Outbound route */}
-      <FormField label={t('transfer.route')} required error={errors.route_id}>
+      {/* Outbound "From" — pickup point dropdown */}
+      <FormField label={t('transfer.pickup_point')} required error={errors.pickup_point_id}>
         {({ id, describedBy, invalid }) => (
           <select
             id={id}
@@ -266,58 +254,65 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
             aria-invalid={invalid}
             aria-describedby={describedBy}
             className={inputClass}
-            value={state.route_id}
-            onChange={(e) => set('route_id', e.target.value)}
+            value={state.pickup_point_id}
+            onChange={(e) => set('pickup_point_id', e.target.value)}
           >
-            <option value="">— {t('transfer.route_placeholder')} —</option>
-            {routeGroups.map((g) => (
+            <option value="">— {t('transfer.pickup_placeholder')} —</option>
+            {pointGroups.map((g) => (
               <optgroup key={g.label} label={g.label}>
-                {g.routes.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {routeLabel(r)}
+                {g.points.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {pointLabel(p)}
                   </option>
                 ))}
               </optgroup>
             ))}
-            <option value={OTHER}>{t('transfer.route_other')}</option>
+            <option value={OTHER}>{t('transfer.pickup_other')}</option>
           </select>
         )}
       </FormField>
 
       {outboundIsOther && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t('transfer.pickup_from')} required error={errors.pickup_from}>
-            {({ id, describedBy, invalid }) => (
-              <input
-                id={id}
-                type="text"
-                required
-                aria-invalid={invalid}
-                aria-describedby={describedBy}
-                className={inputClass}
-                value={state.pickup_from}
-                onChange={(e) => set('pickup_from', e.target.value)}
-              />
-            )}
-          </FormField>
-          <FormField label={t('transfer.pickup_to')} required error={errors.pickup_to}>
-            {({ id, describedBy, invalid }) => (
-              <input
-                id={id}
-                type="text"
-                required
-                aria-invalid={invalid}
-                aria-describedby={describedBy}
-                className={inputClass}
-                value={state.pickup_to}
-                onChange={(e) => set('pickup_to', e.target.value)}
-              />
-            )}
-          </FormField>
-        </div>
+        <FormField label={t('transfer.pickup_from_other')} required error={errors.pickup_from}>
+          {({ id, describedBy, invalid }) => (
+            <input
+              id={id}
+              type="text"
+              required
+              aria-invalid={invalid}
+              aria-describedby={describedBy}
+              className={inputClass}
+              value={state.pickup_from}
+              onChange={(e) => set('pickup_from', e.target.value)}
+              placeholder={t('transfer.pickup_from_other_placeholder')}
+            />
+          )}
+        </FormField>
       )}
 
-      {/* Date + time + party */}
+      {/* Outbound "To" — always free-text hotel + address */}
+      <FormField
+        label={t('transfer.destination')}
+        required
+        error={errors.pickup_to}
+        helpText={t('transfer.destination_help')}
+      >
+        {({ id, describedBy, invalid }) => (
+          <input
+            id={id}
+            type="text"
+            required
+            aria-invalid={invalid}
+            aria-describedby={describedBy}
+            className={inputClass}
+            value={state.pickup_to}
+            onChange={(e) => set('pickup_to', e.target.value)}
+            placeholder={t('transfer.destination_placeholder')}
+          />
+        )}
+      </FormField>
+
+      {/* Date + time */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField label={t('transactional.travel_date')} required error={errors.travel_date}>
           {({ id, describedBy, invalid }) => (
@@ -451,7 +446,34 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
 
         {state.return_enabled && (
           <div className="mt-6 space-y-6 pl-8 border-l-2 border-[#FFCC00]/30">
-            <FormField label={t('transfer.return_route')} required error={errors.return_route_id}>
+            {/* Return "From" — always free-text, auto-filled from outbound "To" */}
+            <FormField
+              label={t('transfer.return_from')}
+              required
+              error={errors.return_pickup_from}
+              helpText={t('transfer.destination_help')}
+            >
+              {({ id, describedBy, invalid }) => (
+                <input
+                  id={id}
+                  type="text"
+                  required
+                  aria-invalid={invalid}
+                  aria-describedby={describedBy}
+                  className={inputClass}
+                  value={state.return_pickup_from}
+                  onChange={(e) => set('return_pickup_from', e.target.value)}
+                  placeholder={t('transfer.destination_placeholder')}
+                />
+              )}
+            </FormField>
+
+            {/* Return "To" — pickup point dropdown (reversed direction) */}
+            <FormField
+              label={t('transfer.return_to')}
+              required
+              error={errors.return_pickup_point_id}
+            >
               {({ id, describedBy, invalid }) => (
                 <select
                   id={id}
@@ -459,63 +481,43 @@ export function TransferInquiryForm({ routes, destinations }: Props) {
                   aria-invalid={invalid}
                   aria-describedby={describedBy}
                   className={inputClass}
-                  value={state.return_route_id}
-                  onChange={(e) => set('return_route_id', e.target.value)}
+                  value={state.return_pickup_point_id}
+                  onChange={(e) => set('return_pickup_point_id', e.target.value)}
                 >
-                  <option value="">— {t('transfer.route_placeholder')} —</option>
-                  {routeGroups.map((g) => (
+                  <option value="">— {t('transfer.pickup_placeholder')} —</option>
+                  {pointGroups.map((g) => (
                     <optgroup key={g.label} label={g.label}>
-                      {g.routes.map((r) => (
-                        <option key={r.id} value={r.id}>
-                          {routeLabel(r)}
+                      {g.points.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {pointLabel(p)}
                         </option>
                       ))}
                     </optgroup>
                   ))}
-                  <option value={OTHER}>{t('transfer.route_other')}</option>
+                  <option value={OTHER}>{t('transfer.pickup_other')}</option>
                 </select>
               )}
             </FormField>
 
             {returnIsOther && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  label={t('transfer.return_pickup_from')}
-                  required
-                  error={errors.return_pickup_from}
-                >
-                  {({ id, describedBy, invalid }) => (
-                    <input
-                      id={id}
-                      type="text"
-                      required
-                      aria-invalid={invalid}
-                      aria-describedby={describedBy}
-                      className={inputClass}
-                      value={state.return_pickup_from}
-                      onChange={(e) => set('return_pickup_from', e.target.value)}
-                    />
-                  )}
-                </FormField>
-                <FormField
-                  label={t('transfer.return_pickup_to')}
-                  required
-                  error={errors.return_pickup_to}
-                >
-                  {({ id, describedBy, invalid }) => (
-                    <input
-                      id={id}
-                      type="text"
-                      required
-                      aria-invalid={invalid}
-                      aria-describedby={describedBy}
-                      className={inputClass}
-                      value={state.return_pickup_to}
-                      onChange={(e) => set('return_pickup_to', e.target.value)}
-                    />
-                  )}
-                </FormField>
-              </div>
+              <FormField
+                label={t('transfer.return_to_other')}
+                required
+                error={errors.return_pickup_to}
+              >
+                {({ id, describedBy, invalid }) => (
+                  <input
+                    id={id}
+                    type="text"
+                    required
+                    aria-invalid={invalid}
+                    aria-describedby={describedBy}
+                    className={inputClass}
+                    value={state.return_pickup_to}
+                    onChange={(e) => set('return_pickup_to', e.target.value)}
+                  />
+                )}
+              </FormField>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

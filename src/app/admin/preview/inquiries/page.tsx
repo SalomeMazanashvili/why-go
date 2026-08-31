@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { NextIntlClientProvider } from 'next-intl'
 import { requireAdmin } from '@/lib/adminAuth'
 import { listDestinationsForAdmin } from '@/lib/destinations'
-import { listTransferRoutesForAdmin } from '@/lib/transferRoutes'
+import { listPickupPointsForAdmin } from '@/lib/pickupPoints'
 import { TransferInquiryForm } from '@/components/forms/TransferInquiryForm'
 import { TransactionalInquiryForm } from '@/components/forms/TransactionalInquiryForm'
 import { ConsultativeInquiryForm } from '@/components/forms/ConsultativeInquiryForm'
@@ -28,13 +28,13 @@ interface Props {
 
 export default async function InquiryPreviewPage(props: Props) {
   await requireAdmin()
-  const [{ locale = 'ka' }, destinations, transferRoutes] = await Promise.all([
+  const [{ locale = 'ka' }, destinations, pickupPoints] = await Promise.all([
     props.searchParams,
     listDestinationsForAdmin(),
-    listTransferRoutesForAdmin(),
+    listPickupPointsForAdmin(),
   ])
   const messages = locale === 'en' ? enMessages : kaMessages
-  const publishedRoutes = transferRoutes.filter((r) => r.is_published)
+  const publishedPickupPoints = pickupPoints.filter((p) => p.is_published)
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -63,18 +63,21 @@ export default async function InquiryPreviewPage(props: Props) {
 
         <section className="admin-card">
           <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-6">
-            Transfer (WHY-68 — route dropdown + flight number + return toggle)
+            Transfer (WHY-68 — pickup point dropdown + free-text destination + return toggle)
           </p>
-          {publishedRoutes.length === 0 ? (
+          {publishedPickupPoints.length === 0 ? (
             <p className="text-orange-400 text-sm">
-              No published transfer routes yet — the dropdown will only show &quot;Other&quot;. Add routes at{' '}
-              <Link href="/admin/transfer-routes" className="underline hover:text-[#FFCC00]">
-                /admin/transfer-routes
+              No published pickup points yet — the dropdown will only show &quot;Other&quot;. Add pickup points at{' '}
+              <Link href="/admin/pickup-points" className="underline hover:text-[#FFCC00]">
+                /admin/pickup-points
               </Link>{' '}
               and toggle Published.
             </p>
           ) : (
-            <TransferInquiryForm routes={publishedRoutes} destinations={destinations} />
+            <TransferInquiryForm
+              pickupPoints={publishedPickupPoints}
+              destinations={destinations}
+            />
           )}
         </section>
 

@@ -53,26 +53,31 @@ export const transactionalInquirySchema = z.object({
   turnstile_token: z.string().optional(),
 })
 
-// WHY-68: transfer form. Route-driven with an "Other" free-text escape hatch,
-// optional flight number, optional return leg stored inline (same row) with
-// its own route_id, date, time, and free-text fallbacks. Server-side cross-
-// field check ensures the outbound has either a route_id or both free-text
-// endpoints — no way to submit "which city?" garbage.
+// WHY-68: transfer form.
+//   Outbound "From" — pickup_point_id (dropdown) OR pickup_from (free-text
+//                     when Other selected). At least one must be set.
+//   Outbound "To"   — pickup_to, ALWAYS free-text hotel + address, required.
+//   Return "From"   — return_pickup_from, ALWAYS free-text hotel + address,
+//                     required when the return toggle was opened. Auto-fills
+//                     from pickup_to on the client, editable.
+//   Return "To"     — return_pickup_point_id (dropdown) OR return_pickup_to
+//                     (free-text when Other). At least one must be set when
+//                     return toggle was opened.
 export const transferInquirySchema = z
   .object({
     service_type: z.literal('transfer'),
     service_id: uuidOrNull,
     destination_id: uuidOrNull,
-    route_id: uuidOrNull,
+    pickup_point_id: uuidOrNull,
     pickup_from: z.string().trim().max(500).optional().or(z.literal('')),
-    pickup_to: z.string().trim().max(500).optional().or(z.literal('')),
+    pickup_to: z.string().trim().min(1, 'error_required').max(500),
     travel_date: z.string().trim().min(1, 'error_required'),
     travel_time: z.string().trim().min(1, 'error_required'),
     passengers: z.coerce.number().int().min(1).max(50),
     luggage_pieces: z.coerce.number().int().min(0).max(50).optional(),
     payment_method: z.enum(['cash', 'iban']),
     flight_number: z.string().trim().max(20).optional().or(z.literal('')),
-    return_route_id: uuidOrNull,
+    return_pickup_point_id: uuidOrNull,
     return_date: z.string().trim().optional().or(z.literal('')),
     return_time: z.string().trim().optional().or(z.literal('')),
     return_pickup_from: z.string().trim().max(500).optional().or(z.literal('')),
@@ -84,19 +89,20 @@ export const transferInquirySchema = z
     turnstile_token: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    const hasOutboundRoute = Boolean(data.route_id)
-    const hasOutboundFreeText = Boolean(data.pickup_from) && Boolean(data.pickup_to)
-    if (!hasOutboundRoute && !hasOutboundFreeText) {
+    // Outbound "From" — either pickup point OR free-text origin
+    const hasOutboundPoint = Boolean(data.pickup_point_id)
+    const hasOutboundFreeText = Boolean(data.pickup_from)
+    if (!hasOutboundPoint && !hasOutboundFreeText) {
       ctx.addIssue({
         code: 'custom',
         message: 'error_required',
-        path: ['pickup_from'],
+        path: ['pickup_point_id'],
       })
     }
     // Return leg is optional. If any return field is set the customer
     // opened the toggle — enforce enough info to actually run the leg.
     const returnStarted =
-      Boolean(data.return_route_id) ||
+      Boolean(data.return_pickup_point_id) ||
       Boolean(data.return_date) ||
       Boolean(data.return_pickup_from) ||
       Boolean(data.return_pickup_to)
@@ -104,13 +110,20 @@ export const transferInquirySchema = z
       if (!data.return_date) {
         ctx.addIssue({ code: 'custom', message: 'error_required', path: ['return_date'] })
       }
-      const hasReturnRoute = Boolean(data.return_route_id)
-      const hasReturnFreeText = Boolean(data.return_pickup_from) && Boolean(data.return_pickup_to)
-      if (!hasReturnRoute && !hasReturnFreeText) {
+      if (!data.return_pickup_from) {
         ctx.addIssue({
           code: 'custom',
           message: 'error_required',
           path: ['return_pickup_from'],
+        })
+      }
+      const hasReturnPoint = Boolean(data.return_pickup_point_id)
+      const hasReturnFreeText = Boolean(data.return_pickup_to)
+      if (!hasReturnPoint && !hasReturnFreeText) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'error_required',
+          path: ['return_pickup_point_id'],
         })
       }
     }

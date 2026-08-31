@@ -40,6 +40,7 @@ const CARDS = [
   { href: '/admin/service-categories', label: 'Categories', key: null, desc: 'Experience-layer taxonomy' },
   { href: '/admin/services', label: 'Services', key: null, desc: 'Experience-layer products' },
   { href: '/admin/transfer-routes', label: 'Transfers', key: null, desc: 'Point-to-point transfers' },
+  { href: '/admin/pickup-points', label: 'Pickup points', key: null, desc: 'Transfer form dropdown options' },
   { href: '/admin/guides', label: 'Guides', key: null, desc: 'Named experience-layer guides' },
   { href: '/admin/destination-contacts', label: 'Contact routing', key: null, desc: 'Driver + guide routing for WhatsApp' },
   { href: '/admin/content', label: 'Content', key: null, desc: 'Edit hero, about, footer text' },

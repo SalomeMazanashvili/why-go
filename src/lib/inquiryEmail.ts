@@ -72,13 +72,13 @@ function founderTemplate(i: Inquiry): string {
     ['Email', i.email || '—'],
     ['Destination ID', i.destination_id || '—'],
     ['Service ID', i.service_id || '—'],
-    ['Route ID', i.route_id || '—'],
+    ['Pickup point ID', i.pickup_point_id || '—'],
     ['Date', i.travel_date || '—'],
     ['Time', i.travel_time || '—'],
     ['Passengers', i.passengers != null ? String(i.passengers) : '—'],
     ['Luggage', i.luggage_pieces != null ? String(i.luggage_pieces) : '—'],
-    ['Pickup from', i.pickup_from || '—'],
-    ['Pickup to', i.pickup_to || '—'],
+    ['Pickup (free-text)', i.pickup_from || '—'],
+    ['Dropoff', i.pickup_to || '—'],
     ['Flight', i.flight_number || '—'],
     ['Interests', i.interests.length ? i.interests.join(', ') : '—'],
     ['Payment', i.payment_method ? `${i.payment_method} (${i.payment_status})` : '—'],
@@ -86,12 +86,15 @@ function founderTemplate(i: Inquiry): string {
     ['Language', i.language],
   ]
   const hasReturn =
-    i.return_route_id || i.return_date || i.return_pickup_from || i.return_pickup_to
+    i.return_pickup_point_id ||
+    i.return_date ||
+    i.return_pickup_from ||
+    i.return_pickup_to
   if (hasReturn) {
     rows.push(['— Return —', ''])
-    rows.push(['Return route ID', i.return_route_id || '—'])
-    rows.push(['Return from', i.return_pickup_from || '—'])
-    rows.push(['Return to', i.return_pickup_to || '—'])
+    rows.push(['Return pickup (free-text)', i.return_pickup_from || '—'])
+    rows.push(['Return pickup point ID', i.return_pickup_point_id || '—'])
+    rows.push(['Return dropoff (free-text)', i.return_pickup_to || '—'])
     rows.push(['Return date', i.return_date || '—'])
     rows.push(['Return time', i.return_time || '—'])
   }
