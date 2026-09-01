@@ -74,20 +74,23 @@
     },
     "transfer": {
       "heading": "Book a transfer",
-      "route": "Route",
-      "route_placeholder": "Choose a route",
-      "route_other": "Other — tell us where",
-      "pickup_from": "From",
-      "pickup_to": "To",
+      "pickup_point": "From",
+      "pickup_placeholder": "Choose a pickup point",
+      "pickup_other": "Other — tell us where",
+      "pickup_from_other": "Pickup address",
+      "pickup_from_other_placeholder": "Address or landmark",
+      "destination": "To",
+      "destination_help": "Hotel name and street address, please — name alone is ambiguous.",
+      "destination_placeholder": "e.g. Hotel Miramar, Passeig de Gràcia 43",
       "flight_number": "Flight number (optional)",
       "flight_number_help": "Helps us handle delays.",
       "return_toggle": "Add return journey",
-      "return_route": "Return route",
+      "return_from": "Return pickup — hotel name and street address",
+      "return_to": "Return drop-off",
+      "return_to_other": "Return drop-off address",
       "return_date": "Return date",
       "return_time": "Return time",
-      "return_pickup_from": "Return from",
-      "return_pickup_to": "Return to",
-      "not_covered": "Don't see your city? Write to us."
+      "not_covered": "Don't see your pickup point? Write to us."
     }
   }
 }

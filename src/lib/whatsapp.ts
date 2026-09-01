@@ -11,11 +11,11 @@ interface BuildOpts {
   contact: DestinationContact | null
   destinationLabel?: string | null
   // Pre-resolved for transfer inquiries. Server component looks up the
-  // TransferRoute via inquiry.route_id / return_route_id and passes the
-  // formatted "From → To" string. Null when the customer picked "Other"
-  // and typed the endpoints as free text (those show via pickup_from/to).
-  outboundRouteLabel?: string | null
-  returnRouteLabel?: string | null
+  // PickupPoint via inquiry.pickup_point_id / return_pickup_point_id and
+  // passes the formatted label ("Barcelona · El Prat T1"). Null when the
+  // customer picked "Other" and typed a free-text address instead.
+  outboundPickupLabel?: string | null
+  returnPickupLabel?: string | null
 }
 
 // Pre-formatted message body for manual paste into WhatsApp. Contains every
@@ -23,12 +23,18 @@ interface BuildOpts {
 // English, since drivers and guides in-country typically operate in local
 // language + English; the customer's language is captured in the row for
 // admin context.
+//
+// Transfer semantics:
+//   Outbound "From" = pickup point (or free-text pickup_from when Other)
+//   Outbound "To"   = free-text destination (always pickup_to, hotel + address)
+//   Return "From"   = free-text (always return_pickup_from, hotel + address)
+//   Return "To"     = pickup point (or free-text return_pickup_to when Other)
 export function buildWhatsAppMessage({
   inquiry,
   contact,
   destinationLabel,
-  outboundRouteLabel,
-  returnRouteLabel,
+  outboundPickupLabel,
+  returnPickupLabel,
 }: BuildOpts): string {
   const lines: string[] = []
   lines.push(`New booking request — ${inquiry.service_type.replace('_', ' ')}`)
@@ -41,8 +47,10 @@ export function buildWhatsAppMessage({
   lines.push('')
 
   // Outbound leg
-  if (inquiry.service_type === 'transfer' && outboundRouteLabel) {
-    lines.push(`Outbound: ${outboundRouteLabel}`)
+  if (inquiry.service_type === 'transfer') {
+    const from = outboundPickupLabel || inquiry.pickup_from
+    if (from) lines.push(`Pickup: ${from}`)
+    if (inquiry.pickup_to) lines.push(`Dropoff: ${inquiry.pickup_to}`)
   } else {
     if (inquiry.pickup_from) lines.push(`From: ${inquiry.pickup_from}`)
     if (inquiry.pickup_to) lines.push(`To: ${inquiry.pickup_to}`)
@@ -62,19 +70,16 @@ export function buildWhatsAppMessage({
   // is populated).
   const hasReturn =
     inquiry.service_type === 'transfer' &&
-    (inquiry.return_route_id ||
+    (inquiry.return_pickup_point_id ||
       inquiry.return_date ||
       inquiry.return_pickup_from ||
       inquiry.return_pickup_to)
   if (hasReturn) {
     lines.push('')
     lines.push('Return journey:')
-    if (returnRouteLabel) {
-      lines.push(`  Route: ${returnRouteLabel}`)
-    } else {
-      if (inquiry.return_pickup_from) lines.push(`  From: ${inquiry.return_pickup_from}`)
-      if (inquiry.return_pickup_to) lines.push(`  To: ${inquiry.return_pickup_to}`)
-    }
+    if (inquiry.return_pickup_from) lines.push(`  Pickup: ${inquiry.return_pickup_from}`)
+    const returnTo = returnPickupLabel || inquiry.return_pickup_to
+    if (returnTo) lines.push(`  Dropoff: ${returnTo}`)
     if (inquiry.return_date) lines.push(`  Date: ${inquiry.return_date}`)
     if (inquiry.return_time) lines.push(`  Time: ${inquiry.return_time}`)
   }

@@ -16,11 +16,11 @@ interface Props {
   inquiry: Inquiry
   contact: DestinationContact | null
   destinationLabel: string | null
-  // Pre-resolved by the server parent (page.tsx) via getTransferRouteById.
-  // Null for non-transfer inquiries, one-way transfers (returnRouteLabel),
+  // Pre-resolved by the server parent (page.tsx) via getPickupPointById.
+  // Null for non-transfer inquiries, one-way transfers (returnPickupLabel),
   // or the "Other" free-text path (both nulls).
-  outboundRouteLabel?: string | null
-  returnRouteLabel?: string | null
+  outboundPickupLabel?: string | null
+  returnPickupLabel?: string | null
 }
 
 const STATUSES: InquiryStatus[] = ['new', 'contacted', 'confirmed', 'declined']
@@ -30,8 +30,8 @@ export default function InquiryDetail({
   inquiry: initial,
   contact,
   destinationLabel,
-  outboundRouteLabel,
-  returnRouteLabel,
+  outboundPickupLabel,
+  returnPickupLabel,
 }: Props) {
   const router = useRouter()
   const toast = useToast()
@@ -45,10 +45,10 @@ export default function InquiryDetail({
         inquiry,
         contact,
         destinationLabel,
-        outboundRouteLabel,
-        returnRouteLabel,
+        outboundPickupLabel,
+        returnPickupLabel,
       }),
-    [inquiry, contact, destinationLabel, outboundRouteLabel, returnRouteLabel],
+    [inquiry, contact, destinationLabel, outboundPickupLabel, returnPickupLabel],
   )
   const link = useMemo(() => waLink(contact, message), [contact, message])
 
@@ -200,10 +200,10 @@ export default function InquiryDetail({
         </div>
       </section>
 
-      {/* Trip section groups the transfer-specific fields (outbound + return
-          + flight) into one panel so the founder can eyeball a booking at a
-          glance. Non-transfer inquiries fall through to the generic
-          Submitted panel below. */}
+      {/* Trip section groups the transfer-specific fields (pickup + dropoff
+          + return + flight) into one panel so the founder can eyeball a
+          booking at a glance. Non-transfer inquiries fall through to the
+          generic Submitted panel below. */}
       {inquiry.service_type === 'transfer' && (
         <section className="admin-card space-y-4">
           <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Trip</p>
@@ -211,9 +211,10 @@ export default function InquiryDetail({
             <p className="text-[10px] font-bold tracking-widest uppercase text-white/40">Outbound</p>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
               <DetailRow
-                label="Route"
-                value={outboundRouteLabel || `${inquiry.pickup_from} → ${inquiry.pickup_to}`}
+                label="Pickup"
+                value={outboundPickupLabel || inquiry.pickup_from || '—'}
               />
+              <DetailRow label="Dropoff" value={inquiry.pickup_to || '—'} />
               <DetailRow label="Date" value={inquiry.travel_date || '—'} />
               <DetailRow label="Time" value={inquiry.travel_time || '—'} />
               {inquiry.flight_number && (
@@ -222,19 +223,17 @@ export default function InquiryDetail({
             </dl>
           </div>
 
-          {(inquiry.return_route_id ||
+          {(inquiry.return_pickup_point_id ||
             inquiry.return_date ||
             inquiry.return_pickup_from ||
             inquiry.return_pickup_to) && (
             <div className="space-y-3 pt-4 border-t border-white/5">
               <p className="text-[10px] font-bold tracking-widest uppercase text-white/40">Return</p>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                <DetailRow label="Pickup" value={inquiry.return_pickup_from || '—'} />
                 <DetailRow
-                  label="Route"
-                  value={
-                    returnRouteLabel ||
-                    `${inquiry.return_pickup_from} → ${inquiry.return_pickup_to}`
-                  }
+                  label="Dropoff"
+                  value={returnPickupLabel || inquiry.return_pickup_to || '—'}
                 />
                 <DetailRow label="Date" value={inquiry.return_date || '—'} />
                 {inquiry.return_time && (

@@ -123,12 +123,16 @@ export interface Inquiry {
   service_type: InquiryServiceType
   service_id: string | null
   destination_id: string | null
-  route_id: string | null
   travel_date: string | null
   travel_time: string | null
   travel_date_end: string | null
   passengers: number | null
   luggage_pieces: number | null
+  // Transfer pickup semantics:
+  //   pickup_point_id      dropdown selection (NULL when "Other")
+  //   pickup_from          free-text origin (used when "Other")
+  //   pickup_to            free-text destination — always required for transfer
+  pickup_point_id: string | null
   pickup_from: string
   pickup_to: string
   interests: string[]
@@ -141,12 +145,28 @@ export interface Inquiry {
   notes: string
   language: string
   flight_number: string
-  return_route_id: string | null
+  return_pickup_point_id: string | null
   return_date: string | null
   return_time: string | null
   return_pickup_from: string
   return_pickup_to: string
   created_at: string
+}
+
+export interface PickupPoint {
+  id: string
+  destination_id: string
+  label_en: string
+  label_ka: string
+  price_from: number | null
+  currency: string
+  notes: string
+  is_published: boolean
+  sort_order: number
+}
+
+export function getPickupPointLabel(p: PickupPoint, l: Locale) {
+  return l === 'ka' && p.label_ka ? p.label_ka : p.label_en
 }
 
 export interface DestinationContact {

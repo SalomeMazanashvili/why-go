@@ -12,6 +12,7 @@ const LINKS = [
   { href: '/admin/service-categories', label: 'Categories' },
   { href: '/admin/services', label: 'Services' },
   { href: '/admin/transfer-routes', label: 'Transfers' },
+  { href: '/admin/pickup-points', label: 'Pickup points' },
   { href: '/admin/guides', label: 'Guides' },
   { href: '/admin/destination-contacts', label: 'Contact routing' },
   { href: '/admin/preview/inquiries', label: 'Preview forms' },

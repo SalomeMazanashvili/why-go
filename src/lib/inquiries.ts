@@ -2,7 +2,7 @@ import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
 import type { Inquiry, InquiryStatus, InquiryServiceType } from '@/types'
 
 const INQUIRY_COLUMNS =
-  'id, service_type, service_id, destination_id, route_id, travel_date, travel_time, travel_date_end, passengers, luggage_pieces, pickup_from, pickup_to, interests, payment_method, payment_status, status, name, phone, email, notes, language, flight_number, return_route_id, return_date, return_time, return_pickup_from, return_pickup_to, created_at'
+  'id, service_type, service_id, destination_id, pickup_point_id, travel_date, travel_time, travel_date_end, passengers, luggage_pieces, pickup_from, pickup_to, interests, payment_method, payment_status, status, name, phone, email, notes, language, flight_number, return_pickup_point_id, return_date, return_time, return_pickup_from, return_pickup_to, created_at'
 
 function normalize(row: any): Inquiry {
   return {
@@ -10,7 +10,7 @@ function normalize(row: any): Inquiry {
     service_type: row.service_type,
     service_id: row.service_id ?? null,
     destination_id: row.destination_id ?? null,
-    route_id: row.route_id ?? null,
+    pickup_point_id: row.pickup_point_id ?? null,
     travel_date: row.travel_date ?? null,
     travel_time: row.travel_time ?? null,
     travel_date_end: row.travel_date_end ?? null,
@@ -28,7 +28,7 @@ function normalize(row: any): Inquiry {
     notes: row.notes ?? '',
     language: row.language ?? 'ka',
     flight_number: row.flight_number ?? '',
-    return_route_id: row.return_route_id ?? null,
+    return_pickup_point_id: row.return_pickup_point_id ?? null,
     return_date: row.return_date ?? null,
     return_time: row.return_time ?? null,
     return_pickup_from: row.return_pickup_from ?? '',

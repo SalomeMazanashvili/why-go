@@ -320,20 +320,59 @@ ALTER TABLE rate_limits ENABLE ROW LEVEL SECURITY;
 -- using travel_date + travel_time as before.
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS travel_date_end DATE;
 
--- WHY-68 PR A: transfer form additions.
---   route_id            outbound route from the dropdown, NULL when "Other"
---   flight_number       free text, drivers use it to watch delays
---   return_route_id     optional return leg (see comment thread on WHY-68)
---   return_date/time    outbound date+time already covered; these mirror them
---   return_pickup_*     only used when the return leg is "Other" free-text
--- All nullable so a one-way booking has all six fields NULL. Stored inline
--- on inquiries (not a linked row) because the booking is one thing to the
--- customer, one WhatsApp message to one driver, one confirmation email.
--- FKs use ON DELETE SET NULL — inquiries are historical; a discontinued
--- route must not block deleting the row (matches WHY-66 PR A convention).
-ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS route_id UUID REFERENCES transfer_routes(id) ON DELETE SET NULL;
+-- WHY-68: pickup_points table — precise pickup locations that seed the
+-- transfer form's dropdown ("Barcelona · El Prat T1", "Rome · Ciampino").
+-- Decoupled from transfer_routes: routes are SEO content with their own
+-- from/to, this table drives the form. Each point belongs to a destination
+-- hub and carries an indicative "from" price for that origin. Customer
+-- destination is free text — the form never constrains where they're going.
+-- ON DELETE CASCADE from destinations because a point is worthless without
+-- its origin city; the destinations DELETE preflight (WHY-63 PR C) still
+-- blocks deletion when services/routes reference the destination.
+CREATE TABLE IF NOT EXISTS pickup_points (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  destination_id UUID NOT NULL REFERENCES destinations(id) ON DELETE CASCADE,
+  label_en TEXT NOT NULL,
+  label_ka TEXT,
+  price_from NUMERIC(10,2),
+  currency TEXT DEFAULT 'EUR',
+  notes TEXT,
+  is_published BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE pickup_points ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read pickup_points" ON pickup_points;
+CREATE POLICY "Public read pickup_points" ON pickup_points
+  FOR SELECT USING (is_published = true);
+
+CREATE INDEX IF NOT EXISTS pickup_points_destination_id_idx ON pickup_points(destination_id);
+
+-- WHY-68: transfer form additions on inquiries.
+--   pickup_point_id           outbound pickup dropdown, NULL when "Other"
+--   pickup_from TEXT          outbound origin free-text when "Other" (existing col)
+--   pickup_to TEXT            outbound destination — ALWAYS free-text hotel + address (existing col)
+--   flight_number             optional, always visible on the form
+--   return_pickup_point_id    return destination dropdown, NULL when "Other"
+--   return_pickup_from TEXT   return origin — ALWAYS free-text hotel + address (auto-fills from pickup_to)
+--   return_pickup_to TEXT     return destination free-text when "Other"
+--   return_date/time          optional return leg date/time
+-- All new columns nullable. One-way bookings have all return_* NULL.
+-- FKs to pickup_points use ON DELETE SET NULL: inquiries are historical
+-- records, and a discontinued pickup point must not block deletion of a
+-- row (same convention as WHY-66 PR A).
+--
+-- If an earlier deploy of this branch ran the route_id/return_route_id
+-- additions, drop them — this revision replaces them with pickup_point_id.
+ALTER TABLE inquiries DROP COLUMN IF EXISTS route_id;
+ALTER TABLE inquiries DROP COLUMN IF EXISTS return_route_id;
+
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS pickup_point_id UUID REFERENCES pickup_points(id) ON DELETE SET NULL;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS flight_number TEXT;
-ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_route_id UUID REFERENCES transfer_routes(id) ON DELETE SET NULL;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_pickup_point_id UUID REFERENCES pickup_points(id) ON DELETE SET NULL;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_date DATE;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_time TIME;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_pickup_from TEXT;
