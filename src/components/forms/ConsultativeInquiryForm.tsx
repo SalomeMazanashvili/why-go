@@ -1,11 +1,17 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { FormField, inputClass, buttonClass } from './FormField'
 import { TurnstileWidget } from './TurnstileWidget'
 import { consultativeInquirySchema } from '@/lib/inquiryValidation'
-import type { Destination, Service, InquiryServiceType } from '@/types'
+import type { Destination, Locale, Service, InquiryServiceType } from '@/types'
+
+// Pick destination label matching the active form locale. Empty-string
+// fallback to the other language so the dropdown never renders blank.
+function destName(d: Destination, l: Locale) {
+  return l === 'ka' ? (d.name_ka || d.name_en) : (d.name_en || d.name_ka)
+}
 
 interface Props {
   serviceType: Extract<InquiryServiceType, 'guide' | 'experience'>
@@ -53,6 +59,7 @@ export function ConsultativeInquiryForm({
   service: _service,
 }: Props) {
   const t = useTranslations('inquiry')
+  const locale = useLocale() as Locale
   const errorLabels: Record<string, string> = {
     error_required: t('shared.error_required'),
     error_phone_format: t('shared.error_phone_format'),
@@ -184,7 +191,7 @@ export function ConsultativeInquiryForm({
               <option value="">—</option>
               {destinations.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {d.name_ka || d.name_en}
+                  {destName(d, locale)}
                 </option>
               ))}
             </select>
