@@ -1,11 +1,22 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { FormField, inputClass, buttonClass } from './FormField'
 import { TurnstileWidget } from './TurnstileWidget'
 import { transferInquirySchema } from '@/lib/inquiryValidation'
-import type { Destination, PickupPoint } from '@/types'
+import type { Destination, Locale, PickupPoint } from '@/types'
+
+// Pick the destination / pickup-point label that matches the active form
+// locale. Falls back to the other language if the localized value is empty
+// (e.g. destination.name_ka not yet written) so the dropdown never renders
+// an empty option.
+function destName(d: Destination, l: Locale) {
+  return l === 'ka' ? (d.name_ka || d.name_en) : (d.name_en || d.name_ka)
+}
+function pointLabelFor(p: PickupPoint, l: Locale) {
+  return l === 'ka' ? (p.label_ka || p.label_en) : (p.label_en || p.label_ka)
+}
 
 // Sentinel select values.
 //   ''            — nothing selected
@@ -70,12 +81,17 @@ function emptyState(initialPickupPointId?: string | null): FormState {
 
 // Group pickup points by origin destination so the select renders one
 // <optgroup> per contracted city. Alphabetical within each group so the
-// option order is stable regardless of insertion order.
-function groupPointsByOrigin(points: PickupPoint[], destinations: Destination[]) {
-  const destName = new Map(destinations.map((d) => [d.id, d.name_ka || d.name_en]))
+// option order is stable regardless of insertion order. Locale-aware
+// labelling so the active form language matches the option text.
+function groupPointsByOrigin(
+  points: PickupPoint[],
+  destinations: Destination[],
+  locale: Locale,
+) {
+  const nameById = new Map(destinations.map((d) => [d.id, destName(d, locale)]))
   const groups = new Map<string, { label: string; points: PickupPoint[] }>()
   for (const p of points) {
-    const label = destName.get(p.destination_id) ?? 'Other'
+    const label = nameById.get(p.destination_id) ?? 'Other'
     const existing = groups.get(p.destination_id)
     if (existing) existing.points.push(p)
     else groups.set(p.destination_id, { label, points: [p] })
@@ -86,12 +102,9 @@ function groupPointsByOrigin(points: PickupPoint[], destinations: Destination[])
   return Array.from(groups.values()).sort((a, b) => a.label.localeCompare(b.label))
 }
 
-function pointLabel(p: PickupPoint): string {
-  return p.label_ka || p.label_en
-}
-
 export function TransferInquiryForm({ pickupPoints, destinations, initialPickupPointId }: Props) {
   const t = useTranslations('inquiry')
+  const locale = useLocale() as Locale
   const errorLabels: Record<string, string> = {
     error_required: t('shared.error_required'),
     error_phone_format: t('shared.error_phone_format'),
@@ -105,8 +118,8 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const pointGroups = useMemo(
-    () => groupPointsByOrigin(pickupPoints, destinations),
-    [pickupPoints, destinations],
+    () => groupPointsByOrigin(pickupPoints, destinations, locale),
+    [pickupPoints, destinations, locale],
   )
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
@@ -262,7 +275,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
               <optgroup key={g.label} label={g.label}>
                 {g.points.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {pointLabel(p)}
+                    {pointLabelFor(p, locale)}
                   </option>
                 ))}
               </optgroup>
@@ -489,7 +502,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
                     <optgroup key={g.label} label={g.label}>
                       {g.points.map((p) => (
                         <option key={p.id} value={p.id}>
-                          {pointLabel(p)}
+                          {pointLabelFor(p, locale)}
                         </option>
                       ))}
                     </optgroup>

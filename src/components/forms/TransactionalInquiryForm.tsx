@@ -1,11 +1,15 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { FormField, inputClass, buttonClass } from './FormField'
 import { TurnstileWidget } from './TurnstileWidget'
 import { transactionalInquirySchema } from '@/lib/inquiryValidation'
-import type { Destination, Service, InquiryServiceType } from '@/types'
+import type { Destination, Locale, Service, InquiryServiceType } from '@/types'
+
+function destName(d: Destination, l: Locale) {
+  return l === 'ka' ? (d.name_ka || d.name_en) : (d.name_en || d.name_ka)
+}
 
 interface Props {
   // Transfers moved to TransferInquiryForm in WHY-68. This component now
@@ -59,6 +63,7 @@ export function TransactionalInquiryForm({
   service: _service,
 }: Props) {
   const t = useTranslations('inquiry')
+  const locale = useLocale() as Locale
   const errorLabels: Record<string, string> = {
     error_required: t('shared.error_required'),
     error_phone_format: t('shared.error_phone_format'),
@@ -272,7 +277,7 @@ export function TransactionalInquiryForm({
               <option value="">—</option>
               {destinations.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {d.name_ka || d.name_en}
+                  {destName(d, locale)}
                 </option>
               ))}
             </select>
