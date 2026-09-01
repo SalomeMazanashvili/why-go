@@ -149,6 +149,60 @@ export function touristTripJsonLd(input: {
   return ld
 }
 
+interface ServiceLd {
+  '@context': 'https://schema.org'
+  '@type': 'Service'
+  name: string
+  description: string
+  url: string
+  serviceType: string
+  areaServed?: string
+  provider: {
+    '@type': 'Organization'
+    name: string
+    url: string
+  }
+  offers?: OfferLd
+}
+
+// Build Service + Offer JSON-LD for a transfer route detail page. Only
+// emits `offers` when a real price exists — no fake pricing per
+// CLAUDE.md "never invent content".
+export function serviceJsonLd(input: {
+  locale: 'en' | 'ka'
+  slug: string
+  name: string
+  description: string
+  serviceType: string
+  areaServed?: string
+  priceFrom: number | null
+  currency: string
+}): ServiceLd {
+  const ld: ServiceLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: input.name,
+    description: input.description,
+    url: canonicalFor(input.locale, `/transfers/${input.slug}`),
+    serviceType: input.serviceType,
+    provider: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  }
+  if (input.areaServed) ld.areaServed = input.areaServed
+  if (input.priceFrom != null) {
+    ld.offers = {
+      '@type': 'Offer',
+      price: String(input.priceFrom),
+      priceCurrency: input.currency,
+      availability: 'https://schema.org/InStock',
+    }
+  }
+  return ld
+}
+
 // Render a JSON-LD payload as a <script> tag string safe for
 // `dangerouslySetInnerHTML`. Callers pass the object; this stringifies
 // with </script> escaped so an attacker can't break out of the block
