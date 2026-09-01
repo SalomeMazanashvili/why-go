@@ -92,5 +92,19 @@
       "return_time": "TODO: Georgian copy needed",
       "not_covered": "TODO: Georgian copy needed"
     }
+  },
+  "transfers_page": {
+    "nav_label": "TODO: Georgian copy needed",
+    "landing_title": "TODO: Georgian copy needed",
+    "landing_intro": "TODO: Georgian copy needed",
+    "popular_routes": "TODO: Georgian copy needed",
+    "no_routes_yet": "TODO: Georgian copy needed",
+    "route_facts_duration": "TODO: Georgian copy needed",
+    "route_facts_duration_minutes": "TODO: Georgian copy needed",
+    "route_facts_vehicle": "TODO: Georgian copy needed",
+    "route_facts_max_passengers": "TODO: Georgian copy needed",
+    "route_facts_price_from": "TODO: Georgian copy needed",
+    "route_book_cta": "TODO: Georgian copy needed",
+    "route_related": "TODO: Georgian copy needed"
   }
 }
