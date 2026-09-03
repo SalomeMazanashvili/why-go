@@ -48,11 +48,10 @@ export default async function TransfersLandingPage(props: Props) {
   setRequestLocale(locale)
   const loc = locale as Locale
 
-  const [pickupPoints, destinations, routes, tNav, tPage] = await Promise.all([
+  const [pickupPoints, destinations, routes, tPage] = await Promise.all([
     listPickupPoints(),
     listDestinations(),
     listTransferRoutes(),
-    getTranslations({ locale, namespace: 'nav' }),
     getTranslations({ locale, namespace: 'transfers_page' }),
   ])
 
@@ -67,8 +66,8 @@ export default async function TransfersLandingPage(props: Props) {
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
 
-      <div className="max-w-6xl mx-auto px-6 md:px-12 pt-24 pb-16">
-        <header className="mb-12 max-w-3xl">
+      <div className="max-w-3xl mx-auto px-6 md:px-12 pt-24 pb-16">
+        <header className="mb-12">
           <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
             {tPage('nav_label')}
           </p>
@@ -80,47 +79,39 @@ export default async function TransfersLandingPage(props: Props) {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-12 items-start">
-          <div className="admin-card">
-            <TransferInquiryForm
-              pickupPoints={pickupPoints}
-              destinations={destinations}
-              initialPickupPointId={pickup ?? null}
-            />
-          </div>
-
-          <aside>
-            <h2 className="text-2xl font-black tracking-tight mb-6">
-              {tPage('popular_routes')}
-            </h2>
-            {routes.length === 0 ? (
-              <p className="text-white/50 text-sm">{tPage('no_routes_yet')}</p>
-            ) : (
-              <ul className="space-y-3">
-                {routes.map((r) => (
-                  <li key={r.id}>
-                    <Link
-                      href={`/transfers/${r.slug}`}
-                      className="block admin-card hover:border-[#FFCC00]/50 transition-colors group"
-                    >
-                      <p className="font-bold text-white group-hover:text-[#FFCC00] transition-colors">
-                        {routeLabel(r, loc)}
-                      </p>
-                      {r.price_from != null && (
-                        <p className="text-white/50 text-xs mt-2">
-                          {tPage('route_facts_price_from')} {r.currency} {r.price_from}
-                        </p>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <p className="text-xs text-white/40 mt-6">
-              — {tNav('contact')}
-            </p>
-          </aside>
+        <div className="admin-card">
+          <TransferInquiryForm
+            pickupPoints={pickupPoints}
+            destinations={destinations}
+            initialPickupPointId={pickup ?? null}
+          />
         </div>
+
+        {/* Crawlable text list of published routes so /transfers/[slug]
+            pages aren't orphaned in the internal link graph — the form's
+            <select> isn't crawlable. Rendered only when 2+ routes exist
+            so a single-route site doesn't ship a one-item nav. This is a
+            temporary bandaid; WHY-65 destination hubs will link to
+            routes properly and this list can be removed then. */}
+        {routes.length >= 2 && (
+          <nav
+            aria-label={tPage('nav_label')}
+            className="mt-16 pt-8 border-t border-white/10"
+          >
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              {routes.map((r) => (
+                <li key={r.id}>
+                  <Link
+                    href={`/transfers/${r.slug}`}
+                    className="text-white/60 hover:text-[#FFCC00] transition-colors underline underline-offset-4"
+                  >
+                    {routeLabel(r, loc)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </div>
     </div>
   )
