@@ -76,7 +76,7 @@
       "heading": "მოითხოვეთ ტრანსფერი",
       "pickup_point": "საიდან",
       "pickup_placeholder": "აირჩიეთ საიდან გსურთ",
-      "pickup_other": "სხვა - მიუთითეთ ადგილი",
+      "pickup_other": "სხვა — მიუთითეთ ადგილი",
       "pickup_from_other": "მიუთითეთ ადგილი",
       "pickup_from_other_placeholder": "მისამართი ან ადგილის დასახელება",
       "destination": "სად",
@@ -102,7 +102,7 @@
     "route_facts_vehicle": "ტრანსპორტი",
     "route_facts_max_passengers": "მაქს. მგზავრი",
     "route_facts_price_from": "დან",
-    "route_book_cta": "დაჯავშნე ტრანსფერი",
+    "route_book_cta": "დაჯავშნეთ ტრანსფერი",
     "route_related": "სხვა მიმართულებები"
   }
 }
