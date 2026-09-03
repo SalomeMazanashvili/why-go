@@ -497,7 +497,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
                   value={state.return_pickup_point_id}
                   onChange={(e) => set('return_pickup_point_id', e.target.value)}
                 >
-                  <option value="">— {t('transfer.pickup_placeholder')} —</option>
+                  <option value="">— {t('transfer.return_to_placeholder')} —</option>
                   {pointGroups.map((g) => (
                     <optgroup key={g.label} label={g.label}>
                       {g.points.map((p) => (
