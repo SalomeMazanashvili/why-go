@@ -87,6 +87,7 @@
       "return_toggle": "Add return journey",
       "return_from": "Return pickup — hotel name and street address",
       "return_to": "Return drop-off",
+      "return_to_placeholder": "Choose a drop-off point",
       "return_to_other": "Return drop-off address",
       "return_date": "Return date",
       "return_time": "Return time",
@@ -95,7 +96,7 @@
   },
   "transfers_page": {
     "nav_label": "Transfers",
-    "landing_title": "Airport transfers with Georgian-speaking drivers",
+    "landing_title": "Transfers",
     "landing_intro": "Point-to-point transfers in Barcelona, Rome, Venice, Paris. Pick your pickup point, tell us where you're going, and we'll confirm within 24 hours.",
     "route_facts_duration": "Duration",
     "route_facts_duration_minutes": "min",
