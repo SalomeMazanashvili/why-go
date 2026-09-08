@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
 import ImageUploader from '../_components/ImageUploader'
-import type { Service, Destination, ServiceCategory } from '@/types'
+import type { Service, ServiceType, Destination, ServiceCategory } from '@/types'
 
 interface Props {
   initial?: Service | null
@@ -14,11 +14,18 @@ interface Props {
   categories: ServiceCategory[]
 }
 
+const SERVICE_TYPE_OPTIONS: Array<{ value: ServiceType; label: string }> = [
+  { value: 'experience', label: 'Experience' },
+  { value: 'guide', label: 'Guide' },
+  { value: 'day_trip', label: 'Day trip' },
+]
+
 const empty: Service = {
   id: '',
   slug: '',
   destination_id: null,
   category_id: null,
+  service_type: 'experience',
   name_en: '',
   name_ka: '',
   short_description_en: '',
@@ -27,6 +34,16 @@ const empty: Service = {
   description_ka: '',
   seo_title_ka: '',
   seo_description_ka: '',
+  route_en: '',
+  route_ka: '',
+  included_en: '',
+  included_ka: '',
+  what_to_bring_en: '',
+  what_to_bring_ka: '',
+  meeting_point_en: '',
+  meeting_point_ka: '',
+  gallery: [],
+  departure_times: [],
   price_from: null,
   currency: 'GEL',
   duration_hours: null,
@@ -48,16 +65,49 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
   const update = <K extends keyof Service>(key: K, value: Service[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
 
+  // WHY-83: the editorial block only applies to day trips. Guides and
+  // experiences would just see eight empty boxes they're meant to ignore.
+  const isDayTrip = item.service_type === 'day_trip'
+
+  const updateGalleryAt = (index: number, url: string) =>
+    setItem((prev) => {
+      const next = [...prev.gallery]
+      if (url) next[index] = url
+      else next.splice(index, 1)
+      return { ...prev, gallery: next }
+    })
+
+  const updateDepartureAt = (index: number, time: string) =>
+    setItem((prev) => {
+      const next = [...prev.departure_times]
+      next[index] = time
+      return { ...prev, departure_times: next }
+    })
+
+  const removeDepartureAt = (index: number) =>
+    setItem((prev) => ({
+      ...prev,
+      departure_times: prev.departure_times.filter((_, i) => i !== index),
+    }))
+
   const save = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
     try {
       const url = mode === 'create' ? '/api/admin/services' : `/api/admin/services/${item.id}`
       const method = mode === 'create' ? 'POST' : 'PUT'
+      // Blank rows are an artefact of the repeatable inputs, not data. Strip
+      // them, dedupe and sort departure slots so the public form renders a
+      // clean chronological dropdown regardless of entry order.
+      const payload: Service = {
+        ...item,
+        gallery: item.gallery.filter(Boolean),
+        departure_times: [...new Set(item.departure_times.filter(Boolean))].sort(),
+      }
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item),
+        body: JSON.stringify(payload),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -122,6 +172,24 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label className="admin-label">Type</label>
+            <select
+              className="admin-input"
+              value={item.service_type}
+              onChange={(e) => update('service_type', e.target.value as ServiceType)}
+            >
+              {SERVICE_TYPE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-[10px] text-white/40 mt-1">
+              Day trips appear on /day-trips and use the day-trip request form. Transfers are
+              not services — they live under Transfer routes.
+            </p>
           </div>
           <div>
             <label className="admin-label">Category</label>
@@ -273,6 +341,162 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
           <p className="text-[10px] text-white/40 mt-1">{item.seo_description_ka.length}/160 recommended</p>
         </div>
       </section>
+
+      {isDayTrip && (
+        <section className="admin-card space-y-6">
+          <div>
+            <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">
+              Day trip details
+            </p>
+            <p className="text-[11px] text-white/40 mt-2 max-w-2xl">
+              A day-trip page is an article that sells — the customer arrives undecided. Fill
+              these in Georgian before publishing; the page needs 300+ words of unique Georgian
+              content (CLAUDE.md) and nothing here may be invented.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="admin-label">Route (Georgian)</label>
+              <textarea
+                rows={4}
+                className="admin-input resize-y"
+                value={item.route_ka}
+                onChange={(e) => update('route_ka', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="admin-label">Route (English)</label>
+              <textarea
+                rows={4}
+                className="admin-input resize-y"
+                value={item.route_en}
+                onChange={(e) => update('route_en', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="admin-label">What&apos;s included (Georgian)</label>
+              <textarea
+                rows={4}
+                className="admin-input resize-y"
+                value={item.included_ka}
+                onChange={(e) => update('included_ka', e.target.value)}
+                placeholder="One item per line"
+              />
+            </div>
+            <div>
+              <label className="admin-label">What&apos;s included (English)</label>
+              <textarea
+                rows={4}
+                className="admin-input resize-y"
+                value={item.included_en}
+                onChange={(e) => update('included_en', e.target.value)}
+                placeholder="One item per line"
+              />
+            </div>
+            <div>
+              <label className="admin-label">What to bring (Georgian)</label>
+              <textarea
+                rows={4}
+                className="admin-input resize-y"
+                value={item.what_to_bring_ka}
+                onChange={(e) => update('what_to_bring_ka', e.target.value)}
+                placeholder="One item per line"
+              />
+            </div>
+            <div>
+              <label className="admin-label">What to bring (English)</label>
+              <textarea
+                rows={4}
+                className="admin-input resize-y"
+                value={item.what_to_bring_en}
+                onChange={(e) => update('what_to_bring_en', e.target.value)}
+                placeholder="One item per line"
+              />
+            </div>
+            <div>
+              <label className="admin-label">Meeting point (Georgian)</label>
+              <textarea
+                rows={2}
+                className="admin-input resize-y"
+                value={item.meeting_point_ka}
+                onChange={(e) => update('meeting_point_ka', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="admin-label">Meeting point (English)</label>
+              <textarea
+                rows={2}
+                className="admin-input resize-y"
+                value={item.meeting_point_en}
+                onChange={(e) => update('meeting_point_en', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="admin-label">Departure times</label>
+            <p className="text-[10px] text-white/40 mb-3">
+              Fixed slots offered on the request form. The customer states a preference; you
+              set the real departure. Leave empty to hide the field entirely.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {item.departure_times.map((time, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input
+                    type="time"
+                    aria-label={`Departure time ${i + 1}`}
+                    className="admin-input w-auto"
+                    value={time}
+                    onChange={(e) => updateDepartureAt(i, e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeDepartureAt(i)}
+                    aria-label={`Remove departure time ${i + 1}`}
+                    className="text-white/40 hover:text-red-400 px-2"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => update('departure_times', [...item.departure_times, ''])}
+                className="admin-btn admin-btn-ghost"
+              >
+                + Add time
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="admin-label">Photographs</label>
+            <p className="text-[10px] text-white/40 mb-3">
+              Shown as a gallery on the day-trip page, in addition to the cover image. Use real
+              photographs of this trip only.
+            </p>
+            <div className="space-y-4">
+              {item.gallery.map((url, i) => (
+                <ImageUploader
+                  key={i}
+                  value={url}
+                  onChange={(next) => updateGalleryAt(i, next)}
+                  folder="services"
+                  label={`Photo ${i + 1}`}
+                />
+              ))}
+              <ImageUploader
+                key={`new-${item.gallery.length}`}
+                value=""
+                onChange={(next) => next && update('gallery', [...item.gallery, next])}
+                folder="services"
+                label="Add photo"
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="admin-card space-y-4">
         <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">English</p>

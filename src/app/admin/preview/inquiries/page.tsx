@@ -3,8 +3,9 @@ import { NextIntlClientProvider } from 'next-intl'
 import { requireAdmin } from '@/lib/adminAuth'
 import { listDestinationsForAdmin } from '@/lib/destinations'
 import { listPickupPointsForAdmin } from '@/lib/pickupPoints'
+import { listDayTripsForAdmin } from '@/lib/services'
 import { TransferInquiryForm } from '@/components/forms/TransferInquiryForm'
-import { TransactionalInquiryForm } from '@/components/forms/TransactionalInquiryForm'
+import { DayTripInquiryForm } from '@/components/forms/DayTripInquiryForm'
 import { ConsultativeInquiryForm } from '@/components/forms/ConsultativeInquiryForm'
 import kaMessages from '../../../../../messages/ka.json'
 import enMessages from '../../../../../messages/en.json'
@@ -28,13 +29,15 @@ interface Props {
 
 export default async function InquiryPreviewPage(props: Props) {
   await requireAdmin()
-  const [{ locale = 'ka' }, destinations, pickupPoints] = await Promise.all([
+  const [{ locale = 'ka' }, destinations, pickupPoints, dayTrips] = await Promise.all([
     props.searchParams,
     listDestinationsForAdmin(),
     listPickupPointsForAdmin(),
+    listDayTripsForAdmin(),
   ])
   const messages = locale === 'en' ? enMessages : kaMessages
   const publishedPickupPoints = pickupPoints.filter((p) => p.is_published)
+  const publishedDayTrips = dayTrips.filter((d) => d.is_published)
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -83,9 +86,20 @@ export default async function InquiryPreviewPage(props: Props) {
 
         <section className="admin-card">
           <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-6">
-            Day trip (legacy transactional form — WHY-83 will replace this)
+            Day trip (WHY-83 — trip picker + hotel pickup, no luggage or return leg)
           </p>
-          <TransactionalInquiryForm serviceType="day_trip" destinations={destinations} />
+          {publishedDayTrips.length === 0 ? (
+            <p className="text-orange-400 text-sm">
+              No published day trips yet, so the picker has nothing to offer. Create one at{' '}
+              <Link href="/admin/services/new" className="underline hover:text-[#FFCC00]">
+                /admin/services/new
+              </Link>
+              , set its type to <span className="font-mono">Day trip</span>, fill the Georgian
+              copy and toggle Published.
+            </p>
+          ) : (
+            <DayTripInquiryForm dayTrips={publishedDayTrips} />
+          )}
         </section>
 
         <section className="admin-card">

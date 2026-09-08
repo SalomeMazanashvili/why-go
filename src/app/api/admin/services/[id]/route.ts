@@ -2,14 +2,22 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
+import { validateServiceWriteFields } from '@/lib/services'
 
 const WRITABLE = [
   'slug',
   'destination_id', 'category_id',
+  'service_type',
   'name_en', 'name_ka',
   'short_description_en', 'short_description_ka',
   'description_en', 'description_ka',
   'seo_title_ka', 'seo_description_ka',
+  // WHY-83 day-trip editorial fields
+  'route_en', 'route_ka',
+  'included_en', 'included_ka',
+  'what_to_bring_en', 'what_to_bring_ka',
+  'meeting_point_en', 'meeting_point_ka',
+  'gallery', 'departure_times',
   'price_from', 'currency',
   'duration_hours',
   'min_group_size', 'max_group_size',
@@ -36,6 +44,8 @@ export async function PUT(req: NextRequest, props: Ctx) {
   try {
     const body = await req.json()
     const payload = pickPayload(body)
+    const valid = validateServiceWriteFields(payload)
+    if (!valid.ok) return NextResponse.json({ error: valid.error }, { status: 400 })
     const s = getAdminSupabase()
     const { error } = await s.from('services').update(payload).eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

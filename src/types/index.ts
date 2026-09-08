@@ -66,11 +66,17 @@ export interface Guide {
   sort_order: number
 }
 
+// WHY-83: how a service is sold, and which inquiry form it renders. Mirrors
+// the inquiries.service_type values it maps onto. 'transfer' is absent by
+// design — transfers are TransferRoute + PickupPoint, never a Service.
+export type ServiceType = 'day_trip' | 'guide' | 'experience'
+
 export interface Service {
   id: string
   slug: string
   destination_id: string | null
   category_id: string | null
+  service_type: ServiceType
   name_en: string
   name_ka: string
   short_description_en: string
@@ -79,6 +85,21 @@ export interface Service {
   description_ka: string
   seo_title_ka: string
   seo_description_ka: string
+  // WHY-83 editorial fields. Populated for day trips, null for everything
+  // else — the day-trip page is an article that sells, so it needs more
+  // structure than a single description blob.
+  route_en: string
+  route_ka: string
+  included_en: string
+  included_ka: string
+  what_to_bring_en: string
+  what_to_bring_ka: string
+  meeting_point_en: string
+  meeting_point_ka: string
+  gallery: string[]
+  // Fixed departure slots ("08:00"). Empty means the form hides the field
+  // rather than offering invented times.
+  departure_times: string[]
   price_from: number | null
   currency: string
   duration_hours: number | null
@@ -212,6 +233,10 @@ export function getGuideSpecialties(g: Guide, l: Locale) { return l === 'ka' && 
 export function getServiceName(s: Service, l: Locale) { return l === 'ka' && s.name_ka ? s.name_ka : s.name_en }
 export function getServiceShortDescription(s: Service, l: Locale) { return l === 'ka' && s.short_description_ka ? s.short_description_ka : s.short_description_en }
 export function getServiceDescription(s: Service, l: Locale) { return l === 'ka' && s.description_ka ? s.description_ka : s.description_en }
+export function getServiceRoute(s: Service, l: Locale) { return l === 'ka' && s.route_ka ? s.route_ka : s.route_en }
+export function getServiceIncluded(s: Service, l: Locale) { return l === 'ka' && s.included_ka ? s.included_ka : s.included_en }
+export function getServiceWhatToBring(s: Service, l: Locale) { return l === 'ka' && s.what_to_bring_ka ? s.what_to_bring_ka : s.what_to_bring_en }
+export function getServiceMeetingPoint(s: Service, l: Locale) { return l === 'ka' && s.meeting_point_ka ? s.meeting_point_ka : s.meeting_point_en }
 export function getTransferRouteFrom(r: TransferRoute, l: Locale) { return l === 'ka' && r.from_name_ka ? r.from_name_ka : r.from_name_en }
 export function getTransferRouteTo(r: TransferRoute, l: Locale) { return l === 'ka' && r.to_name_ka ? r.to_name_ka : r.to_name_en }
 export function getTransferRouteDescription(r: TransferRoute, l: Locale) { return l === 'ka' && r.description_ka ? r.description_ka : r.description_en }

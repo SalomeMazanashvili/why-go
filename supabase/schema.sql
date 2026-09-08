@@ -377,3 +377,55 @@ ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_date DATE;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_time TIME;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_pickup_from TEXT;
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS return_pickup_to TEXT;
+
+-- ---------------------------------------------------------------------------
+-- WHY-83 PR A: day trips
+-- ---------------------------------------------------------------------------
+-- Day trips are `services` rows, not a separate table — they share the
+-- experience-layer model (destination hub + price + duration) and the
+-- inquiries.service_id FK already points at services.
+--
+-- Classification lives in a constrained column rather than being derived from
+-- service_categories.slug. Categories are admin-editable free text: renaming
+-- or re-slugging one would silently empty /day-trips with no error anywhere.
+-- This column instead maps 1:1 onto inquiries.service_type, which the
+-- day-trip form has to send regardless.
+--
+-- 'transfer' is deliberately absent from the CHECK. Transfers are modelled by
+-- transfer_routes + pickup_points (WHY-63 PR C / WHY-68), never as services.
+-- Existing rows backfill to 'experience', which is what they are.
+ALTER TABLE services ADD COLUMN IF NOT EXISTS service_type TEXT NOT NULL DEFAULT 'experience';
+
+ALTER TABLE services DROP CONSTRAINT IF EXISTS services_service_type_check;
+ALTER TABLE services ADD CONSTRAINT services_service_type_check
+  CHECK (service_type IN ('day_trip', 'guide', 'experience'));
+
+CREATE INDEX IF NOT EXISTS services_service_type_idx ON services(service_type);
+
+-- Editorial fields backing the day-trip page. WHY-83 requires these pages to
+-- read as articles that happen to sell, not product pages with filler: the
+-- customer arrives undecided. duration_hours, price_from, currency, cover_image
+-- and seo_* already exist on the table and are reused as-is.
+--
+-- All nullable — existing guide/experience services are unaffected, and a
+-- day trip stays is_published = false until a founder fills these in with
+-- real, human-written Georgian (CLAUDE.md rules 1 and 2).
+ALTER TABLE services ADD COLUMN IF NOT EXISTS route_en TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS route_ka TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS included_en TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS included_ka TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS what_to_bring_en TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS what_to_bring_ka TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS meeting_point_en TEXT;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS meeting_point_ka TEXT;
+
+-- Photographs beyond cover_image. Plain TEXT[] of uploaded image URLs —
+-- ~30 products total, so a join table would be overkill (CLAUDE.md: curated
+-- catalogue, not marketplace).
+ALTER TABLE services ADD COLUMN IF NOT EXISTS gallery TEXT[] DEFAULT '{}';
+
+-- Fixed departure slots offered on the day-trip form ("08:00", "08:30").
+-- Stored per-service because the operator sets the real departure — the
+-- customer states a preference, not a booking time. Empty array hides the
+-- field entirely rather than inventing slots.
+ALTER TABLE services ADD COLUMN IF NOT EXISTS departure_times TEXT[] DEFAULT '{}';
