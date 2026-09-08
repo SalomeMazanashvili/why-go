@@ -9,3 +9,6 @@ node_modules
 .env.*.local
 tsconfig.tsbuildinfo
 *.tsbuildinfo
+.agents/
+.claude/
+skills-lock.json
