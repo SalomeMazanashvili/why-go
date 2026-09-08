@@ -5,6 +5,7 @@ import { getInquiryById } from '@/lib/inquiries'
 import { getDestinationContact } from '@/lib/destinationContacts'
 import { getDestinationById } from '@/lib/destinations'
 import { getPickupPointById } from '@/lib/pickupPoints'
+import { getServiceById } from '@/lib/services'
 import { contactTypeFor } from '@/lib/whatsapp'
 import InquiryDetail from './InquiryDetail'
 import type { PickupPoint } from '@/types'
@@ -36,11 +37,16 @@ export default async function InquiryDetailPage(props: Params) {
   // Resolve outbound + return pickup point rows for transfer inquiries so
   // the detail view + WhatsApp message show real labels instead of opaque
   // UUIDs. Server-side fetch keeps this data off the client bundle.
-  const [contact, destination, outboundPickup, returnPickup] = await Promise.all([
+  //
+  // WHY-83: resolve service_id too. Day-trip inquiries carry the trip in
+  // service_id and nowhere else — without this the founder sees only
+  // "day trip" and has to guess which one was requested.
+  const [contact, destination, service, outboundPickup, returnPickup] = await Promise.all([
     inquiry.destination_id
       ? getDestinationContact(inquiry.destination_id, contactTypeFor(inquiry.service_type))
       : Promise.resolve(null),
     inquiry.destination_id ? getDestinationById(inquiry.destination_id) : Promise.resolve(null),
+    inquiry.service_id ? getServiceById(inquiry.service_id) : Promise.resolve(null),
     inquiry.pickup_point_id ? getPickupPointById(inquiry.pickup_point_id) : Promise.resolve(null),
     inquiry.return_pickup_point_id
       ? getPickupPointById(inquiry.return_pickup_point_id)
@@ -64,6 +70,7 @@ export default async function InquiryDetailPage(props: Params) {
         inquiry={inquiry}
         contact={contact}
         destinationLabel={destination ? destination.name_ka || destination.name_en : null}
+        serviceLabel={service ? service.name_ka || service.name_en : null}
         outboundPickupLabel={formatPickupLabel(outboundPickup)}
         returnPickupLabel={formatPickupLabel(returnPickup)}
       />

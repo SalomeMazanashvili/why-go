@@ -47,17 +47,19 @@
       "error_phone_format": "შეიყვანეთ სწორი ტელეფონის ნომერი.",
       "error_email_format": "შეიყვანეთ სწორი ელფოსტის მისამართი"
     },
-    "transactional": {
-      "heading": "მოითხოვეთ ტრანსფერი",
-      "pickup_from": "საიდან",
-      "pickup_to": "სად",
-      "travel_date": "თარიღი",
-      "travel_time": "დრო",
-      "passengers": "მგზავრების რაოდენობა",
-      "luggage_pieces": "ბარგის რაოდენობა",
-      "payment_method": "გადახდის მეთოდი",
-      "payment_cash": "გადახდა ნაღდი ანგარიშსწორებით, ადგილზე",
-      "payment_iban": "საბანკო გადარიცხვა"
+    "day_trip": {
+      "heading": "TODO: Georgian copy needed",
+      "day_trip": "TODO: Georgian copy needed",
+      "day_trip_placeholder": "TODO: Georgian copy needed",
+      "travel_date": "TODO: Georgian copy needed",
+      "passengers": "TODO: Georgian copy needed",
+      "pickup_from": "TODO: Georgian copy needed",
+      "pickup_from_help": "TODO: Georgian copy needed",
+      "pickup_from_placeholder": "TODO: Georgian copy needed",
+      "departure_time": "TODO: Georgian copy needed",
+      "departure_time_help": "TODO: Georgian copy needed",
+      "departure_time_any": "TODO: Georgian copy needed",
+      "no_trips": "TODO: Georgian copy needed"
     },
     "consultative": {
       "heading": "მოითხოვეთ გიდის მომსახურება",

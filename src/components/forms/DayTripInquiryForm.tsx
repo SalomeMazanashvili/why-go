@@ -1,53 +1,49 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { FormField, inputClass, buttonClass } from './FormField'
 import { TurnstileWidget } from './TurnstileWidget'
-import { transactionalInquirySchema } from '@/lib/inquiryValidation'
-import type { Destination, Locale, Service, InquiryServiceType } from '@/types'
+import { dayTripInquirySchema } from '@/lib/inquiryValidation'
+import { getServiceName, type Locale, type Service } from '@/types'
 
-function destName(d: Destination, l: Locale) {
-  return l === 'ka' ? (d.name_ka || d.name_en) : (d.name_en || d.name_ka)
-}
+// WHY-83: the day-trip request form. Deliberately NOT the transfer template —
+// the founders confirmed the split (ticket comment, 2026-08-30). A day trip is
+// a round trip by definition with a hotel pickup, so there is no return leg, no
+// flight number, no luggage count and no route dropdown. The customer is
+// deciding *whether to go*, so the surrounding page does the persuading and
+// this form stays as short as it can be.
+//
+// travel_time is a preference, not a booking: the operator sets the real
+// departure. It renders only when the selected trip has departure slots
+// configured, so we never present invented times.
 
 interface Props {
-  // Transfers moved to TransferInquiryForm in WHY-68. This component now
-  // handles day_trip only until WHY-83 replaces it with DayTripInquiryForm.
-  serviceType: Extract<InquiryServiceType, 'day_trip'>
+  // Published day trips, for the picker. On a detail page pass the single
+  // trip plus `serviceId` to lock the selection.
+  dayTrips: Service[]
   serviceId?: string | null
-  destinationId?: string | null
-  destinations?: Destination[]
-  service?: Service | null
 }
 
 type FormState = {
   service_id: string
-  destination_id: string
-  pickup_from: string
-  pickup_to: string
   travel_date: string
   travel_time: string
   passengers: string
-  luggage_pieces: string
-  payment_method: 'cash' | 'iban'
+  pickup_from: string
   name: string
   phone: string
   email: string
   notes: string
 }
 
-function emptyState(serviceId?: string | null, destinationId?: string | null): FormState {
+function emptyState(serviceId?: string | null): FormState {
   return {
     service_id: serviceId ?? '',
-    destination_id: destinationId ?? '',
-    pickup_from: '',
-    pickup_to: '',
     travel_date: '',
     travel_time: '',
     passengers: '1',
-    luggage_pieces: '0',
-    payment_method: 'cash',
+    pickup_from: '',
     name: '',
     phone: '',
     email: '',
@@ -55,13 +51,7 @@ function emptyState(serviceId?: string | null, destinationId?: string | null): F
   }
 }
 
-export function TransactionalInquiryForm({
-  serviceType,
-  serviceId,
-  destinationId,
-  destinations,
-  service: _service,
-}: Props) {
+export function DayTripInquiryForm({ dayTrips, serviceId }: Props) {
   const t = useTranslations('inquiry')
   const locale = useLocale() as Locale
   const errorLabels: Record<string, string> = {
@@ -69,7 +59,8 @@ export function TransactionalInquiryForm({
     error_phone_format: t('shared.error_phone_format'),
     error_email_format: t('shared.error_email_format'),
   }
-  const [state, setState] = useState<FormState>(() => emptyState(serviceId, destinationId))
+
+  const [state, setState] = useState<FormState>(() => emptyState(serviceId))
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [formError, setFormError] = useState<string | null>(null)
@@ -82,21 +73,45 @@ export function TransactionalInquiryForm({
     setTurnstileToken(token)
   }, [])
 
+  const selectedTrip = useMemo(
+    () => dayTrips.find((d) => d.id === state.service_id) ?? null,
+    [dayTrips, state.service_id],
+  )
+
+  // Departure slots belong to the trip, so switching trips must not carry a
+  // stale time over. Clearing on change is simpler than reconciling.
+  const onTripChange = (nextId: string) => {
+    setState((prev) => ({ ...prev, service_id: nextId, travel_time: '' }))
+  }
+
+  const departureTimes = selectedTrip?.departure_times ?? []
+
+  // Nothing to request against — render the empty state instead of a form
+  // that can only fail validation. Expected until the founders publish the
+  // first day trips.
+  if (dayTrips.length === 0) {
+    return (
+      <p role="status" className="text-white/60 text-sm">
+        {t('day_trip.no_trips')}
+      </p>
+    )
+  }
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)
 
     const payload = {
-      service_type: serviceType,
-      service_id: state.service_id || null,
-      destination_id: state.destination_id || null,
-      pickup_from: state.pickup_from,
-      pickup_to: state.pickup_to,
+      service_type: 'day_trip' as const,
+      service_id: state.service_id,
+      // Derived from the trip, never asked. The admin WhatsApp block and
+      // destination_contacts routing key off destination_id, so a day-trip
+      // inquiry that omitted it would land with no driver to route to.
+      destination_id: selectedTrip?.destination_id || null,
       travel_date: state.travel_date,
       travel_time: state.travel_time || undefined,
       passengers: state.passengers,
-      luggage_pieces: state.luggage_pieces,
-      payment_method: state.payment_method,
+      pickup_from: state.pickup_from,
       name: state.name,
       phone: state.phone,
       email: state.email,
@@ -104,7 +119,7 @@ export function TransactionalInquiryForm({
       turnstile_token: turnstileToken || undefined,
     }
 
-    const parsed = transactionalInquirySchema.safeParse(payload)
+    const parsed = dayTripInquirySchema.safeParse(payload)
     if (!parsed.success) {
       const next: Partial<Record<keyof FormState, string>> = {}
       for (const issue of parsed.error.issues) {
@@ -127,7 +142,7 @@ export function TransactionalInquiryForm({
       })
       if (res.status === 201) {
         setFormStatus('success')
-        setState(emptyState(serviceId, destinationId))
+        setState(emptyState(serviceId))
         return
       }
       if (res.status === 429) {
@@ -159,7 +174,7 @@ export function TransactionalInquiryForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl" noValidate>
-      <h2 className="text-2xl font-black text-white">{t('transactional.heading')}</h2>
+      <h2 className="text-2xl font-black text-white">{t('day_trip.heading')}</h2>
 
       <div
         role="alert"
@@ -169,38 +184,35 @@ export function TransactionalInquiryForm({
         {formError}
       </div>
 
+      {/* On a detail page the trip is already chosen — the picker would be a
+          one-option select, so it's replaced by a hidden value. */}
+      {serviceId ? (
+        <input type="hidden" name="service_id" value={state.service_id} />
+      ) : (
+        <FormField label={t('day_trip.day_trip')} required error={errors.service_id}>
+          {({ id, describedBy, invalid }) => (
+            <select
+              id={id}
+              required
+              aria-invalid={invalid}
+              aria-describedby={describedBy}
+              className={inputClass}
+              value={state.service_id}
+              onChange={(e) => onTripChange(e.target.value)}
+            >
+              <option value="">{t('day_trip.day_trip_placeholder')}</option>
+              {dayTrips.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {getServiceName(d, locale)}
+                </option>
+              ))}
+            </select>
+          )}
+        </FormField>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label={t('transactional.pickup_from')} required error={errors.pickup_from}>
-          {({ id, describedBy, invalid }) => (
-            <input
-              id={id}
-              type="text"
-              required
-              aria-invalid={invalid}
-              aria-describedby={describedBy}
-              className={inputClass}
-              value={state.pickup_from}
-              onChange={(e) => set('pickup_from', e.target.value)}
-            />
-          )}
-        </FormField>
-
-        <FormField label={t('transactional.pickup_to')} required error={errors.pickup_to}>
-          {({ id, describedBy, invalid }) => (
-            <input
-              id={id}
-              type="text"
-              required
-              aria-invalid={invalid}
-              aria-describedby={describedBy}
-              className={inputClass}
-              value={state.pickup_to}
-              onChange={(e) => set('pickup_to', e.target.value)}
-            />
-          )}
-        </FormField>
-
-        <FormField label={t('transactional.travel_date')} required error={errors.travel_date}>
+        <FormField label={t('day_trip.travel_date')} required error={errors.travel_date}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -215,21 +227,7 @@ export function TransactionalInquiryForm({
           )}
         </FormField>
 
-        <FormField label={t('transactional.travel_time')} error={errors.travel_time}>
-          {({ id, describedBy, invalid }) => (
-            <input
-              id={id}
-              type="time"
-              aria-invalid={invalid}
-              aria-describedby={describedBy}
-              className={inputClass}
-              value={state.travel_time}
-              onChange={(e) => set('travel_time', e.target.value)}
-            />
-          )}
-        </FormField>
-
-        <FormField label={t('transactional.passengers')} required error={errors.passengers}>
+        <FormField label={t('day_trip.passengers')} required error={errors.passengers}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -237,6 +235,7 @@ export function TransactionalInquiryForm({
               min={1}
               max={50}
               required
+              inputMode="numeric"
               aria-invalid={invalid}
               aria-describedby={describedBy}
               className={inputClass}
@@ -245,75 +244,54 @@ export function TransactionalInquiryForm({
             />
           )}
         </FormField>
-
-        <FormField label={t('transactional.luggage_pieces')} error={errors.luggage_pieces}>
-          {({ id, describedBy, invalid }) => (
-            <input
-              id={id}
-              type="number"
-              min={0}
-              max={50}
-              aria-invalid={invalid}
-              aria-describedby={describedBy}
-              className={inputClass}
-              value={state.luggage_pieces}
-              onChange={(e) => set('luggage_pieces', e.target.value)}
-            />
-          )}
-        </FormField>
       </div>
 
-      {destinations && destinations.length > 0 && !destinationId && (
-        <FormField label={t('consultative.destination')} error={errors.destination_id}>
+      <FormField
+        label={t('day_trip.pickup_from')}
+        required
+        error={errors.pickup_from}
+        helpText={t('day_trip.pickup_from_help')}
+      >
+        {({ id, describedBy, invalid }) => (
+          <input
+            id={id}
+            type="text"
+            required
+            aria-invalid={invalid}
+            aria-describedby={describedBy}
+            className={inputClass}
+            placeholder={t('day_trip.pickup_from_placeholder')}
+            value={state.pickup_from}
+            onChange={(e) => set('pickup_from', e.target.value)}
+          />
+        )}
+      </FormField>
+
+      {departureTimes.length > 0 && (
+        <FormField
+          label={t('day_trip.departure_time')}
+          error={errors.travel_time}
+          helpText={t('day_trip.departure_time_help')}
+        >
           {({ id, describedBy, invalid }) => (
             <select
               id={id}
               aria-invalid={invalid}
               aria-describedby={describedBy}
               className={inputClass}
-              value={state.destination_id}
-              onChange={(e) => set('destination_id', e.target.value)}
+              value={state.travel_time}
+              onChange={(e) => set('travel_time', e.target.value)}
             >
-              <option value="">—</option>
-              {destinations.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {destName(d, locale)}
+              <option value="">{t('day_trip.departure_time_any')}</option>
+              {departureTimes.map((time) => (
+                <option key={time} value={time}>
+                  {time}
                 </option>
               ))}
             </select>
           )}
         </FormField>
       )}
-
-      <fieldset className="space-y-3">
-        <legend className="block text-sm font-semibold text-white">
-          {t('transactional.payment_method')}
-          <span aria-hidden="true" className="text-[#FFCC00] ml-1">*</span>
-          <span className="sr-only"> (required)</span>
-        </legend>
-        <label className="flex items-center gap-3 min-h-11">
-          <input
-            type="radio"
-            name="payment_method"
-            value="cash"
-            checked={state.payment_method === 'cash'}
-            onChange={() => set('payment_method', 'cash')}
-            className="w-4 h-4 accent-[#FFCC00]"
-          />
-          <span className="text-white">{t('transactional.payment_cash')}</span>
-        </label>
-        <label className="flex items-center gap-3 min-h-11">
-          <input
-            type="radio"
-            name="payment_method"
-            value="iban"
-            checked={state.payment_method === 'iban'}
-            onChange={() => set('payment_method', 'iban')}
-            className="w-4 h-4 accent-[#FFCC00]"
-          />
-          <span className="text-white">{t('transactional.payment_iban')}</span>
-        </label>
-      </fieldset>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField label={t('shared.name')} required error={errors.name}>

@@ -33,19 +33,44 @@ const nameSchema = z.string().trim().min(2, 'error_required')
 // Nullable Supabase UUIDs from destination/service pickers.
 const uuidOrNull = z.string().uuid().nullish().or(z.literal(''))
 
-// Day-trip only. Transfers now use transferInquirySchema below (WHY-68).
-// WHY-83 will retire this schema entirely in favour of dayTripInquirySchema.
-export const transactionalInquirySchema = z.object({
+// Postgres DATE / TIME columns reject malformed strings with a 500 rather
+// than a validation error. Both fields are driven by native date inputs and
+// a fixed dropdown, so a bad value can only arrive from a crafted request —
+// rejecting with the generic required message is enough, and avoids adding
+// error keys that would need founder-written Georgian.
+const isoDateSchema = z
+  .string()
+  .trim()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'error_required')
+
+const timeSchema = z
+  .string()
+  .trim()
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'error_required')
+
+// WHY-83: day trips. Replaces the old transactionalInquirySchema, which was
+// a transfer form wearing a day-trip label — it demanded pickup_to, luggage
+// and a payment method that this product doesn't have.
+//
+// Shape confirmed by the founders (WHY-83 comment, 2026-08-30):
+//   - Round trip by definition, so no return leg.
+//   - Pickup is a hotel or address, never a terminal — no flight number.
+//   - No luggage: day trippers travel light.
+//   - service_id is REQUIRED. A day-trip request that doesn't say which day
+//     trip is unactionable, unlike a transfer where the route is free text.
+//   - travel_time is a *preference* drawn from the service's fixed departure
+//     slots; the operator sets the real departure. Optional by design.
+//   - No payment_method — the API then writes payment_status
+//     'not_applicable', which is correct for a request-to-book day trip.
+//   - pickup_to stays null; the destination is the day trip itself.
+export const dayTripInquirySchema = z.object({
   service_type: z.literal('day_trip'),
-  service_id: uuidOrNull,
+  service_id: z.string().uuid('error_required'),
   destination_id: uuidOrNull,
-  pickup_from: z.string().trim().min(1, 'error_required'),
-  pickup_to: z.string().trim().min(1, 'error_required'),
-  travel_date: z.string().trim().min(1, 'error_required'),
-  travel_time: z.string().trim().optional().or(z.literal('')),
+  pickup_from: z.string().trim().min(1, 'error_required').max(500),
+  travel_date: isoDateSchema,
+  travel_time: timeSchema.optional().or(z.literal('')),
   passengers: z.coerce.number().int().min(1).max(50),
-  luggage_pieces: z.coerce.number().int().min(0).max(50).optional(),
-  payment_method: z.enum(['cash', 'iban']),
   name: nameSchema,
   phone: phoneSchema,
   email: emailSchema,
@@ -144,7 +169,7 @@ export const consultativeInquirySchema = z.object({
   turnstile_token: z.string().optional(),
 })
 
-export type TransactionalInquiryPayload = z.infer<typeof transactionalInquirySchema>
+export type DayTripInquiryPayload = z.infer<typeof dayTripInquirySchema>
 export type ConsultativeInquiryPayload = z.infer<typeof consultativeInquirySchema>
 export type TransferInquiryPayload = z.infer<typeof transferInquirySchema>
 
@@ -162,9 +187,9 @@ export function validateInquiryPayload(body: unknown) {
       : { ok: false as const, error: parsed.error.issues[0]?.message ?? 'Invalid form' }
   }
   if (serviceType === 'day_trip') {
-    const parsed = transactionalInquirySchema.safeParse(body)
+    const parsed = dayTripInquirySchema.safeParse(body)
     return parsed.success
-      ? { ok: true as const, kind: 'transactional' as const, data: parsed.data }
+      ? { ok: true as const, kind: 'day_trip' as const, data: parsed.data }
       : { ok: false as const, error: parsed.error.issues[0]?.message ?? 'Invalid form' }
   }
   if (serviceType === 'guide' || serviceType === 'experience') {

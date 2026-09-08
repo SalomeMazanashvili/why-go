@@ -16,6 +16,10 @@ interface Props {
   inquiry: Inquiry
   contact: DestinationContact | null
   destinationLabel: string | null
+  // WHY-83: resolved from inquiry.service_id by the server parent. This is
+  // the requested day trip / experience — null for transfers, which have no
+  // service row.
+  serviceLabel?: string | null
   // Pre-resolved by the server parent (page.tsx) via getPickupPointById.
   // Null for non-transfer inquiries, one-way transfers (returnPickupLabel),
   // or the "Other" free-text path (both nulls).
@@ -30,6 +34,7 @@ export default function InquiryDetail({
   inquiry: initial,
   contact,
   destinationLabel,
+  serviceLabel,
   outboundPickupLabel,
   returnPickupLabel,
 }: Props) {
@@ -253,6 +258,7 @@ export default function InquiryDetail({
           <DetailRow label="Email" value={inquiry.email || '—'} />
           <DetailRow label="Language" value={inquiry.language} />
           <DetailRow label="Destination" value={destinationLabel || '—'} />
+          {serviceLabel && <DetailRow label="Service" value={serviceLabel} />}
           <DetailRow label="Type" value={inquiry.service_type.replace('_', ' ')} />
           {/* Transfer-specific fields render in the Trip section above; keep
               generic date/pickup rows only for non-transfer service types. */}

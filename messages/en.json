@@ -47,17 +47,19 @@
       "error_phone_format": "Enter a valid phone number.",
       "error_email_format": "Enter a valid email address."
     },
-    "transactional": {
-      "heading": "Book a transfer or day trip",
-      "pickup_from": "Pickup location",
-      "pickup_to": "Drop-off location",
+    "day_trip": {
+      "heading": "Request this day trip",
+      "day_trip": "Day trip",
+      "day_trip_placeholder": "Choose a day trip",
       "travel_date": "Date",
-      "travel_time": "Time",
-      "passengers": "Passengers",
-      "luggage_pieces": "Luggage pieces",
-      "payment_method": "Payment method",
-      "payment_cash": "Cash on arrival",
-      "payment_iban": "Bank transfer (IBAN)"
+      "passengers": "Travellers",
+      "pickup_from": "Pickup address",
+      "pickup_from_help": "Hotel name and street address, please — your driver collects you here.",
+      "pickup_from_placeholder": "e.g. Hotel Miramar, Passeig de Gràcia 43",
+      "departure_time": "Preferred departure time (optional)",
+      "departure_time_help": "We confirm the final departure time when we reply.",
+      "departure_time_any": "No preference",
+      "no_trips": "No day trips are published yet."
     },
     "consultative": {
       "heading": "Book a guide or experience",
