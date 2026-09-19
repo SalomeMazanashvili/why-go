@@ -203,6 +203,62 @@ export function serviceJsonLd(input: {
   return ld
 }
 
+interface ProductLd {
+  '@context': 'https://schema.org'
+  '@type': 'Product'
+  name: string
+  description: string
+  url: string
+  image?: string[]
+  brand: { '@type': 'Brand'; name: string }
+  offers: OfferLd & { url: string }
+}
+
+// Build Product + Offer JSON-LD for a day-trip detail page (WHY-83).
+// Returns null without a real price: Google rejects a Product that has no
+// offers, and CLAUDE.md forbids inventing one. Callers skip the <script>.
+export function productJsonLd(input: {
+  locale: 'en' | 'ka'
+  path: string
+  name: string
+  description: string
+  images: string[]
+  priceFrom: number | null
+  currency: string
+}): ProductLd | null {
+  if (input.priceFrom == null) return null
+  const url = canonicalFor(input.locale, input.path)
+  const ld: ProductLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: input.name,
+    description: input.description,
+    url,
+    brand: { '@type': 'Brand', name: SITE_NAME },
+    offers: {
+      '@type': 'Offer',
+      price: String(input.priceFrom),
+      priceCurrency: input.currency,
+      availability: 'https://schema.org/InStock',
+      url,
+    },
+  }
+  if (input.images.length > 0) ld.image = input.images
+  return ld
+}
+
+// CLAUDE.md rule 5: programmatic pages need 300+ words of unique Georgian
+// content or they must not be indexed. Whitespace splitting is accurate for
+// Georgian, which separates words with spaces.
+export const MIN_INDEXABLE_WORDS = 300
+
+export function countWords(...texts: Array<string | null | undefined>): number {
+  return texts.reduce(
+    (n, t) => n + (t ? t.split(/\s+/).filter(Boolean).length : 0),
+    0,
+  )
+}
+
 // Render a JSON-LD payload as a <script> tag string safe for
 // `dangerouslySetInnerHTML`. Callers pass the object; this stringifies
 // with </script> escaped so an attacker can't break out of the block
