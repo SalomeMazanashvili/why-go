@@ -16,6 +16,12 @@ Two products:
 
 ---
 
+## Source docs
+
+`docs/` is the source of truth for product and structure decisions. Read the relevant doc before planning a ticket or asking the founders a question it may already answer. Where docs conflict, the newer one wins: `whygo-homepage-brief.md` supersedes `whygo-site-structure.md` §4, which supersedes `whygo-services-spec.md` §2.
+
+---
+
 ## Stack
 
 - Next.js (App Router) + TypeScript strict
