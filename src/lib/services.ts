@@ -1,4 +1,5 @@
 import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { countWords, MIN_INDEXABLE_WORDS } from '@/lib/seo'
 import type { Service, ServiceType } from '@/types'
 
 const SERVICE_COLUMNS =
@@ -234,6 +235,21 @@ export async function getDayTripBySlug(slug: string): Promise<Service | null> {
     console.error('[services] getDayTripBySlug threw', slug, err)
     return null
   }
+}
+
+// Whether a day-trip page carries enough Georgian editorial to be indexed.
+// Shared by the detail page (robots noindex) and the sitemap so the two can
+// never disagree. Counts only the *_ka fields: English is noindex site-wide.
+export function isDayTripIndexable(trip: Service): boolean {
+  return (
+    countWords(
+      trip.description_ka,
+      trip.route_ka,
+      trip.included_ka,
+      trip.what_to_bring_ka,
+      trip.meeting_point_ka,
+    ) >= MIN_INDEXABLE_WORDS
+  )
 }
 
 // Count services referencing a given destination — used by the destination

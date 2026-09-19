@@ -107,5 +107,27 @@
     "route_facts_price_from": "From",
     "route_book_cta": "Book this transfer",
     "route_related": "Other routes from here"
+  },
+  "day_trips_page": {
+    "nav_label": "Day trips",
+    "index_title": "Day trips",
+    "index_intro": "Full-day excursions with a driver from the city you're staying in. Pick a trip, tell us the date and where to collect you, and we'll confirm by the next morning.",
+    "index_meta_description": "Full-day excursions with a driver, arranged in Georgian. Hotel pickup and return, confirmed by the next morning.",
+    "index_jump_label": "Day trips by city",
+    "index_other_group": "Other trips",
+    "card_duration_hours": "{hours} h",
+    "card_price_from": "From {price}",
+    "back_to_index": "All day trips",
+    "request_cta": "Request this trip",
+    "facts_duration": "Duration",
+    "facts_hours": "hours",
+    "facts_group_size": "Group size",
+    "facts_price_from": "From",
+    "section_route": "The route",
+    "section_included": "What's included",
+    "section_what_to_bring": "What to bring",
+    "section_meeting_point": "Pickup and meeting point",
+    "section_gallery": "Photographs",
+    "gallery_alt": "{name} — photograph {n}"
   }
 }

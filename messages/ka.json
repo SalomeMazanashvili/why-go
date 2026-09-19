@@ -107,5 +107,27 @@
     "route_facts_price_from": "დან",
     "route_book_cta": "დაჯავშნეთ ტრანსფერი",
     "route_related": "სხვა მიმართულებები"
+  },
+  "day_trips_page": {
+    "nav_label": "TODO: Georgian copy needed",
+    "index_title": "TODO: Georgian copy needed",
+    "index_intro": "TODO: Georgian copy needed",
+    "index_meta_description": "TODO: Georgian copy needed",
+    "index_jump_label": "TODO: Georgian copy needed",
+    "index_other_group": "TODO: Georgian copy needed",
+    "card_duration_hours": "TODO: Georgian copy needed",
+    "card_price_from": "TODO: Georgian copy needed",
+    "back_to_index": "TODO: Georgian copy needed",
+    "request_cta": "TODO: Georgian copy needed",
+    "facts_duration": "TODO: Georgian copy needed",
+    "facts_hours": "TODO: Georgian copy needed",
+    "facts_group_size": "TODO: Georgian copy needed",
+    "facts_price_from": "TODO: Georgian copy needed",
+    "section_route": "TODO: Georgian copy needed",
+    "section_included": "TODO: Georgian copy needed",
+    "section_what_to_bring": "TODO: Georgian copy needed",
+    "section_meeting_point": "TODO: Georgian copy needed",
+    "section_gallery": "TODO: Georgian copy needed",
+    "gallery_alt": "TODO: Georgian copy needed"
   }
 }

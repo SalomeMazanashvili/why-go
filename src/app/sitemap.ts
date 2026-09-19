@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { listTours } from '@/lib/tours'
 import { listTransferRoutes } from '@/lib/transferRoutes'
+import { isDayTripIndexable, listDayTrips } from '@/lib/services'
 import { SITE_URL } from '@/lib/seo'
 
 // WHY-69: Georgian URLs only. English is noindex; whisky-tour is noindex.
@@ -35,5 +36,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   )
 
-  return [...staticEntries, ...tourEntries, ...transferRouteEntries]
+  // WHY-83 PR B: day trips. The index only exists once something is
+  // published (it 404s otherwise), and detail pages under 300 words of
+  // Georgian are noindex — the same isDayTripIndexable check the page uses.
+  const dayTrips = await listDayTrips()
+  const indexableDayTrips = dayTrips.filter(isDayTripIndexable)
+  const dayTripEntries: MetadataRoute.Sitemap = [
+    ...(dayTrips.length > 0
+      ? [{
+          url: `${SITE_URL}/day-trips`,
+          lastModified: now,
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        }]
+      : []),
+    ...indexableDayTrips.map((trip) => ({
+      url: `${SITE_URL}/day-trips/${trip.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ]
+
+  return [...staticEntries, ...tourEntries, ...transferRouteEntries, ...dayTripEntries]
 }
