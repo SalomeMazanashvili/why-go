@@ -75,6 +75,13 @@
       "interest_family": "Family friendly"
     },
     "transfer": {
+      "travel_date": "Date",
+      "travel_time": "Time",
+      "passengers": "Passengers",
+      "luggage_pieces": "Luggage pieces",
+      "payment_method": "Payment method",
+      "payment_cash": "Cash on arrival",
+      "payment_iban": "Bank transfer (IBAN)",
       "heading": "Book a transfer",
       "pickup_point": "From",
       "pickup_placeholder": "Choose a pickup point",

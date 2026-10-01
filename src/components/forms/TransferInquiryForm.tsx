@@ -327,7 +327,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
 
       {/* Date + time */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label={t('transactional.travel_date')} required error={errors.travel_date}>
+        <FormField label={t('transfer.travel_date')} required error={errors.travel_date}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -341,7 +341,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             />
           )}
         </FormField>
-        <FormField label={t('transactional.travel_time')} required error={errors.travel_time}>
+        <FormField label={t('transfer.travel_time')} required error={errors.travel_time}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -358,7 +358,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label={t('transactional.passengers')} required error={errors.passengers}>
+        <FormField label={t('transfer.passengers')} required error={errors.passengers}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -374,7 +374,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             />
           )}
         </FormField>
-        <FormField label={t('transactional.luggage_pieces')} error={errors.luggage_pieces}>
+        <FormField label={t('transfer.luggage_pieces')} error={errors.luggage_pieces}>
           {({ id, describedBy, invalid }) => (
             <input
               id={id}
@@ -417,7 +417,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
       {/* Payment method */}
       <fieldset className="space-y-3">
         <legend className="block text-sm font-semibold text-white">
-          {t('transactional.payment_method')}
+          {t('transfer.payment_method')}
           <span aria-hidden="true" className="text-[#FFCC00] ml-1">*</span>
           <span className="sr-only"> (required)</span>
         </legend>
@@ -430,7 +430,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             onChange={() => set('payment_method', 'cash')}
             className="w-4 h-4 accent-[#FFCC00]"
           />
-          <span className="text-white">{t('transactional.payment_cash')}</span>
+          <span className="text-white">{t('transfer.payment_cash')}</span>
         </label>
         <label className="flex items-center gap-3 min-h-11">
           <input
@@ -441,7 +441,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             onChange={() => set('payment_method', 'iban')}
             className="w-4 h-4 accent-[#FFCC00]"
           />
-          <span className="text-white">{t('transactional.payment_iban')}</span>
+          <span className="text-white">{t('transfer.payment_iban')}</span>
         </label>
       </fieldset>
 

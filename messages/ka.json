@@ -75,6 +75,13 @@
       "interest_family": "ოჯახური"
     },
     "transfer": {
+      "travel_date": "თარიღი",
+      "travel_time": "დრო",
+      "passengers": "მგზავრების რაოდენობა",
+      "luggage_pieces": "ბარგის რაოდენობა",
+      "payment_method": "გადახდის მეთოდი",
+      "payment_cash": "გადახდა ნაღდი ანგარიშსწორებით, ადგილზე",
+      "payment_iban": "საბანკო გადარიცხვა",
       "heading": "მოითხოვეთ ტრანსფერი",
       "pickup_point": "საიდან",
       "pickup_placeholder": "აირჩიეთ საიდან გსურთ",
