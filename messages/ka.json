@@ -1,5 +1,5 @@
 {
-  "nav": { "tours": "ტურები", "about": "ჩვენ შესახებ", "tips": "რჩევები", "contact": "კონტაქტი" },
+  "nav": { "tours": "ტურები", "about": "ჩვენ შესახებ", "tips": "რჩევები", "contact": "კონტაქტი", "menu_open": "TODO: Georgian copy needed", "menu_close": "TODO: Georgian copy needed", "menu_title": "TODO: Georgian copy needed", "primary_label": "TODO: Georgian copy needed (main navigation)", "footer_label": "TODO: Georgian copy needed (footer navigation)" },
   "hero": {
     "eyebrow": "გამოცდილება · განვითარება · კვლევა",
     "line1": "WAY", "line2": "BEYOND", "line3": "მოგზაურობა",
