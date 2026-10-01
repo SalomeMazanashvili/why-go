@@ -1,5 +1,5 @@
 {
-  "nav": { "tours": "Tours", "about": "About", "tips": "Tips", "contact": "Contact" },
+  "nav": { "tours": "Tours", "about": "About", "tips": "Tips", "contact": "Contact", "menu_open": "Open menu", "menu_close": "Close menu", "menu_title": "Menu", "primary_label": "Main navigation", "footer_label": "Footer navigation" },
   "hero": {
     "eyebrow": "Experience · Develop · Explore",
     "line1": "GO", "line2": "BEYOND", "line3": "TRAVEL",

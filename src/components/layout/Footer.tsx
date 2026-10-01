@@ -12,17 +12,17 @@ export default function Footer() {
           <p className="font-black text-xl tracking-tight text-white">
             WHY<span className="text-yellow-400">GO</span>
           </p>
-          <p className="text-[10px] tracking-widest uppercase text-white/25 mt-1">Experience + Development</p>
+          <p className="text-[10px] tracking-widest uppercase text-white/60 mt-1">Experience + Development</p>
         </div>
-        <nav className="flex gap-6 flex-wrap">
+        <nav aria-label={t('footer_label')} className="flex gap-6 flex-wrap">
           {[['tours', t('tours')], ['about', t('about')], ['tips', t('tips')], ['contact', t('contact')]].map(([path, label]) => (
             <Link key={path} href={`/${path}`}
-              className="text-[10px] tracking-widest uppercase text-white/30 hover:text-yellow-400 transition-colors">
+              className="text-[10px] tracking-widest uppercase text-white/60 hover:text-yellow-400 transition-colors">
               {label}
             </Link>
           ))}
         </nav>
-        <p className="text-[10px] tracking-wide text-white/20">
+        <p className="text-[10px] tracking-wide text-white/60">
           © {new Date().getFullYear()} WHYGO · whygo.ge
         </p>
       </div>
