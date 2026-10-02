@@ -264,7 +264,7 @@ export default async function DayTripDetailPage(
       </article>
 
       <section id="request" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 scroll-mt-24">
-        <div className="surface-dark request-panel">
+        <div className="request-panel">
           <DayTripInquiryForm dayTrips={[trip]} serviceId={trip.id} />
         </div>
       </section>

@@ -22,6 +22,7 @@ declare global {
           callback: (token: string) => void
           'error-callback'?: () => void
           'expired-callback'?: () => void
+          theme?: 'light' | 'dark' | 'auto'
         },
       ) => string
       remove: (widgetId: string) => void
@@ -49,6 +50,8 @@ export function TurnstileWidget({ onToken }: Props) {
         callback: (token) => onToken(token),
         'error-callback': () => onToken(null),
         'expired-callback': () => onToken(null),
+        // Forms sit on a white card; 'auto' would follow the OS and go dark.
+        theme: 'light',
       })
     }
     tryRender()

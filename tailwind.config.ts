@@ -20,6 +20,8 @@ const config: Config = {
         accent: 'var(--accent-text)',
         surface: 'var(--surface)',
         raised: 'var(--surface-raised)',
+        danger: 'var(--danger)',
+        field: 'var(--field-border)',
         ink: '#111110',
         paper: '#F7F3EC',
       },

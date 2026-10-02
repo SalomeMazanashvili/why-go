@@ -23,6 +23,8 @@ html { scroll-behavior: smooth; }
   --focus: #111110;
   --surface: #F7F3EC;       /* warm off-white "paper" */
   --surface-raised: #FFFFFF;
+  --danger: #B42318;        /* 6.4:1 on white */
+  --field-border: #8A857C;  /* 3.4:1 on white — WCAG 1.4.11 */
   color: var(--fg);
 }
 .surface-dark, .tone-dark {
@@ -33,6 +35,8 @@ html { scroll-behavior: smooth; }
   --focus: #FFCC00;
   --surface: #111110;       /* brand ink */
   --surface-raised: #1C1C1A;
+  --danger: #F87171;
+  --field-border: rgba(255, 255, 255, 0.35);
   color: var(--fg);
 }
 /* `tone-*` sets the tokens only (for elements over an image or a
@@ -82,8 +86,11 @@ body {
   border: 1px solid var(--line);
   padding: 1.5rem;
 }
-/* Request forms stay dark: they're the "action" block on any page. */
+/* Request forms: a white card on paper, lifted by a yellow top rule. */
 .request-panel {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid #FFCC00;
   padding: 1.5rem;
 }
 @media (min-width: 768px) {

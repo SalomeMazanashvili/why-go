@@ -79,7 +79,7 @@ export default async function TransfersLandingPage(props: Props) {
           </p>
         </header>
 
-        <div className="surface-dark request-panel">
+        <div className="request-panel">
           <TransferInquiryForm
             pickupPoints={pickupPoints}
             destinations={destinations}
