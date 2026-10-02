@@ -41,7 +41,7 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
-      <div className="pt-24">
+      <div className="surface-dark pt-24">
         <ContactSection tours={tours} locale={locale as Locale} />
       </div>
     </>

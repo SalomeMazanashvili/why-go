@@ -93,7 +93,7 @@ export default async function TourDetailPage(
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(trip) }}
       />
-      <section className="relative h-[85vh] flex items-end overflow-hidden">
+      <section className="tone-dark relative h-[85vh] flex items-end overflow-hidden bg-ink">
         <Image
           src={tour.cover_image ?? ''}
           alt={getTourTitle(tour, loc)}
@@ -123,17 +123,17 @@ export default async function TourDetailPage(
         </div>
       </section>
 
-      <section className="bg-white px-6 md:px-10 py-16">
+      <section className="surface-light px-6 md:px-10 py-16">
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
           <div className="md:col-span-2">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">
               About This Experience
             </p>
-            <p className="text-base leading-relaxed text-black/80">
+            <p className="text-base leading-relaxed text-fg">
               {getTourDescription(tour, loc)}
             </p>
           </div>
-          <div className="bg-black p-8">
+          <div className="surface-dark p-8">
             <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-6">
               Trip Details
             </p>

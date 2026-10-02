@@ -76,7 +76,7 @@ export default async function ExperiencesIndexPage(
   ])
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="surface-light min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -87,7 +87,7 @@ export default async function ExperiencesIndexPage(
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
             {t('index_title')}
           </h1>
-          <p className="text-lg text-white/70 leading-relaxed">{t('index_intro')}</p>
+          <p className="text-lg text-muted leading-relaxed">{t('index_intro')}</p>
         </header>
 
         {/* In-page jump links — only worth showing once there's a choice. */}
@@ -98,7 +98,7 @@ export default async function ExperiencesIndexPage(
                 <li key={g.key}>
                   <a
                     href={`#${g.key}`}
-                    className="inline-flex items-center min-h-[44px] px-4 border border-white/20 text-sm font-bold hover:border-[#FFCC00] hover:text-[#FFCC00] transition-colors"
+                    className="inline-flex items-center min-h-[44px] px-4 border border-line text-sm font-bold hover:border-fg hover:underline decoration-yellow-400 decoration-2 underline-offset-4 transition-colors"
                   >
                     {groupLabel(g)}
                   </a>

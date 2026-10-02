@@ -22,15 +22,15 @@ export default function ToursGridClient({ tours, locale }: Props) {
 
   if (tours.length === 0) {
     return (
-      <section className="bg-white min-h-[60vh] flex items-center justify-center px-6 md:px-10 py-24">
+      <section className="surface-light min-h-[60vh] flex items-center justify-center px-6 md:px-10 py-24">
         <div className="text-center max-w-md">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">
             {t('section_tag')}
           </p>
-          <h2 className="font-black text-3xl md:text-4xl text-black leading-tight tracking-tight mb-4">
+          <h2 className="font-black text-3xl md:text-4xl text-fg leading-tight tracking-tight mb-4">
             No tours available yet
           </h2>
-          <p className="text-sm text-black/60">
+          <p className="text-sm text-muted">
             New signature tours are being finalised. Please check back soon.
           </p>
         </div>
@@ -40,7 +40,7 @@ export default function ToursGridClient({ tours, locale }: Props) {
 
   return (
     <>
-      <div className="bg-black/90 border-t border-white/10 px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[69px] z-30 backdrop-blur-sm">
+      <div className="tone-dark bg-ink/95 border-t border-white/10 px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[69px] z-30 backdrop-blur-sm">
         <button onClick={() => setActiveTag(null)}
           className={`text-[10px] font-black tracking-widest uppercase px-4 py-2 border transition-colors ${!activeTag ? 'bg-yellow-400 text-black border-yellow-400' : 'text-white/60 border-white/20 hover:border-white/50'}`}>
           ALL
@@ -53,14 +53,14 @@ export default function ToursGridClient({ tours, locale }: Props) {
         ))}
       </div>
 
-      <section className="bg-white min-h-screen px-6 md:px-10 py-12">
+      <section className="surface-light min-h-screen px-6 md:px-10 py-12">
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
           <AnimatePresence mode="popLayout">
             {filtered.map((tour, i) => (
               <motion.div key={tour.id} layout initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}>
-                <Link href={`/tours/${tour.slug}`} className="group block relative overflow-hidden bg-black">
+                <Link href={`/tours/${tour.slug}`} className="tone-dark group block relative overflow-hidden bg-ink">
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {tour.cover_image && (
                       <Image src={tour.cover_image} alt={getTourTitle(tour, loc)} fill
