@@ -5,6 +5,9 @@ import { getMessages, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import { getNavItems } from '@/lib/nav'
+import { socialLinksFrom } from '@/lib/socialNetworks'
+import { loadSiteSettings } from '@/lib/siteData'
 import {
   SITE_NAME,
   SITE_URL,
@@ -83,7 +86,11 @@ export default async function LocaleLayout(
   // Required by next-intl for statically-rendered routes; without this,
   // rendering silently falls back to dynamic and WHY-74 achieves nothing.
   setRequestLocale(locale)
-  const messages = await getMessages()
+  const [messages, navItems, settings] = await Promise.all([
+    getMessages(),
+    getNavItems(),
+    loadSiteSettings(),
+  ])
   const loc = locale as 'en' | 'ka'
 
   return (
@@ -98,9 +105,9 @@ export default async function LocaleLayout(
           dangerouslySetInnerHTML={{ __html: jsonLdScript(webSiteJsonLd(loc)) }}
         />
         <NextIntlClientProvider messages={messages}>
-          <Navbar locale={locale} />
+          <Navbar items={navItems} />
           <main>{children}</main>
-          <Footer />
+          <Footer socials={socialLinksFrom(settings)} />
         </NextIntlClientProvider>
       </body>
     </html>

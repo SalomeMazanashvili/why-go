@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { listTours } from '@/lib/tours'
 import { listTransferRoutes } from '@/lib/transferRoutes'
-import { isDayTripIndexable, listDayTrips } from '@/lib/services'
+import { isDayTripIndexable, listDayTrips, listExperiences } from '@/lib/services'
 import { SITE_URL } from '@/lib/seo'
 
 // WHY-69: Georgian URLs only. English is noindex; whisky-tour is noindex.
@@ -58,5 +58,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ]
 
-  return [...staticEntries, ...tourEntries, ...transferRouteEntries, ...dayTripEntries]
+  // WHY-67: /experiences 404s while nothing linkable is published, same rule
+  // as the nav item.
+  const experienceEntries: MetadataRoute.Sitemap =
+    (await listExperiences()).length > 0
+      ? [{
+          url: `${SITE_URL}/experiences`,
+          lastModified: now,
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        }]
+      : []
+
+  return [
+    ...staticEntries,
+    ...tourEntries,
+    ...transferRouteEntries,
+    ...dayTripEntries,
+    ...experienceEntries,
+  ]
 }

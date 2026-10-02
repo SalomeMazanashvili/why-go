@@ -3,8 +3,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
+import type { NavItem } from '@/lib/nav'
 
-export default function Navbar({ locale: _locale }: { locale: string }) {
+export default function Navbar({ items }: { items: NavItem[] }) {
   const t = useTranslations('nav')
   const currentLocale = useLocale()
   const pathname = usePathname()
@@ -73,14 +74,12 @@ export default function Navbar({ locale: _locale }: { locale: string }) {
     router.replace(pathname, { locale: next })
   }
 
-  const navLinks = [
-    { href: '/tours', label: t('tours') },
-    { href: '/about', label: t('about') },
-    { href: '/tips', label: t('tips') },
-    { href: '/contact', label: t('contact') },
-  ]
+  // WHY-67: items are computed server-side (lib/nav.ts) so only pages with
+  // published content appear.
+  const navLinks = items.map((item) => ({ href: item.href, label: t(item.key) }))
 
   const isHome = pathname === '/'
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
   const hasBackground = !isHome || scrolled
 
   return (
@@ -94,6 +93,7 @@ export default function Navbar({ locale: _locale }: { locale: string }) {
           <nav aria-label={t('primary_label')} className="hidden md:flex items-center gap-8">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href}
+                aria-current={isCurrent(link.href) ? 'page' : undefined}
                 className="text-[11px] font-bold tracking-widest uppercase text-white/60 hover:text-yellow-400 transition-colors">
                 {link.label}
               </Link>
@@ -145,6 +145,7 @@ export default function Navbar({ locale: _locale }: { locale: string }) {
                   initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 + i * 0.08 }}>
                   <Link href={link.href} onClick={() => closeMenu(false)}
+                    aria-current={isCurrent(link.href) ? 'page' : undefined}
                     className="block text-[clamp(36px,8vw,60px)] font-black leading-tight tracking-tight text-white hover:text-yellow-400 transition-colors uppercase">
                     {link.label}
                   </Link>
