@@ -1,24 +1,8 @@
 {
   "nav": { "tours": "ტურები", "about": "ჩვენ შესახებ", "tips": "რჩევები", "contact": "კონტაქტი", "menu_open": "TODO: Georgian copy needed", "menu_close": "TODO: Georgian copy needed", "menu_title": "TODO: Georgian copy needed", "primary_label": "TODO: Georgian copy needed (main navigation)", "footer_label": "TODO: Georgian copy needed (footer navigation)", "transfers": "ტრანსფერები", "experiences": "გამოცდილება", "guides": "გიდები", "blog": "ბლოგი", "social_label": "TODO: Georgian copy needed" },
-  "hero": {
-    "eyebrow": "გამოცდილება · განვითარება · კვლევა",
-    "line1": "WAY", "line2": "BEYOND", "line3": "მოგზაურობა",
-    "sub": "ბუტიკური ტურები ენის, სპორტისა და კულინარიის ირგვლივ. შეისწავლე სამყარო ახალი უნარების დაუფლებისას.",
-    "cta_primary": "ტურები", "cta_secondary": "ჩვენი ისტორია", "scroll": "გადახვევა"
-  },
   "tours": {
     "section_tag": "კურირებული გამოცდილება", "section_title_1": "სიგნატური", "section_title_2": "ტურები",
     "view_all": "ყველა ნახვა →", "from": "დან", "days": "დღე", "book_now": "დაჯავშნა", "enquire": "შეკითხვა"
-  },
-  "about": {
-    "label": "ჩვენი ფილოსოფია", "title_1": "ჩვენ ვქმნით", "title_2": "ტურებს,", "title_3": "რომლებიც ასწავლის",
-    "body": "WHYGO დაიბადა თბილისში მარტივი რწმენით: მოგზაურობამ უნდა შეგცვალოს. ყველა ტური, რომელსაც ვქმნით, შეუხამებს დაუვიწყარ დანიშნულებას რეალური უნარ-ჩვევებს — ენა, სამზარეულო, სპორტი.",
-    "cta": "ჩვენი ისტორია",
-    "stat_destinations": "მიმართულება", "stat_bespoke": "ინდივიდუალური", "stat_languages": "ენა", "stat_experiences": "გამოცდილება"
-  },
-  "blog": {
-    "section_tag": "სამოგზაურო სახელმძღვანელო", "section_title_1": "რჩევები", "section_title_2": "და ამბები",
-    "view_all": "ყველა სტატია →", "read_more": "სრულად", "min_read": "წუთი"
   },
   "contact": {
     "label": "დაგვიკავშირდით", "title_1": "დაგეგმოთ", "title_2": "თქვენი", "title_3": "მოგზაურობა",
@@ -28,7 +12,7 @@
     "submit": "შეტყობინების გაგზავნა", "reply_note": "ვპასუხობთ 24 საათის განმავლობაში",
     "success": "შეტყობინება გაიგზავნა!", "error": "შეცდომა. სცადეთ ხელახლა."
   },
-  "footer": { "tagline": "გამოცდილება + განვითარება", "rights": "ყველა უფლება დაცულია", "domain": "whygo.ge" },
+  "footer": { "tagline": "გამოცდილება + განვითარება" },
   "inquiry": {
     "shared": {
       "name": "სახელი და გვარი",
@@ -114,6 +98,22 @@
     "route_facts_price_from": "დან",
     "route_book_cta": "დაჯავშნეთ ტრანსფერი",
     "route_related": "სხვა მიმართულებები"
+  },
+  "home": {
+    "hero_title": "TODO: Georgian copy needed",
+    "hero_sub": "TODO: Georgian copy needed",
+    "hero_cta": "TODO: Georgian copy needed",
+    "tours_title": "ტურები",
+    "cities_title": "ქალაქები",
+    "experiences_title": "გამოცდილებები",
+    "guides_title": "გიდები",
+    "blog_title": "ბლოგი",
+    "transfers_title": "TODO: Georgian copy needed",
+    "transfers_body": "TODO: Georgian copy needed",
+    "transfers_cta": "TODO: Georgian copy needed",
+    "view_all": "ყველა ნახვა →",
+    "price_from": "{price}-დან",
+    "tour_days": "{days} დღე"
   },
   "experiences_page": {
     "nav_label": "გამოცდილება",

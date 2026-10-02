@@ -37,6 +37,9 @@ export async function listTours(): Promise<Tour[]> {
     const { data, error } = await s
       .from('tours')
       .select(TOUR_COLUMNS)
+      // WHY-67: public list — inactive tours were leaking to /tours, the
+      // sitemap and (now) the homepage.
+      .eq('is_active', true)
       .order('sort_order', { ascending: true })
     if (error) {
       console.error('[tours] listTours query failed', error)
@@ -45,6 +48,26 @@ export async function listTours(): Promise<Tour[]> {
     return (data ?? []).map(normalize)
   } catch (err) {
     console.error('[tours] listTours threw', err)
+    return []
+  }
+}
+
+// Admin list — inactive tours included. Never call from public pages.
+export async function listToursForAdmin(): Promise<Tour[]> {
+  if (!hasAdminSupabase()) return []
+  try {
+    const s = getAdminSupabase()
+    const { data, error } = await s
+      .from('tours')
+      .select(TOUR_COLUMNS)
+      .order('sort_order', { ascending: true })
+    if (error) {
+      console.error('[tours] listToursForAdmin query failed', error)
+      return []
+    }
+    return (data ?? []).map(normalize)
+  } catch (err) {
+    console.error('[tours] listToursForAdmin threw', err)
     return []
   }
 }

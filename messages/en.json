@@ -1,24 +1,8 @@
 {
   "nav": { "tours": "Tours", "about": "About", "tips": "Tips", "contact": "Contact", "menu_open": "Open menu", "menu_close": "Close menu", "menu_title": "Menu", "primary_label": "Main navigation", "footer_label": "Footer navigation", "transfers": "Transfers", "experiences": "Experiences", "guides": "Guides", "blog": "Blog", "social_label": "WhyGo on social media" },
-  "hero": {
-    "eyebrow": "Experience · Develop · Explore",
-    "line1": "GO", "line2": "BEYOND", "line3": "TRAVEL",
-    "sub": "Boutique tours built around language, sport, and culinary skills. Explore the world while mastering something new.",
-    "cta_primary": "Explore Tours", "cta_secondary": "Our Story", "scroll": "SCROLL"
-  },
   "tours": {
     "section_tag": "Curated Experiences", "section_title_1": "SIGNATURE", "section_title_2": "TOURS",
     "view_all": "View All →", "from": "From", "days": "days", "book_now": "Book This Tour", "enquire": "Enquire"
-  },
-  "about": {
-    "label": "Our Philosophy", "title_1": "WE BUILD", "title_2": "TRIPS THAT", "title_3": "TEACH",
-    "body": "WHYGO was born in Tbilisi with a simple belief: travel should change you. Every tour we design pairs an unforgettable destination with a real skill — a language to learn, a dish to master, a sport to play. We call it Experience + Development.",
-    "cta": "Read Our Story",
-    "stat_destinations": "Destinations", "stat_bespoke": "Bespoke", "stat_languages": "Languages", "stat_experiences": "Experiences"
-  },
-  "blog": {
-    "section_tag": "Travel Intelligence", "section_title_1": "TIPS &", "section_title_2": "STORIES",
-    "view_all": "All Articles →", "read_more": "Read More", "min_read": "min read"
   },
   "contact": {
     "label": "Get In Touch", "title_1": "LET'S", "title_2": "PLAN YOUR", "title_3": "JOURNEY",
@@ -28,7 +12,7 @@
     "submit": "Send Message", "reply_note": "We reply within 24 hours",
     "success": "Message sent! We'll be in touch soon.", "error": "Something went wrong. Please try again."
   },
-  "footer": { "tagline": "Experience + Development", "rights": "All rights reserved", "domain": "whygo.ge" },
+  "footer": { "tagline": "Experience + Development" },
   "inquiry": {
     "shared": {
       "name": "Full name",
@@ -114,6 +98,22 @@
     "route_facts_price_from": "From",
     "route_book_cta": "Book this transfer",
     "route_related": "Other routes from here"
+  },
+  "home": {
+    "hero_title": "Your trip abroad, arranged in Georgian",
+    "hero_sub": "Transfers, day trips and guides in the cities you're travelling to.",
+    "hero_cta": "Request a transfer",
+    "tours_title": "Tours",
+    "cities_title": "Cities",
+    "experiences_title": "Experiences",
+    "guides_title": "Guides",
+    "blog_title": "Blog",
+    "transfers_title": "Transfers",
+    "transfers_body": "Airport and city transfers with a driver, arranged in Georgian.",
+    "transfers_cta": "Request a transfer",
+    "view_all": "View all",
+    "price_from": "From {price}",
+    "tour_days": "{days} days"
   },
   "experiences_page": {
     "nav_label": "Experiences",

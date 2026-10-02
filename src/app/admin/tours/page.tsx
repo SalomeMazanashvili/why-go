@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/adminAuth'
-import { listTours } from '@/lib/tours'
+import { listToursForAdmin } from '@/lib/tours'
 import { hasAdminSupabase } from '@/lib/supabase/admin'
 import { formatPrice } from '@/types'
 
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function ToursAdminPage() {
   await requireAdmin()
-  const tours = await listTours()
+  const tours = await listToursForAdmin()
   const connected = hasAdminSupabase()
 
   return (

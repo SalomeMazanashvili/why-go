@@ -3,13 +3,20 @@ import type { Locale } from '@/types'
 import { setRequestLocale } from 'next-intl/server'
 import { listTours } from '@/lib/tours'
 import { listNews } from '@/lib/news'
+import { listDestinations } from '@/lib/destinations'
+import { listExperiences } from '@/lib/services'
+import { listGuides } from '@/lib/guides'
+import { GUIDES_PAGE_LIVE } from '@/lib/nav'
 import { canonicalFor, SITE_NAME } from '@/lib/seo'
-import HeroSection from '@/components/sections/HeroSection'
-import MarqueeStrip from '@/components/sections/MarqueeStrip'
-import ToursGrid from '@/components/sections/ToursGrid'
-import AboutSection from '@/components/sections/AboutSection'
-import BlogSection from '@/components/sections/BlogSection'
-import ContactSection from '@/components/sections/ContactSection'
+import HomeHero from '@/components/home/HomeHero'
+import {
+  BlogSection,
+  CitiesSection,
+  ExperiencesSection,
+  GuidesSection,
+  ToursSection,
+  TransfersBanner,
+} from '@/components/home/HomeSections'
 
 export const revalidate = 3600 // 1h; admin publish triggers revalidatePath on top
 
@@ -29,19 +36,31 @@ export async function generateMetadata(
   }
 }
 
+// WHY-67: section order and content from docs/whygo-homepage-brief.md. Most
+// sources are near-empty at launch; each section hides itself when empty.
+// The footer (§8) is the shared site footer.
 export default async function HomePage(props: { params: Promise<{ locale: string }> }) {
   const { locale } = await props.params
   setRequestLocale(locale)
+  const loc = locale as Locale
 
-  const [tours, news] = await Promise.all([listTours(), listNews()])
+  const [tours, destinations, experiences, guides, news] = await Promise.all([
+    listTours(),
+    listDestinations(),
+    listExperiences(),
+    GUIDES_PAGE_LIVE ? listGuides() : Promise.resolve([]),
+    listNews(),
+  ])
+
   return (
     <>
-      <HeroSection locale={locale as Locale} />
-      <MarqueeStrip tours={tours} locale={locale as Locale} />
-      <ToursGrid tours={tours} locale={locale as Locale} />
-      <AboutSection locale={locale as Locale} />
-      <BlogSection news={news} locale={locale as Locale} />
-      <ContactSection tours={tours} locale={locale as Locale} />
+      <HomeHero locale={locale} />
+      <ToursSection tours={tours} locale={loc} />
+      <CitiesSection destinations={destinations} experiences={experiences} locale={loc} />
+      <TransfersBanner locale={loc} />
+      <ExperiencesSection experiences={experiences} destinations={destinations} locale={loc} />
+      <GuidesSection guides={guides} enabled={GUIDES_PAGE_LIVE} locale={loc} />
+      <BlogSection posts={news} locale={loc} />
     </>
   )
 }

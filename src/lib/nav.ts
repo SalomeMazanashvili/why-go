@@ -17,7 +17,7 @@ export interface NavItem {
 
 // /guides doesn't exist until WHY-84. Flip this when that page ships; from
 // then on the item follows the published-guides rule like the others.
-const GUIDES_PAGE_LIVE = false
+export const GUIDES_PAGE_LIVE = false
 
 export async function getNavItems(): Promise<NavItem[]> {
   const [tours, experiences, news] = await Promise.all([
