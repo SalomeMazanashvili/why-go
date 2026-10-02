@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '../_components/ToastProvider'
+import { SOCIAL_NETWORKS } from '@/lib/socialNetworks'
 
 type Settings = Record<string, string>
 
@@ -97,6 +98,27 @@ export default function BrandingEditor({ initial }: Props) {
                 value={settings[f.key] ?? ''}
                 onChange={(e) => update(f.key, e.target.value)}
                 placeholder={f.hint}
+              />
+            </div>
+          ))}
+        </section>
+
+        <section className="admin-card space-y-4">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Social links</p>
+          <p className="text-[10px] text-white/40">
+            Full profile URL starting with https://. Shown as icons in the site footer; leave
+            empty to hide a network.
+          </p>
+          {SOCIAL_NETWORKS.map((n) => (
+            <div key={n.key}>
+              <label className="admin-label" htmlFor={n.key}>{n.name}</label>
+              <input
+                id={n.key}
+                type="url"
+                className="admin-input font-mono"
+                value={settings[n.key] ?? ''}
+                onChange={(e) => update(n.key, e.target.value.trim())}
+                placeholder="https://"
               />
             </div>
           ))}

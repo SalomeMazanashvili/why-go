@@ -1,5 +1,5 @@
 {
-  "nav": { "tours": "Tours", "about": "About", "tips": "Tips", "contact": "Contact", "menu_open": "Open menu", "menu_close": "Close menu", "menu_title": "Menu", "primary_label": "Main navigation", "footer_label": "Footer navigation" },
+  "nav": { "tours": "Tours", "about": "About", "tips": "Tips", "contact": "Contact", "menu_open": "Open menu", "menu_close": "Close menu", "menu_title": "Menu", "primary_label": "Main navigation", "footer_label": "Footer navigation", "transfers": "Transfers", "experiences": "Experiences", "guides": "Guides", "blog": "Blog", "social_label": "WhyGo on social media" },
   "hero": {
     "eyebrow": "Experience · Develop · Explore",
     "line1": "GO", "line2": "BEYOND", "line3": "TRAVEL",
@@ -114,6 +114,15 @@
     "route_facts_price_from": "From",
     "route_book_cta": "Book this transfer",
     "route_related": "Other routes from here"
+  },
+  "experiences_page": {
+    "nav_label": "Experiences",
+    "index_title": "Experiences",
+    "index_intro": "Day trips and activities in the cities you're travelling to, arranged in Georgian.",
+    "index_meta_description": "Day trips and activities abroad, arranged in Georgian. Pick a city, choose an experience and send us a request.",
+    "index_jump_label": "Experiences by city",
+    "index_other_group": "Other experiences",
+    "card_price_from": "From {price}"
   },
   "day_trips_page": {
     "nav_label": "Day trips",

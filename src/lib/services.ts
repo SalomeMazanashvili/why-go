@@ -1,6 +1,6 @@
 import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
 import { countWords, MIN_INDEXABLE_WORDS } from '@/lib/seo'
-import type { Service, ServiceType } from '@/types'
+import type { Destination, Service, ServiceType } from '@/types'
 
 const SERVICE_COLUMNS =
   'id, slug, destination_id, category_id, service_type, name_en, name_ka, short_description_en, short_description_ka, description_en, description_ka, seo_title_ka, seo_description_ka, route_en, route_ka, included_en, included_ka, what_to_bring_en, what_to_bring_ka, meeting_point_en, meeting_point_ka, gallery, departure_times, price_from, currency, duration_hours, min_group_size, max_group_size, cover_image, is_published, is_featured, sort_order'
@@ -250,6 +250,50 @@ export function isDayTripIndexable(trip: Service): boolean {
       trip.meeting_point_ka,
     ) >= MIN_INDEXABLE_WORDS
   )
+}
+
+// WHY-67: service types that have a public detail page, and where it lives.
+// /experiences and the homepage list only these, so no card links to a 404.
+// WHY-84 (guides) and WHY-85 (experiences) add their types when their detail
+// pages exist.
+const SERVICE_DETAIL_BASE: Partial<Record<ServiceType, string>> = {
+  day_trip: '/day-trips',
+}
+
+export function serviceHref(service: Service): string | null {
+  const base = SERVICE_DETAIL_BASE[service.service_type]
+  return base ? `${base}/${service.slug}` : null
+}
+
+// Published services that can be linked to — the `გამოცდილება` catalogue.
+export async function listExperiences(): Promise<Service[]> {
+  return (await listServices()).filter((s) => serviceHref(s) !== null)
+}
+
+export interface DestinationGroup {
+  key: string
+  destination: Destination | null
+  services: Service[]
+}
+
+// Groups follow destination sort_order. Services whose destination is unset
+// or unpublished go last, under a neutral heading, rather than disappearing.
+// Shared by /day-trips and /experiences so their in-page anchors match.
+export function groupByDestination(
+  services: Service[],
+  destinations: Destination[],
+): DestinationGroup[] {
+  const groups: DestinationGroup[] = destinations
+    .map((d) => ({
+      key: d.slug,
+      destination: d,
+      services: services.filter((s) => s.destination_id === d.id),
+    }))
+    .filter((g) => g.services.length > 0)
+  const known = new Set(destinations.map((d) => d.id))
+  const rest = services.filter((s) => !s.destination_id || !known.has(s.destination_id))
+  if (rest.length > 0) groups.push({ key: 'other', destination: null, services: rest })
+  return groups
 }
 
 // Count services referencing a given destination — used by the destination

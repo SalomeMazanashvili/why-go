@@ -1,7 +1,12 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { groupByDestination, listDayTrips, serviceHref, type DestinationGroup } from '@/lib/services'
+import {
+  groupByDestination,
+  listExperiences,
+  serviceHref,
+  type DestinationGroup,
+} from '@/lib/services'
 import ServiceCard from '@/components/services/ServiceCard'
 import { listDestinations } from '@/lib/destinations'
 import {
@@ -16,22 +21,21 @@ import { getDestinationName, type Locale } from '@/types'
 // sync with publishes without a rebuild.
 export const revalidate = 3600
 
-// WHY-83 PR B. The filtered SEO view for day-trip intent
-// (`ბარსელონადან ერთდღიანი ექსკურსია`). The `გამოცდილება` nav item points at
-// /experiences (WHY-67), not here — this page is reached from search, the
-// sitemap and, once WHY-65 lands, destination hubs.
+// WHY-67 PR A. The `გამოცდილება` catalogue: every published service that has
+// a detail page (day trips only, until WHY-84/WHY-85 add guides and
+// experiences), grouped by destination. WHY-85 extends this page.
 //
-// With ~30 products in the whole catalogue, "filterable by destination" is
-// plain server-rendered groups with in-page anchors: crawlable, works without
-// JS, and no filter infrastructure (CLAUDE.md: curated, not marketplace).
+// City filtering is in-page anchors (`/experiences#<destination-slug>`), not
+// `?destination=`: reading searchParams would make the route dynamic, and the
+// anchors match /day-trips. Curated catalogue, not marketplace (CLAUDE.md).
 
 export async function generateMetadata(
   props: { params: Promise<{ locale: string }> },
 ): Promise<Metadata> {
   const { locale } = await props.params
   const loc = (locale === 'en' ? 'en' : 'ka') as 'en' | 'ka'
-  const t = await getTranslations({ locale, namespace: 'day_trips_page' })
-  const canonical = canonicalFor(loc, '/day-trips')
+  const t = await getTranslations({ locale, namespace: 'experiences_page' })
+  const canonical = canonicalFor(loc, '/experiences')
   return {
     title: t('index_title'),
     description: t('index_meta_description'),
@@ -46,29 +50,29 @@ export async function generateMetadata(
   }
 }
 
-export default async function DayTripsIndexPage(
+export default async function ExperiencesIndexPage(
   props: { params: Promise<{ locale: string }> },
 ) {
   const { locale } = await props.params
   setRequestLocale(locale)
   const loc = locale as Locale
 
-  const [trips, destinations, t] = await Promise.all([
-    listDayTrips(),
+  const [services, destinations, t] = await Promise.all([
+    listExperiences(),
     listDestinations(),
-    getTranslations({ locale, namespace: 'day_trips_page' }),
+    getTranslations({ locale, namespace: 'experiences_page' }),
   ])
 
-  // Nothing published → no page. An empty index would be a thin, public page
-  // with placeholder copy; the sitemap omits it under the same condition.
-  if (trips.length === 0) notFound()
+  // Nothing published → no page. The nav item and sitemap entry are hidden
+  // under the same condition, so nothing links here while it 404s.
+  if (services.length === 0) notFound()
 
-  const groups = groupByDestination(trips, destinations)
+  const groups = groupByDestination(services, destinations)
   const groupLabel = (g: DestinationGroup) =>
     g.destination ? getDestinationName(g.destination, loc) : t('index_other_group')
 
   const crumbs = breadcrumbJsonLd(loc as 'en' | 'ka', loc === 'ka' ? 'მთავარი' : 'Home', [
-    { name: t('nav_label'), path: '/day-trips' },
+    { name: t('nav_label'), path: '/experiences' },
   ])
 
   return (
@@ -80,9 +84,6 @@ export default async function DayTripsIndexPage(
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 pt-24 pb-16">
         <header className="mb-12 max-w-3xl">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
-            {t('nav_label')}
-          </p>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
             {t('index_title')}
           </h1>
@@ -114,20 +115,17 @@ export default async function DayTripsIndexPage(
                 {groupLabel(g)}
               </h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {g.services.map((trip) => (
-                  <li key={trip.id}>
+                {g.services.map((service) => (
+                  <li key={service.id}>
                     <ServiceCard
-                      service={trip}
+                      service={service}
                       loc={loc}
-                      href={serviceHref(trip) ?? `/day-trips/${trip.slug}`}
-                      details={
-                        trip.duration_hours != null
-                          ? t('card_duration_hours', { hours: trip.duration_hours })
-                          : null
-                      }
+                      href={serviceHref(service)!}
                       price={
-                        trip.price_from != null
-                          ? t('card_price_from', { price: `${trip.currency} ${trip.price_from}` })
+                        service.price_from != null
+                          ? t('card_price_from', {
+                              price: `${service.currency} ${service.price_from}`,
+                            })
                           : null
                       }
                     />

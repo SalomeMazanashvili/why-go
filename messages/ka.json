@@ -1,5 +1,5 @@
 {
-  "nav": { "tours": "ტურები", "about": "ჩვენ შესახებ", "tips": "რჩევები", "contact": "კონტაქტი", "menu_open": "TODO: Georgian copy needed", "menu_close": "TODO: Georgian copy needed", "menu_title": "TODO: Georgian copy needed", "primary_label": "TODO: Georgian copy needed (main navigation)", "footer_label": "TODO: Georgian copy needed (footer navigation)" },
+  "nav": { "tours": "ტურები", "about": "ჩვენ შესახებ", "tips": "რჩევები", "contact": "კონტაქტი", "menu_open": "TODO: Georgian copy needed", "menu_close": "TODO: Georgian copy needed", "menu_title": "TODO: Georgian copy needed", "primary_label": "TODO: Georgian copy needed (main navigation)", "footer_label": "TODO: Georgian copy needed (footer navigation)", "transfers": "ტრანსფერები", "experiences": "გამოცდილება", "guides": "გიდები", "blog": "ბლოგი", "social_label": "TODO: Georgian copy needed" },
   "hero": {
     "eyebrow": "გამოცდილება · განვითარება · კვლევა",
     "line1": "WAY", "line2": "BEYOND", "line3": "მოგზაურობა",
@@ -114,6 +114,15 @@
     "route_facts_price_from": "დან",
     "route_book_cta": "დაჯავშნეთ ტრანსფერი",
     "route_related": "სხვა მიმართულებები"
+  },
+  "experiences_page": {
+    "nav_label": "გამოცდილება",
+    "index_title": "TODO: Georgian copy needed",
+    "index_intro": "TODO: Georgian copy needed",
+    "index_meta_description": "TODO: Georgian copy needed",
+    "index_jump_label": "TODO: Georgian copy needed",
+    "index_other_group": "TODO: Georgian copy needed",
+    "card_price_from": "{price}-დან"
   },
   "day_trips_page": {
     "nav_label": "ექსკურსიები",
