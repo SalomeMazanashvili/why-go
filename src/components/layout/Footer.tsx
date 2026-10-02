@@ -8,6 +8,7 @@ import type { SocialKey, SocialLink } from '@/lib/socialNetworks'
 // only for networks whose URL is set in Admin → Branding.
 export default function Footer({ socials }: { socials: SocialLink[] }) {
   const t = useTranslations('nav')
+  const tFooter = useTranslations('footer')
 
   return (
     <footer className="bg-black border-t border-white/10 px-6 md:px-10 py-10">
@@ -16,7 +17,7 @@ export default function Footer({ socials }: { socials: SocialLink[] }) {
           <p className="font-black text-xl tracking-tight text-white">
             WHY<span className="text-yellow-400">GO</span>
           </p>
-          <p className="text-[10px] tracking-widest uppercase text-white/60 mt-1">Experience + Development</p>
+          <p className="text-[10px] tracking-widest uppercase text-white/60 mt-1">{tFooter('tagline')}</p>
         </div>
         <nav aria-label={t('footer_label')} className="flex gap-6 flex-wrap">
           {[['about', t('about')], ['contact', t('contact')]].map(([path, label]) => (
