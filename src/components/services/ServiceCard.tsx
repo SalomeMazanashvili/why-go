@@ -35,7 +35,7 @@ export default function ServiceCard({
   return (
     <Link
       href={href}
-      className={`group block h-full border border-white/10 hover:border-[#FFCC00]/50 transition-colors ${wide ? 'md:grid md:grid-cols-2' : ''}`}
+      className={`group block h-full bg-raised border border-line hover:border-fg transition-colors ${wide ? 'md:grid md:grid-cols-2' : ''}`}
     >
       {service.cover_image && (
         <div className={`relative aspect-[4/3] overflow-hidden ${wide ? 'md:aspect-auto md:min-h-[320px]' : ''}`}>
@@ -51,14 +51,14 @@ export default function ServiceCard({
       )}
       <div className={wide ? 'p-5 md:p-8 md:self-center' : 'p-5'}>
         {city && (
-          <p className="text-[10px] font-bold tracking-widest uppercase text-white/60 mb-2">{city}</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-2">{city}</p>
         )}
-        <h3 className="text-lg font-bold group-hover:text-[#FFCC00] transition-colors">{name}</h3>
-        {short && <p className="text-white/60 text-sm mt-2 leading-relaxed">{short}</p>}
+        <h3 className="text-lg font-bold group-hover:underline decoration-yellow-400 decoration-2 underline-offset-4 transition-colors">{name}</h3>
+        {short && <p className="text-muted text-sm mt-2 leading-relaxed">{short}</p>}
         {(details || price) && (
-          <p className="text-xs text-white/50 mt-4 flex flex-wrap gap-x-4">
+          <p className="text-xs text-muted mt-4 flex flex-wrap gap-x-4 items-center">
             {details && <span>{details}</span>}
-            {price && <span className="text-[#FFCC00] font-bold">{price}</span>}
+            {price && <span className="inline-block bg-yellow-400 text-ink font-bold px-1.5">{price}</span>}
           </p>
         )}
       </div>

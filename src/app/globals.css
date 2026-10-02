@@ -11,9 +11,39 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
+/* Design trial: light/dark surfaces. A section opts into a surface; shared
+   components use the fg / muted / line / accent tokens and adapt to
+   whichever surface they sit on. Yellow is never text on light: `accent`
+   resolves to ink there. */
+.surface-light, .tone-light {
+  --fg: #111110;
+  --fg-muted: #57534B;      /* 7.0:1 on paper */
+  --line: rgba(17, 17, 16, 0.14);
+  --accent-text: #111110;
+  --focus: #111110;
+  --surface: #F7F3EC;       /* warm off-white "paper" */
+  --surface-raised: #FFFFFF;
+  --danger: #B42318;        /* 6.4:1 on white */
+  --field-border: #8A857C;  /* 3.4:1 on white — WCAG 1.4.11 */
+  color: var(--fg);
+}
+.surface-dark, .tone-dark {
+  --fg: #FFFFFF;
+  --fg-muted: rgba(255, 255, 255, 0.72);
+  --line: rgba(255, 255, 255, 0.14);
+  --accent-text: #FFCC00;
+  --focus: #FFCC00;
+  --surface: #111110;       /* brand ink */
+  --surface-raised: #1C1C1A;
+  --danger: #F87171;
+  --field-border: rgba(255, 255, 255, 0.35);
+  color: var(--fg);
+}
+/* `tone-*` sets the tokens only (for elements over an image or a
+   transparent header); `surface-*` also paints the background. */
+.surface-light, .surface-dark { background-color: var(--surface); }
+
 body {
-  background-color: #000;
-  color: #fff;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -32,7 +62,7 @@ body {
 }
 
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-track { background: #111110; }
 ::-webkit-scrollbar-thumb { background: #FFCC00; }
 
 @keyframes marquee {
@@ -46,6 +76,23 @@ body {
 }
 
 *:focus-visible {
-  outline: 2px solid #FFCC00;
+  outline: 2px solid var(--focus, #FFCC00);
   outline-offset: 2px;
+}
+
+/* Design trial: a card/fact box that sits on either surface. */
+.panel {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--line);
+  padding: 1.5rem;
+}
+/* Request forms: a white card on paper, lifted by a yellow top rule. */
+.request-panel {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid #FFCC00;
+  padding: 1.5rem;
+}
+@media (min-width: 768px) {
+  .request-panel { padding: 2.5rem; }
 }

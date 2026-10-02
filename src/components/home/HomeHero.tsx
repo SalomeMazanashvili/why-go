@@ -8,7 +8,7 @@ import { Link } from '@/i18n/navigation'
 export default async function HomeHero({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'home' })
   return (
-    <section className="relative min-h-[78svh] flex flex-col justify-end px-6 md:px-10 pt-28 pb-12 md:pb-16 overflow-hidden bg-[#080808]">
+    <section className="relative min-h-[78svh] flex flex-col justify-end px-6 md:px-10 pt-28 pb-12 md:pb-16 overflow-hidden surface-dark">
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"

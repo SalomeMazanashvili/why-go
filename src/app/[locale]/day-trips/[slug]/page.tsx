@@ -132,7 +132,7 @@ export default async function DayTripDetailPage(
   })
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="surface-light min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -147,22 +147,22 @@ export default async function DayTripDetailPage(
       <article className="max-w-3xl mx-auto px-6 md:px-12 pt-24 pb-16">
         {/* A single back link, not a landmark — a second unlabelled <nav>
             next to the header's fails axe landmark-unique. */}
-        <p className="mb-8 text-[10px] font-bold tracking-widest uppercase text-white/60">
-          <Link href="/day-trips" className="hover:text-[#FFCC00]">
+        <p className="mb-8 text-[10px] font-bold tracking-widest uppercase text-muted">
+          <Link href="/day-trips" className="hover:underline decoration-yellow-400 decoration-2 underline-offset-4">
             ← {t('back_to_index')}
           </Link>
         </p>
 
         <header className="mb-10">
           {destinationName && (
-            <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">
               {destinationName}
             </p>
           )}
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
             {name}
           </h1>
-          {short && <p className="text-lg text-white/70 leading-relaxed mt-6">{short}</p>}
+          {short && <p className="text-lg text-muted leading-relaxed mt-6">{short}</p>}
         </header>
 
         {trip.cover_image && (
@@ -179,7 +179,7 @@ export default async function DayTripDetailPage(
         )}
 
         {(trip.duration_hours != null || groupSize || trip.price_from != null) && (
-          <section className="admin-card mb-10 grid grid-cols-2 md:grid-cols-3 gap-6">
+          <section className="panel mb-10 grid grid-cols-2 md:grid-cols-3 gap-6">
             {trip.duration_hours != null && (
               <Fact
                 label={t('facts_duration')}
@@ -200,7 +200,7 @@ export default async function DayTripDetailPage(
         <p className="mb-12">
           <a
             href="#request"
-            className="inline-flex items-center min-h-[44px] bg-[#FFCC00] text-black font-black uppercase tracking-widest text-sm px-8 py-4 hover:bg-yellow-300 transition-colors"
+            className="inline-flex items-center min-h-[44px] bg-yellow-400 text-ink font-black uppercase tracking-widest text-sm px-8 py-4 hover:bg-yellow-300 transition-colors"
           >
             {t('request_cta')} ↓
           </a>
@@ -209,7 +209,7 @@ export default async function DayTripDetailPage(
         {description && (
           <div className="mb-12">
             {paragraphs(description).map((p, i) => (
-              <p key={i} className="text-lg text-white/80 leading-relaxed mb-4 whitespace-pre-line">
+              <p key={i} className="text-lg text-fg leading-relaxed mb-4 whitespace-pre-line">
                 {p}
               </p>
             ))}
@@ -219,7 +219,7 @@ export default async function DayTripDetailPage(
         {route && (
           <Section title={t('section_route')}>
             {paragraphs(route).map((p, i) => (
-              <p key={i} className="text-white/80 leading-relaxed mb-4 whitespace-pre-line">
+              <p key={i} className="text-fg leading-relaxed mb-4 whitespace-pre-line">
                 {p}
               </p>
             ))}
@@ -240,7 +240,7 @@ export default async function DayTripDetailPage(
 
         {meetingPoint && (
           <Section title={t('section_meeting_point')}>
-            <p className="text-white/80 leading-relaxed whitespace-pre-line">{meetingPoint}</p>
+            <p className="text-fg leading-relaxed whitespace-pre-line">{meetingPoint}</p>
           </Section>
         )}
 
@@ -264,7 +264,7 @@ export default async function DayTripDetailPage(
       </article>
 
       <section id="request" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 scroll-mt-24">
-        <div className="admin-card">
+        <div className="request-panel">
           <DayTripInquiryForm dayTrips={[trip]} serviceId={trip.id} />
         </div>
       </section>
@@ -285,8 +285,8 @@ function BulletList({ items }: { items: string[] }) {
   return (
     <ul className="space-y-2">
       {items.map((item, i) => (
-        <li key={i} className="flex gap-3 text-white/80 leading-relaxed">
-          <span aria-hidden="true" className="text-[#FFCC00]">—</span>
+        <li key={i} className="flex gap-3 text-fg leading-relaxed">
+          <span aria-hidden="true" className="text-muted">—</span>
           <span>{item}</span>
         </li>
       ))}
@@ -297,10 +297,10 @@ function BulletList({ items }: { items: string[] }) {
 function Fact({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div>
-      <p className="text-[10px] font-bold tracking-widest uppercase text-white/60 mb-2">
+      <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-2">
         {label}
       </p>
-      <p className={`text-lg font-bold ${accent ? 'text-[#FFCC00]' : 'text-white'}`}>
+      <p className={`text-lg font-bold ${accent ? 'inline-block bg-yellow-400 text-ink font-bold px-1.5' : 'text-fg'}`}>
         {value}
       </p>
     </div>

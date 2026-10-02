@@ -60,7 +60,7 @@ export default async function TransfersLandingPage(props: Props) {
   ])
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="surface-light min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -68,18 +68,18 @@ export default async function TransfersLandingPage(props: Props) {
 
       <div className="max-w-3xl mx-auto px-6 md:px-12 pt-24 pb-16">
         <header className="mb-12">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">
             {tPage('nav_label')}
           </p>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
             {tPage('landing_title')}
           </h1>
-          <p className="text-lg text-white/70 leading-relaxed">
+          <p className="text-lg text-muted leading-relaxed">
             {tPage('landing_intro')}
           </p>
         </header>
 
-        <div className="admin-card">
+        <div className="request-panel">
           <TransferInquiryForm
             pickupPoints={pickupPoints}
             destinations={destinations}
@@ -96,14 +96,14 @@ export default async function TransfersLandingPage(props: Props) {
         {routes.length >= 2 && (
           <nav
             aria-label={tPage('nav_label')}
-            className="mt-16 pt-8 border-t border-white/10"
+            className="mt-16 pt-8 border-t border-line"
           >
             <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
               {routes.map((r) => (
                 <li key={r.id}>
                   <Link
                     href={`/transfers/${r.slug}`}
-                    className="text-white/60 hover:text-[#FFCC00] transition-colors underline underline-offset-4"
+                    className="text-muted hover:underline decoration-yellow-400 decoration-2 underline-offset-4 transition-colors underline underline-offset-4"
                   >
                     {routeLabel(r, loc)}
                   </Link>

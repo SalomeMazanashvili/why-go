@@ -238,22 +238,22 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
       <div
         role="status"
         aria-live="polite"
-        className="admin-card border-l-4 border-l-[#FFCC00] max-w-2xl"
+        className="panel border-l-4 border-l-[#FFCC00] max-w-2xl"
       >
-        <h2 className="text-2xl font-black text-white mb-3">{t('shared.success_title')}</h2>
-        <p className="text-white/70">{t('shared.success_body')}</p>
+        <h2 className="text-2xl font-black text-fg mb-3">{t('shared.success_title')}</h2>
+        <p className="text-muted">{t('shared.success_body')}</p>
       </div>
     )
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl" noValidate>
-      <h2 className="text-2xl font-black text-white">{t('transfer.heading')}</h2>
+      <h2 className="text-2xl font-black text-fg">{t('transfer.heading')}</h2>
 
       <div
         role="alert"
         aria-live="assertive"
-        className={`min-h-[1.5rem] text-sm ${formError ? 'text-red-400' : ''}`}
+        className={`min-h-[1.5rem] text-sm ${formError ? 'text-danger' : ''}`}
       >
         {formError}
       </div>
@@ -416,9 +416,9 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
 
       {/* Payment method */}
       <fieldset className="space-y-3">
-        <legend className="block text-sm font-semibold text-white">
+        <legend className="block text-sm font-semibold text-fg">
           {t('transfer.payment_method')}
-          <span aria-hidden="true" className="text-[#FFCC00] ml-1">*</span>
+          <span aria-hidden="true" className="text-accent ml-1">*</span>
           <span className="sr-only"> (required)</span>
         </legend>
         <label className="flex items-center gap-3 min-h-11">
@@ -428,9 +428,9 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             value="cash"
             checked={state.payment_method === 'cash'}
             onChange={() => set('payment_method', 'cash')}
-            className="w-4 h-4 accent-[#FFCC00]"
+            className="w-4 h-4 accent-ink"
           />
-          <span className="text-white">{t('transfer.payment_cash')}</span>
+          <span className="text-fg">{t('transfer.payment_cash')}</span>
         </label>
         <label className="flex items-center gap-3 min-h-11">
           <input
@@ -439,26 +439,26 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             value="iban"
             checked={state.payment_method === 'iban'}
             onChange={() => set('payment_method', 'iban')}
-            className="w-4 h-4 accent-[#FFCC00]"
+            className="w-4 h-4 accent-ink"
           />
-          <span className="text-white">{t('transfer.payment_iban')}</span>
+          <span className="text-fg">{t('transfer.payment_iban')}</span>
         </label>
       </fieldset>
 
       {/* Return journey toggle + fields */}
-      <div className="border-t border-white/10 pt-6">
+      <div className="border-t border-line pt-6">
         <label className="flex items-center gap-3 min-h-11 cursor-pointer">
           <input
             type="checkbox"
             checked={state.return_enabled}
             onChange={(e) => toggleReturn(e.target.checked)}
-            className="w-5 h-5 accent-[#FFCC00]"
+            className="w-5 h-5 accent-ink"
           />
-          <span className="text-white font-semibold">{t('transfer.return_toggle')}</span>
+          <span className="text-fg font-semibold">{t('transfer.return_toggle')}</span>
         </label>
 
         {state.return_enabled && (
-          <div className="mt-6 space-y-6 pl-8 border-l-2 border-[#FFCC00]/30">
+          <div className="mt-6 space-y-6 pl-8 border-l-2 border-yellow-400">
             {/* Return "From" — always free-text, auto-filled from outbound "To" */}
             <FormField
               label={t('transfer.return_from')}
@@ -641,10 +641,10 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
         <button type="submit" disabled={formStatus === 'submitting'} className={buttonClass}>
           {formStatus === 'submitting' ? t('shared.sending') : t('shared.submit')}
         </button>
-        <p className="text-sm text-white/60">{t('shared.reply_note')}</p>
+        <p className="text-sm text-muted">{t('shared.reply_note')}</p>
       </div>
 
-      <p className="text-xs text-white/50 pt-2 border-t border-white/5">
+      <p className="text-xs text-muted pt-2 border-t border-line">
         {t('transfer.not_covered')}
       </p>
     </form>

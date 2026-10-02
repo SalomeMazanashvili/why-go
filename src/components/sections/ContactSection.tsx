@@ -29,7 +29,7 @@ export default function ContactSection({ tours, locale }: { tours: Tour[]; local
   const input = "w-full bg-transparent border border-white/15 text-white text-sm px-4 py-3.5 focus:outline-none focus:border-yellow-400 transition-colors placeholder:text-white/25"
 
   return (
-    <section className="bg-black border-t-4 border-yellow-400 py-20 px-6 md:px-10">
+    <section className="surface-dark border-t-4 border-yellow-400 py-20 px-6 md:px-10">
       <div className="max-w-2xl">
         <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-4">{t('label')}</p>
         <h2 className="font-black uppercase text-white leading-none tracking-tight"
