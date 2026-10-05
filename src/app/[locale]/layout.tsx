@@ -18,25 +18,25 @@ import {
 } from '@/lib/seo'
 import '../globals.css'
 
-// Self-hosted via @fontsource/firago. The `latin` subset files carry both
-// Latin and Georgian glyphs (~2.5k in cmap incl. full Mkhedruli) — one
-// download covers both scripts for the whole public site.
+// FiraGO, subset to Latin + Georgian (~17KB per weight instead of ~240KB).
+// Generated from @fontsource/firago by scripts/subset-fonts.sh — re-run it
+// after a FiraGO update or when the UI needs a new symbol.
 const firago = localFont({
   variable: '--font-firago',
   display: 'swap',
   src: [
     {
-      path: '../../../node_modules/@fontsource/firago/files/firago-latin-400-normal.woff2',
+      path: '../fonts/firago-400.woff2',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../../../node_modules/@fontsource/firago/files/firago-latin-700-normal.woff2',
+      path: '../fonts/firago-700.woff2',
       weight: '700',
       style: 'normal',
     },
     {
-      path: '../../../node_modules/@fontsource/firago/files/firago-latin-900-normal.woff2',
+      path: '../fonts/firago-900.woff2',
       weight: '900',
       style: 'normal',
     },

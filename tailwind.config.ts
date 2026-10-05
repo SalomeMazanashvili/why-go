@@ -16,7 +16,7 @@ const config: Config = {
       },
       fontFamily: {
         // FiraGO covers both Latin and Georgian in a single font file
-        // (self-hosted via @fontsource/firago, loaded in [locale]/layout.tsx).
+        // (subset by scripts/subset-fonts.sh, loaded in [locale]/layout.tsx).
         // System-ui fallbacks are for the brief FOUT window under
         // display: 'swap' before the woff2 arrives.
         sans: [
