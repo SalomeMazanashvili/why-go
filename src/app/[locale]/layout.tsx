@@ -7,6 +7,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { getNavItems } from '@/lib/nav'
 import { socialLinksFrom } from '@/lib/socialNetworks'
+import { contactInfoFrom } from '@/lib/contactInfo'
 import { loadSiteSettings } from '@/lib/siteData'
 import {
   SITE_NAME,
@@ -92,13 +93,21 @@ export default async function LocaleLayout(
     loadSiteSettings(),
   ])
   const loc = locale as 'en' | 'ka'
+  const socials = socialLinksFrom(settings)
 
   return (
     <html lang={locale} className={firago.variable}>
       <body className="font-sans surface-light antialiased">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdScript(orgJsonLd()) }}
+          dangerouslySetInnerHTML={{
+            __html: jsonLdScript(
+              orgJsonLd({
+                sameAs: socials.map((s) => s.url),
+                telephone: contactInfoFrom(settings).phone?.e164,
+              }),
+            ),
+          }}
         />
         <script
           type="application/ld+json"
@@ -107,7 +116,7 @@ export default async function LocaleLayout(
         <NextIntlClientProvider messages={messages}>
           <Navbar items={navItems} />
           <main>{children}</main>
-          <Footer socials={socialLinksFrom(settings)} />
+          <Footer socials={socials} />
         </NextIntlClientProvider>
       </body>
     </html>

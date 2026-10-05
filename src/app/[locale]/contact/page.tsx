@@ -4,6 +4,10 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { listTours } from '@/lib/tours'
 import { DEFAULT_OG_IMAGES, breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 import ContactSection from '@/components/sections/ContactSection'
+import ContactDetails from '@/components/sections/ContactDetails'
+import { loadSiteSettings } from '@/lib/siteData'
+import { contactInfoFrom } from '@/lib/contactInfo'
+import { socialLinksFrom } from '@/lib/socialNetworks'
 
 export const revalidate = 3600
 
@@ -26,9 +30,10 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
   const { locale } = await props.params
   setRequestLocale(locale)
 
-  const [tours, tNav] = await Promise.all([
+  const [tours, tNav, settings] = await Promise.all([
     listTours(),
     getTranslations({ locale, namespace: 'nav' }),
+    loadSiteSettings(),
   ])
   const loc = locale as 'en' | 'ka'
   const crumbs = breadcrumbJsonLd(loc, loc === 'ka' ? 'მთავარი' : 'Home', [
@@ -42,7 +47,11 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
       <div>
-        <ContactSection tours={tours} locale={locale as Locale} />
+        <ContactSection
+          tours={tours}
+          locale={locale as Locale}
+          details={<ContactDetails info={contactInfoFrom(settings)} socials={socialLinksFrom(settings)} />}
+        />
       </div>
     </>
   )

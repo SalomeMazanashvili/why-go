@@ -34,15 +34,22 @@ interface OrgLd {
   url: string
   logo: string
   sameAs?: string[]
+  contactPoint?: { '@type': 'ContactPoint'; telephone: string; contactType: string }
 }
 
-export function orgJsonLd(): OrgLd {
+// WHY-111: social profiles and phone come from Admin → Branding & contact;
+// each is omitted until it's set.
+export function orgJsonLd(opts: { sameAs?: string[]; telephone?: string } = {}): OrgLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}/icon.png`,
+    ...(opts.sameAs?.length ? { sameAs: opts.sameAs } : {}),
+    ...(opts.telephone
+      ? { contactPoint: { '@type': 'ContactPoint', telephone: opts.telephone, contactType: 'customer service' } }
+      : {}),
   }
 }
 
