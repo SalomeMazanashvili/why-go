@@ -31,10 +31,10 @@ export function FormField({ label, required, error, helpText, children }: Props)
 
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="block text-sm font-semibold text-white">
+      <label htmlFor={id} className="block text-sm font-semibold text-fg">
         {label}
         {required && (
-          <span aria-hidden="true" className="text-brand-yellow ml-1">
+          <span aria-hidden="true" className="text-accent ml-1">
             *
           </span>
         )}
@@ -42,11 +42,11 @@ export function FormField({ label, required, error, helpText, children }: Props)
       </label>
       {children({ id, describedBy, invalid })}
       {helpText && (
-        <p id={helpId} className="text-xs text-white/50">
+        <p id={helpId} className="text-xs text-muted">
           {helpText}
         </p>
       )}
-      <p id={errorId} role="alert" aria-live="polite" className="min-h-[1.25rem] text-sm text-red-400">
+      <p id={errorId} role="alert" aria-live="polite" className="min-h-[1.25rem] text-sm text-danger">
         {error ? (
           <>
             <span aria-hidden="true">✕ </span>
@@ -63,13 +63,13 @@ export function FormField({ label, required, error, helpText, children }: Props)
 // Shared class strings for consistent styling + touch target sizing across
 // both forms. min-h-11 == 44px, matching WCAG 2.1 target-size guidance.
 export const inputClass =
-  'w-full min-h-11 px-4 py-2 bg-ink border border-white/20 text-white rounded-md ' +
-  'placeholder:text-white/30 ' +
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:border-brand-yellow ' +
-  'aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus-visible:ring-red-500 ' +
+  'w-full min-h-11 px-4 py-2 bg-raised border border-field text-fg rounded-md ' +
+  'placeholder:text-muted ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus)] focus-visible:border-fg ' +
+  'aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:ring-danger ' +
   'disabled:opacity-50'
 
 export const buttonClass =
   'min-h-11 px-6 py-3 bg-brand-yellow text-ink font-bold uppercase tracking-widest text-sm rounded-md ' +
-  'hover:bg-brand-yellow/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ' +
-  'focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed'
+  'hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg ' +
+  'focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-50 disabled:cursor-not-allowed'

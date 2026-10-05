@@ -11,7 +11,7 @@ export default function Footer({ socials }: { socials: SocialLink[] }) {
   const tFooter = useTranslations('footer')
 
   return (
-    <footer className="bg-ink border-t border-white/10 px-6 md:px-10 py-10">
+    <footer className="surface-dark px-6 md:px-10 py-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <p className="font-black text-xl tracking-tight text-white">

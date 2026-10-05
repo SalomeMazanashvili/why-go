@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import type { Tour, Locale } from '@/types'
 import { getTourTitle } from '@/types'
+import { FormField, inputClass, buttonClass } from '@/components/forms/FormField'
 
+// /contact only. Light surface, request-panel card, and the shared FormField
+// primitives so every control has a real <label> (WHY-109).
 export default function ContactSection({ tours, locale }: { tours: Tour[]; locale: Locale }) {
   const t = useTranslations('contact')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
@@ -26,54 +29,61 @@ export default function ContactSection({ tours, locale }: { tours: Tour[]; local
     }
   }
 
-  const input = "w-full bg-transparent border border-white/15 text-white text-sm px-4 py-3.5 focus:outline-none focus:border-brand-yellow transition-colors placeholder:text-white/25"
-
   return (
-    <section className="bg-ink border-t-4 border-brand-yellow py-20 px-6 md:px-10">
+    <section className="surface-light pt-32 pb-20 px-6 md:px-10">
       <div className="max-w-2xl">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-4">{t('label')}</p>
-        <h2 className="font-black uppercase text-white leading-none tracking-tight"
-          style={{ fontSize: 'clamp(40px,7vw,80px)', letterSpacing: '-0.04em', lineHeight: 0.9 }}>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">{t('label')}</p>
+        <h1 className="font-black uppercase text-fg leading-none tracking-tight"
+          style={{ fontSize: 'clamp(40px,7vw,80px)', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
           {t('title_1')}<br />{t('title_2')}<br />
-          <span className="text-brand-yellow">{t('title_3')}</span>
-        </h2>
+          <span className="bg-brand-yellow text-ink px-[0.08em] box-decoration-clone">{t('title_3')}</span>
+        </h1>
 
-        <form onSubmit={handleSubmit} className="mt-12 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-[9px] font-bold tracking-widest uppercase text-white/40 block mb-1.5">{t('name')}</label>
-              <input value={form.full_name} onChange={e => setForm({...form, full_name: e.target.value})}
-                className={input} placeholder={t('placeholder_name')} required minLength={2} />
-            </div>
-            <div>
-              <label className="text-[9px] font-bold tracking-widest uppercase text-white/40 block mb-1.5">{t('email')}</label>
-              <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                className={input} placeholder={t('placeholder_email')} required />
-            </div>
+        <form onSubmit={handleSubmit} className="request-panel mt-12 space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+            <FormField label={t('name')} required>
+              {({ id, describedBy }) => (
+                <input id={id} aria-describedby={describedBy} autoComplete="name"
+                  value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })}
+                  className={inputClass} placeholder={t('placeholder_name')} required minLength={2} />
+              )}
+            </FormField>
+            <FormField label={t('email')} required>
+              {({ id, describedBy }) => (
+                <input id={id} aria-describedby={describedBy} type="email" autoComplete="email"
+                  value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+                  className={inputClass} placeholder={t('placeholder_email')} required />
+              )}
+            </FormField>
           </div>
-          <div>
-            <label className="text-[9px] font-bold tracking-widest uppercase text-white/40 block mb-1.5">{t('interest')}</label>
-            <select value={form.tour_slug} onChange={e => setForm({...form, tour_slug: e.target.value})}
-              className={input + ' cursor-pointer'}>
-              <option value="" className="bg-ink">—</option>
-              {tours.map(tour => (
-                <option key={tour.slug} value={tour.slug} className="bg-ink">{getTourTitle(tour, locale)}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="text-[9px] font-bold tracking-widest uppercase text-white/40 block mb-1.5">{t('message')}</label>
-            <textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})}
-              rows={4} className={input + ' resize-none'} placeholder={t('placeholder_message')} required minLength={10} />
-          </div>
+          <FormField label={t('interest')}>
+            {({ id, describedBy }) => (
+              <select id={id} aria-describedby={describedBy}
+                value={form.tour_slug} onChange={e => setForm({ ...form, tour_slug: e.target.value })}
+                className={inputClass + ' cursor-pointer'}>
+                <option value="">—</option>
+                {tours.map(tour => (
+                  <option key={tour.slug} value={tour.slug}>{getTourTitle(tour, locale)}</option>
+                ))}
+              </select>
+            )}
+          </FormField>
+          <FormField label={t('message')} required>
+            {({ id, describedBy }) => (
+              <textarea id={id} aria-describedby={describedBy}
+                value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
+                rows={4} className={inputClass + ' resize-none'} placeholder={t('placeholder_message')}
+                required minLength={10} />
+            )}
+          </FormField>
           <div className="flex items-center gap-6 pt-2 flex-wrap">
-            <button type="submit" disabled={status === 'loading'}
-              className="bg-brand-yellow text-ink font-black text-[11px] tracking-widest uppercase px-8 py-4 hover:brightness-110 transition-colors disabled:opacity-50">
+            <button type="submit" disabled={status === 'loading'} className={buttonClass}>
               {status === 'loading' ? '...' : `${t('submit')} →`}
             </button>
-            <span className="text-[11px] text-white/30">
+            <p role="status" aria-live="polite"
+              className={`text-sm ${status === 'error' ? 'text-danger' : 'text-muted'}`}>
               {status === 'success' ? t('success') : status === 'error' ? t('error') : t('reply_note')}
-            </span>
+            </p>
           </div>
         </form>
       </div>
