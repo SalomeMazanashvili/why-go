@@ -7,7 +7,16 @@ import { FormField, inputClass, buttonClass } from '@/components/forms/FormField
 
 // /contact only. Light surface, request-panel card, and the shared FormField
 // primitives so every control has a real <label> (WHY-109).
-export default function ContactSection({ tours, locale }: { tours: Tour[]; locale: Locale }) {
+export default function ContactSection({
+  tours,
+  locale,
+  details,
+}: {
+  tours: Tour[]
+  locale: Locale
+  // Server-rendered ContactDetails (WHY-111); null when nothing is set.
+  details?: React.ReactNode
+}) {
   const t = useTranslations('contact')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [form, setForm] = useState({ full_name: '', email: '', tour_slug: '', message: '' })
@@ -34,12 +43,16 @@ export default function ContactSection({ tours, locale }: { tours: Tour[]; local
       <div className="max-w-2xl">
         <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">{t('label')}</p>
         <h1 className="font-black uppercase text-fg leading-none tracking-tight"
-          style={{ fontSize: 'clamp(40px,7vw,80px)', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+          style={{ fontSize: 'clamp(40px,7vw,80px)', letterSpacing: '-0.04em', lineHeight: 1.15 }}>
           {t('title_1')}<br />{t('title_2')}<br />
           <span className="bg-brand-yellow text-ink px-[0.08em] box-decoration-clone">{t('title_3')}</span>
         </h1>
-
-        <form onSubmit={handleSubmit} className="request-panel mt-12 space-y-2">
+      </div>
+      {/* Details come first in the DOM so a phone user sees the number before
+          the form; on wide screens they sit beside it. */}
+      <div className={details ? 'mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start max-w-5xl' : 'max-w-2xl'}>
+        {details && <div className="lg:order-2">{details}</div>}
+        <form onSubmit={handleSubmit} className={`request-panel space-y-2 ${details ? 'lg:order-1' : 'mt-12'}`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
             <FormField label={t('name')} required>
               {({ id, describedBy }) => (

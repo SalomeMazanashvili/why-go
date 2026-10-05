@@ -10,7 +10,12 @@
     "placeholder_name": "მაგ. გიორგი ბერიძე", "placeholder_email": "you@email.com",
     "placeholder_message": "მოგვიყევი შენი ოცნების ტურის შესახებ...",
     "submit": "შეტყობინების გაგზავნა", "reply_note": "ვპასუხობთ 24 საათის განმავლობაში",
-    "success": "შეტყობინება გაიგზავნა!", "error": "შეცდომა. სცადეთ ხელახლა."
+    "success": "შეტყობინება გაიგზავნა!", "error": "შეცდომა. სცადეთ ხელახლა.",
+    "details_heading": "TODO: Georgian copy needed",
+    "phone_label": "TODO: Georgian copy needed",
+    "hours_label": "TODO: Georgian copy needed",
+    "whatsapp_cta": "TODO: Georgian copy needed",
+    "social_heading": "TODO: Georgian copy needed"
   },
   "footer": { "tagline": "გამოცდილება + განვითარება" },
   "inquiry": {
