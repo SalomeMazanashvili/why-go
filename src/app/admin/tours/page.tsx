@@ -15,7 +15,7 @@ export default async function ToursAdminPage() {
     <div className="p-8 lg:p-12">
       <header className="mb-8 flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Tours</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Tours</p>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight">Tour packages</h1>
           <p className="text-white/40 text-sm mt-2">
             {connected
@@ -50,7 +50,7 @@ export default async function ToursAdminPage() {
                 <td className="px-5 py-4 text-white/70">{t.duration_days ? `${t.duration_days}d` : '—'}</td>
                 <td className="px-5 py-4">
                   {t.is_featured ? (
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Yes</span>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Yes</span>
                   ) : (
                     <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">No</span>
                   )}
@@ -58,7 +58,7 @@ export default async function ToursAdminPage() {
                 <td className="px-5 py-4 text-right">
                   <Link
                     href={`/admin/tours/${t.id}`}
-                    className="text-[10px] font-bold tracking-widest uppercase text-white/60 hover:text-[#FFCC00]"
+                    className="text-[10px] font-bold tracking-widest uppercase text-white/60 hover:text-brand-yellow"
                   >
                     Edit →
                   </Link>

@@ -238,7 +238,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
       <div
         role="status"
         aria-live="polite"
-        className="admin-card border-l-4 border-l-[#FFCC00] max-w-2xl"
+        className="admin-card border-l-4 border-l-brand-yellow max-w-2xl"
       >
         <h2 className="text-2xl font-black text-white mb-3">{t('shared.success_title')}</h2>
         <p className="text-white/70">{t('shared.success_body')}</p>
@@ -418,7 +418,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
       <fieldset className="space-y-3">
         <legend className="block text-sm font-semibold text-white">
           {t('transfer.payment_method')}
-          <span aria-hidden="true" className="text-[#FFCC00] ml-1">*</span>
+          <span aria-hidden="true" className="text-brand-yellow ml-1">*</span>
           <span className="sr-only"> (required)</span>
         </legend>
         <label className="flex items-center gap-3 min-h-11">
@@ -428,7 +428,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             value="cash"
             checked={state.payment_method === 'cash'}
             onChange={() => set('payment_method', 'cash')}
-            className="w-4 h-4 accent-[#FFCC00]"
+            className="w-4 h-4 accent-brand-yellow"
           />
           <span className="text-white">{t('transfer.payment_cash')}</span>
         </label>
@@ -439,7 +439,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             value="iban"
             checked={state.payment_method === 'iban'}
             onChange={() => set('payment_method', 'iban')}
-            className="w-4 h-4 accent-[#FFCC00]"
+            className="w-4 h-4 accent-brand-yellow"
           />
           <span className="text-white">{t('transfer.payment_iban')}</span>
         </label>
@@ -452,13 +452,13 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             type="checkbox"
             checked={state.return_enabled}
             onChange={(e) => toggleReturn(e.target.checked)}
-            className="w-5 h-5 accent-[#FFCC00]"
+            className="w-5 h-5 accent-brand-yellow"
           />
           <span className="text-white font-semibold">{t('transfer.return_toggle')}</span>
         </label>
 
         {state.return_enabled && (
-          <div className="mt-6 space-y-6 pl-8 border-l-2 border-[#FFCC00]/30">
+          <div className="mt-6 space-y-6 pl-8 border-l-2 border-brand-yellow/30">
             {/* Return "From" — always free-text, auto-filled from outbound "To" */}
             <FormField
               label={t('transfer.return_from')}

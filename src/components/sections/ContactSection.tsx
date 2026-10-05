@@ -26,16 +26,16 @@ export default function ContactSection({ tours, locale }: { tours: Tour[]; local
     }
   }
 
-  const input = "w-full bg-transparent border border-white/15 text-white text-sm px-4 py-3.5 focus:outline-none focus:border-yellow-400 transition-colors placeholder:text-white/25"
+  const input = "w-full bg-transparent border border-white/15 text-white text-sm px-4 py-3.5 focus:outline-none focus:border-brand-yellow transition-colors placeholder:text-white/25"
 
   return (
-    <section className="bg-black border-t-4 border-yellow-400 py-20 px-6 md:px-10">
+    <section className="bg-ink border-t-4 border-brand-yellow py-20 px-6 md:px-10">
       <div className="max-w-2xl">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-4">{t('label')}</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-4">{t('label')}</p>
         <h2 className="font-black uppercase text-white leading-none tracking-tight"
           style={{ fontSize: 'clamp(40px,7vw,80px)', letterSpacing: '-0.04em', lineHeight: 0.9 }}>
           {t('title_1')}<br />{t('title_2')}<br />
-          <span className="text-yellow-400">{t('title_3')}</span>
+          <span className="text-brand-yellow">{t('title_3')}</span>
         </h2>
 
         <form onSubmit={handleSubmit} className="mt-12 space-y-4">
@@ -55,9 +55,9 @@ export default function ContactSection({ tours, locale }: { tours: Tour[]; local
             <label className="text-[9px] font-bold tracking-widest uppercase text-white/40 block mb-1.5">{t('interest')}</label>
             <select value={form.tour_slug} onChange={e => setForm({...form, tour_slug: e.target.value})}
               className={input + ' cursor-pointer'}>
-              <option value="" className="bg-black">—</option>
+              <option value="" className="bg-ink">—</option>
               {tours.map(tour => (
-                <option key={tour.slug} value={tour.slug} className="bg-black">{getTourTitle(tour, locale)}</option>
+                <option key={tour.slug} value={tour.slug} className="bg-ink">{getTourTitle(tour, locale)}</option>
               ))}
             </select>
           </div>
@@ -68,7 +68,7 @@ export default function ContactSection({ tours, locale }: { tours: Tour[]; local
           </div>
           <div className="flex items-center gap-6 pt-2 flex-wrap">
             <button type="submit" disabled={status === 'loading'}
-              className="bg-yellow-400 text-black font-black text-[11px] tracking-widest uppercase px-8 py-4 hover:bg-yellow-300 transition-colors disabled:opacity-50">
+              className="bg-brand-yellow text-ink font-black text-[11px] tracking-widest uppercase px-8 py-4 hover:brightness-110 transition-colors disabled:opacity-50">
               {status === 'loading' ? '...' : `${t('submit')} →`}
             </button>
             <span className="text-[11px] text-white/30">

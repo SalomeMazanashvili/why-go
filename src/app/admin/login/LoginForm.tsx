@@ -47,7 +47,7 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoFocus
-          className="w-full bg-[#111] border border-white/10 text-white text-sm px-4 py-3 focus:outline-none focus:border-[#FFCC00] transition-colors"
+          className="w-full bg-[#111] border border-white/10 text-white text-sm px-4 py-3 focus:outline-none focus:border-brand-yellow transition-colors"
           placeholder="you@example.com"
         />
       </div>
@@ -60,7 +60,7 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full bg-[#111] border border-white/10 text-white text-sm px-4 py-3 focus:outline-none focus:border-[#FFCC00] transition-colors"
+          className="w-full bg-[#111] border border-white/10 text-white text-sm px-4 py-3 focus:outline-none focus:border-brand-yellow transition-colors"
           placeholder="••••••••"
         />
       </div>
@@ -72,7 +72,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#FFCC00] text-black font-black text-[11px] tracking-widest uppercase py-3.5 hover:bg-yellow-300 transition-colors disabled:opacity-50"
+        className="w-full bg-brand-yellow text-black font-black text-[11px] tracking-widest uppercase py-3.5 hover:brightness-110 transition-colors disabled:opacity-50"
       >
         {loading ? '…' : 'Sign in'}
       </button>

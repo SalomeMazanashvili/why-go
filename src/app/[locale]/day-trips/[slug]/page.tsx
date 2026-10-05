@@ -132,7 +132,7 @@ export default async function DayTripDetailPage(
   })
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-ink text-white min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -148,14 +148,14 @@ export default async function DayTripDetailPage(
         {/* A single back link, not a landmark — a second unlabelled <nav>
             next to the header's fails axe landmark-unique. */}
         <p className="mb-8 text-[10px] font-bold tracking-widest uppercase text-white/60">
-          <Link href="/day-trips" className="hover:text-[#FFCC00]">
+          <Link href="/day-trips" className="hover:text-brand-yellow">
             ← {t('back_to_index')}
           </Link>
         </p>
 
         <header className="mb-10">
           {destinationName && (
-            <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-3">
               {destinationName}
             </p>
           )}
@@ -200,7 +200,7 @@ export default async function DayTripDetailPage(
         <p className="mb-12">
           <a
             href="#request"
-            className="inline-flex items-center min-h-[44px] bg-[#FFCC00] text-black font-black uppercase tracking-widest text-sm px-8 py-4 hover:bg-yellow-300 transition-colors"
+            className="inline-flex items-center min-h-[44px] bg-brand-yellow text-ink font-black uppercase tracking-widest text-sm px-8 py-4 hover:brightness-110 transition-colors"
           >
             {t('request_cta')} ↓
           </a>
@@ -286,7 +286,7 @@ function BulletList({ items }: { items: string[] }) {
     <ul className="space-y-2">
       {items.map((item, i) => (
         <li key={i} className="flex gap-3 text-white/80 leading-relaxed">
-          <span aria-hidden="true" className="text-[#FFCC00]">—</span>
+          <span aria-hidden="true" className="text-brand-yellow">—</span>
           <span>{item}</span>
         </li>
       ))}
@@ -300,7 +300,7 @@ function Fact({ label, value, accent }: { label: string; value: string; accent?:
       <p className="text-[10px] font-bold tracking-widest uppercase text-white/60 mb-2">
         {label}
       </p>
-      <p className={`text-lg font-bold ${accent ? 'text-[#FFCC00]' : 'text-white'}`}>
+      <p className={`text-lg font-bold ${accent ? 'text-brand-yellow' : 'text-white'}`}>
         {value}
       </p>
     </div>

@@ -30,7 +30,7 @@ export default async function ContactsAdminPage(props: SearchParams) {
   return (
     <div className="p-8 lg:p-12">
       <header className="mb-8">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Contacts</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Contacts</p>
         <h1 className="text-3xl md:text-4xl font-black tracking-tight">Contact submissions</h1>
         <p className="text-white/40 text-sm mt-2">
           {connected
@@ -49,7 +49,7 @@ export default async function ContactsAdminPage(props: SearchParams) {
               href={href}
               className={`px-4 py-2 text-[10px] font-bold tracking-widest uppercase border ${
                 active
-                  ? 'bg-[#FFCC00] text-black border-[#FFCC00]'
+                  ? 'bg-brand-yellow text-black border-brand-yellow'
                   : 'text-white/60 border-white/10 hover:text-white hover:border-white/30'
               }`}
             >

@@ -43,7 +43,7 @@ export default async function InquiryPreviewPage(props: Props) {
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div className="p-8 lg:p-12 space-y-16">
         <header>
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Preview</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Preview</p>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight">Inquiry forms</h1>
           <p className="text-white/50 text-sm mt-3 max-w-2xl">
             Every form in the request-to-book system. Submitting here writes to <span className="font-mono">inquiries</span>{' '}
@@ -54,24 +54,24 @@ export default async function InquiryPreviewPage(props: Props) {
             <span>Locale: <strong className="text-white">{locale}</strong></span>
             <Link
               href={`/admin/preview/inquiries?locale=${locale === 'ka' ? 'en' : 'ka'}`}
-              className="text-[#FFCC00] hover:underline"
+              className="text-brand-yellow hover:underline"
             >
               Switch to {locale === 'ka' ? 'English' : 'Georgian'}
             </Link>
-            <Link href="/admin/inquiries" className="hover:text-[#FFCC00]">
+            <Link href="/admin/inquiries" className="hover:text-brand-yellow">
               → Admin inquiries list
             </Link>
           </p>
         </header>
 
         <section className="admin-card">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-6">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-6">
             Transfer (WHY-68 — pickup point dropdown + free-text destination + return toggle)
           </p>
           {publishedPickupPoints.length === 0 ? (
             <p className="text-orange-400 text-sm">
               No published pickup points yet — the dropdown will only show &quot;Other&quot;. Add pickup points at{' '}
-              <Link href="/admin/pickup-points" className="underline hover:text-[#FFCC00]">
+              <Link href="/admin/pickup-points" className="underline hover:text-brand-yellow">
                 /admin/pickup-points
               </Link>{' '}
               and toggle Published.
@@ -85,13 +85,13 @@ export default async function InquiryPreviewPage(props: Props) {
         </section>
 
         <section className="admin-card">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-6">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-6">
             Day trip (WHY-83 — trip picker + hotel pickup, no luggage or return leg)
           </p>
           {publishedDayTrips.length === 0 ? (
             <p className="text-orange-400 text-sm">
               No published day trips yet, so the picker has nothing to offer. Create one at{' '}
-              <Link href="/admin/services/new" className="underline hover:text-[#FFCC00]">
+              <Link href="/admin/services/new" className="underline hover:text-brand-yellow">
                 /admin/services/new
               </Link>
               , set its type to <span className="font-mono">Day trip</span>, fill the Georgian
@@ -103,7 +103,7 @@ export default async function InquiryPreviewPage(props: Props) {
         </section>
 
         <section className="admin-card">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-6">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-6">
             Consultative (guides, experiences)
           </p>
           <ConsultativeInquiryForm serviceType="guide" destinations={destinations} />

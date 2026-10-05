@@ -14,7 +14,7 @@ export default async function HomeHero({ locale }: { locale: string }) {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,204,0,0.04) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,204,0,0.04) 80px)',
+            'repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(252,204,1,0.04) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(252,204,1,0.04) 80px)',
         }}
       />
       <div className="relative z-10 max-w-6xl mx-auto w-full">
@@ -29,7 +29,7 @@ export default async function HomeHero({ locale }: { locale: string }) {
         </p>
         <Link
           href="/transfers"
-          className="mt-8 inline-flex items-center min-h-[48px] bg-yellow-400 text-black font-black text-[12px] tracking-widest uppercase px-8 hover:bg-yellow-300 transition-colors"
+          className="mt-8 inline-flex items-center min-h-[48px] bg-brand-yellow text-ink font-black text-[12px] tracking-widest uppercase px-8 hover:brightness-110 transition-colors"
         >
           {t('hero_cta')}
         </Link>

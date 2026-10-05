@@ -88,7 +88,7 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
   return (
     <form onSubmit={save} className="space-y-8">
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Meta</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Meta</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="admin-label">Origin destination (city)</label>
@@ -146,7 +146,7 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
               type="checkbox"
               checked={item.is_published}
               onChange={(e) => update('is_published', e.target.checked)}
-              className="w-4 h-4 accent-[#FFCC00]"
+              className="w-4 h-4 accent-brand-yellow"
             />
             <span className="text-[11px] font-bold tracking-widest uppercase text-white/70">Published</span>
           </label>
@@ -154,7 +154,7 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Labels</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Labels</p>
         <p className="text-white/50 text-xs">
           Precise labels — customers read them in the dropdown and drivers read them in the WhatsApp handoff. Include terminal / station identifier so nobody guesses.
         </p>
@@ -182,7 +182,7 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Internal notes</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Internal notes</p>
         <textarea
           rows={3}
           className="admin-input resize-y"

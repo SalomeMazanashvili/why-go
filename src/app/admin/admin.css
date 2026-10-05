@@ -9,7 +9,7 @@
   transition: border-color 0.15s;
 }
 .admin-input:focus {
-  border-color: #FFCC00;
+  border-color: #FCCC01;
 }
 .admin-label {
   font-size: 10px;
@@ -21,7 +21,7 @@
   margin-bottom: 6px;
 }
 .admin-btn {
-  background: #FFCC00;
+  background: #FCCC01;
   color: #000;
   font-weight: 900;
   font-size: 11px;

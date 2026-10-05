@@ -37,7 +37,7 @@ export default async function InquiriesAdminPage(props: Props) {
   return (
     <div className="p-8 lg:p-12">
       <header className="mb-8">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Inquiries</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Inquiries</p>
         <h1 className="text-3xl md:text-4xl font-black tracking-tight">Booking requests</h1>
         <p className="text-white/40 text-sm mt-2">
           {connected
@@ -55,7 +55,7 @@ export default async function InquiriesAdminPage(props: Props) {
               href={{ query: { status: s, service_type } }}
               className={`text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 border ${
                 status === s
-                  ? 'text-[#FFCC00] border-[#FFCC00] bg-[#FFCC00]/10'
+                  ? 'text-brand-yellow border-brand-yellow bg-brand-yellow/10'
                   : 'text-white/50 border-white/10 hover:text-white hover:border-white/30'
               }`}
             >
@@ -71,7 +71,7 @@ export default async function InquiriesAdminPage(props: Props) {
               href={{ query: { status, service_type: s } }}
               className={`text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 border ${
                 service_type === s
-                  ? 'text-[#FFCC00] border-[#FFCC00] bg-[#FFCC00]/10'
+                  ? 'text-brand-yellow border-brand-yellow bg-brand-yellow/10'
                   : 'text-white/50 border-white/10 hover:text-white hover:border-white/30'
               }`}
             >
@@ -125,7 +125,7 @@ export default async function InquiriesAdminPage(props: Props) {
                 <td className="px-5 py-4 text-right">
                   <Link
                     href={`/admin/inquiries/${i.id}`}
-                    className="text-[10px] font-bold tracking-widest uppercase text-white/60 hover:text-[#FFCC00]"
+                    className="text-[10px] font-bold tracking-widest uppercase text-white/60 hover:text-brand-yellow"
                   >
                     Open →
                   </Link>
@@ -148,7 +148,7 @@ export default async function InquiriesAdminPage(props: Props) {
 
 function StatusBadge({ status }: { status: InquiryStatus }) {
   const map: Record<InquiryStatus, string> = {
-    new: 'text-[#FFCC00]',
+    new: 'text-brand-yellow',
     contacted: 'text-sky-400',
     confirmed: 'text-emerald-400',
     declined: 'text-white/40',

@@ -87,8 +87,8 @@ export default function DestinationContactForm({ initial, mode, destinations }: 
 
   return (
     <form onSubmit={save} className="space-y-8">
-      <div className="admin-card border-l-2 border-l-[#FFCC00]">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Internal only</p>
+      <div className="admin-card border-l-2 border-l-brand-yellow">
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Internal only</p>
         <p className="text-white/60 text-xs leading-relaxed">
           These contacts are never shown to customers. They power the WhatsApp copy block on inquiry
           admin pages so the founders can forward booking details to the right driver or guide.
@@ -98,7 +98,7 @@ export default function DestinationContactForm({ initial, mode, destinations }: 
       </div>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Routing</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Routing</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="admin-label">Destination</label>
@@ -138,7 +138,7 @@ export default function DestinationContactForm({ initial, mode, destinations }: 
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Contact</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Contact</p>
         <div>
           <label className="admin-label">Name</label>
           <input

@@ -72,7 +72,7 @@ export default async function DayTripsIndexPage(
   ])
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-ink text-white min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -80,7 +80,7 @@ export default async function DayTripsIndexPage(
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 pt-24 pb-16">
         <header className="mb-12 max-w-3xl">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-3">
             {t('nav_label')}
           </p>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
@@ -97,7 +97,7 @@ export default async function DayTripsIndexPage(
                 <li key={g.key}>
                   <a
                     href={`#${g.key}`}
-                    className="inline-flex items-center min-h-[44px] px-4 border border-white/20 text-sm font-bold hover:border-[#FFCC00] hover:text-[#FFCC00] transition-colors"
+                    className="inline-flex items-center min-h-[44px] px-4 border border-white/20 text-sm font-bold hover:border-brand-yellow hover:text-brand-yellow transition-colors"
                   >
                     {groupLabel(g)}
                   </a>

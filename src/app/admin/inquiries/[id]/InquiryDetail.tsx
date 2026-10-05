@@ -112,7 +112,7 @@ export default function InquiryDetail({
   return (
     <div className="space-y-8">
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Status</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Status</p>
         <div className="flex flex-wrap gap-2">
           {STATUSES.map((s) => (
             <button
@@ -122,7 +122,7 @@ export default function InquiryDetail({
               onClick={() => patch({ status: s })}
               className={`text-[11px] font-bold tracking-widest uppercase px-3 py-2 border transition-colors ${
                 inquiry.status === s
-                  ? 'text-[#FFCC00] border-[#FFCC00] bg-[#FFCC00]/10'
+                  ? 'text-brand-yellow border-brand-yellow bg-brand-yellow/10'
                   : 'text-white/60 border-white/10 hover:text-white hover:border-white/30'
               } disabled:cursor-not-allowed`}
             >
@@ -133,7 +133,7 @@ export default function InquiryDetail({
 
         {inquiry.payment_method === 'iban' && (
           <>
-            <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] pt-4">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow pt-4">
               Payment (IBAN — needs confirmation)
             </p>
             <div className="flex flex-wrap gap-2">
@@ -145,7 +145,7 @@ export default function InquiryDetail({
                   onClick={() => patch({ payment_status: s })}
                   className={`text-[11px] font-bold tracking-widest uppercase px-3 py-2 border transition-colors ${
                     inquiry.payment_status === s
-                      ? 'text-[#FFCC00] border-[#FFCC00] bg-[#FFCC00]/10'
+                      ? 'text-brand-yellow border-brand-yellow bg-brand-yellow/10'
                       : 'text-white/60 border-white/10 hover:text-white hover:border-white/30'
                   } disabled:cursor-not-allowed`}
                 >
@@ -159,7 +159,7 @@ export default function InquiryDetail({
 
       <section className="admin-card space-y-4">
         <div className="flex items-baseline justify-between gap-4 flex-wrap">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">
             WhatsApp — copy + forward
           </p>
           {contact ? (
@@ -174,7 +174,7 @@ export default function InquiryDetail({
                   {' '}
                   <Link
                     href="/admin/destination-contacts/new"
-                    className="underline hover:text-[#FFCC00]"
+                    className="underline hover:text-brand-yellow"
                   >
                     Add one →
                   </Link>
@@ -211,7 +211,7 @@ export default function InquiryDetail({
           generic Submitted panel below. */}
       {inquiry.service_type === 'transfer' && (
         <section className="admin-card space-y-4">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Trip</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Trip</p>
           <div className="space-y-3">
             <p className="text-[10px] font-bold tracking-widest uppercase text-white/40">Outbound</p>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
@@ -251,7 +251,7 @@ export default function InquiryDetail({
       )}
 
       <section className="admin-card space-y-3">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Submitted</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Submitted</p>
         <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
           <DetailRow label="Name" value={inquiry.name} />
           <DetailRow label="Phone" value={inquiry.phone} mono />

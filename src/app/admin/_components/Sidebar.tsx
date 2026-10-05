@@ -42,7 +42,7 @@ export default function Sidebar() {
     <aside className="w-64 shrink-0 bg-[#111] border-r border-white/5 min-h-screen flex flex-col sticky top-0">
       <div className="px-6 py-6 border-b border-white/5">
         <Link href="/admin" className="text-xl font-black tracking-tight text-white">
-          WHY<span className="text-[#FFCC00]">GO</span>
+          WHY<span className="text-brand-yellow">GO</span>
         </Link>
         <p className="text-[9px] tracking-widest uppercase text-white/30 mt-1">Admin Panel</p>
       </div>
@@ -56,7 +56,7 @@ export default function Sidebar() {
               href={link.href}
               className={`block px-6 py-3 text-[11px] font-bold tracking-widest uppercase transition-colors border-l-2 ${
                 active
-                  ? 'text-[#FFCC00] border-[#FFCC00] bg-[#FFCC00]/5'
+                  ? 'text-brand-yellow border-brand-yellow bg-brand-yellow/5'
                   : 'text-white/50 border-transparent hover:text-white hover:bg-white/5'
               }`}
             >

@@ -99,7 +99,7 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
   return (
     <form onSubmit={save} className="space-y-8">
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Meta</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Meta</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="admin-label">Slug</label>
@@ -201,7 +201,7 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
               type="checkbox"
               checked={item.is_published}
               onChange={(e) => update('is_published', e.target.checked)}
-              className="w-4 h-4 accent-[#FFCC00]"
+              className="w-4 h-4 accent-brand-yellow"
             />
             <span className="text-[11px] font-bold tracking-widest uppercase text-white/70">Published</span>
           </label>
@@ -209,7 +209,7 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Endpoint names</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Endpoint names</p>
         <p className="text-white/40 text-xs">
           Specific pickup / drop-off labels (finer than the destination hub). Shown in cards and route titles.
         </p>
@@ -256,7 +256,7 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Georgian</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Georgian</p>
         <div>
           <label className="admin-label">Description</label>
           <textarea
@@ -293,7 +293,7 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">English</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">English</p>
         <div>
           <label className="admin-label">Description</label>
           <textarea

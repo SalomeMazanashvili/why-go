@@ -107,8 +107,8 @@ function founderTemplate(i: Inquiry): string {
     )
     .join('')
   return `
-    <div style="background:#0a0a0a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:24px">
-      <h1 style="color:#FFCC00;font-size:20px;margin:0 0 16px;letter-spacing:2px;text-transform:uppercase">New inquiry</h1>
+    <div style="background:#111110;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:24px">
+      <h1 style="color:#FCCC01;font-size:20px;margin:0 0 16px;letter-spacing:2px;text-transform:uppercase">New inquiry</h1>
       <table style="width:100%;border-collapse:collapse;background:#111;border-radius:6px;overflow:hidden">${rowHtml}</table>
       <p style="color:#666;font-size:11px;margin-top:16px">Open the admin panel at whygo.ge/admin/inquiries/${i.id} to update status.</p>
     </div>`
@@ -120,9 +120,9 @@ function founderTemplate(i: Inquiry): string {
 // CLAUDE.md rule 3.
 function customerTemplate(i: Inquiry): string {
   return `
-    <div style="background:#0a0a0a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:32px">
+    <div style="background:#111110;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:32px">
       <div style="max-width:520px;margin:0 auto">
-        <p style="color:#FFCC00;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:0 0 24px">WHYGO</p>
+        <p style="color:#FCCC01;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:0 0 24px">WHYGO</p>
 
         <!-- SECTION: Greeting -->
         <p style="color:#fff;font-size:16px;line-height:1.6;margin:0 0 20px">
@@ -135,7 +135,7 @@ function customerTemplate(i: Inquiry): string {
         </p>
 
         <!-- SECTION: The 24-hour promise (founder-approved verbatim string, do NOT translate or edit) -->
-        <div style="background:#111;border-left:3px solid #FFCC00;padding:16px 20px;margin:0 0 24px">
+        <div style="background:#111;border-left:3px solid #FCCC01;padding:16px 20px;margin:0 0 24px">
           <p style="color:#fff;font-size:15px;font-weight:bold;margin:0">
             დაგიკავშირდებით 24 საათის განმავლობაში
           </p>

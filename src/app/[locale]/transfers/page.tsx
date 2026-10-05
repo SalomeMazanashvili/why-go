@@ -60,7 +60,7 @@ export default async function TransfersLandingPage(props: Props) {
   ])
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-ink text-white min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -68,7 +68,7 @@ export default async function TransfersLandingPage(props: Props) {
 
       <div className="max-w-3xl mx-auto px-6 md:px-12 pt-24 pb-16">
         <header className="mb-12">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-3">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-3">
             {tPage('nav_label')}
           </p>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
@@ -103,7 +103,7 @@ export default async function TransfersLandingPage(props: Props) {
                 <li key={r.id}>
                   <Link
                     href={`/transfers/${r.slug}`}
-                    className="text-white/60 hover:text-[#FFCC00] transition-colors underline underline-offset-4"
+                    className="text-white/60 hover:text-brand-yellow transition-colors underline underline-offset-4"
                   >
                     {routeLabel(r, loc)}
                   </Link>

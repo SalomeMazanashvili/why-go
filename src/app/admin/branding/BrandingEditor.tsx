@@ -67,7 +67,7 @@ export default function BrandingEditor({ initial }: Props) {
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
       <div className="space-y-6">
         <section className="admin-card space-y-4">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Colors</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Colors</p>
           {COLORS.map((c) => (
             <div key={c.key} className="flex items-center gap-4">
               <input
@@ -89,7 +89,7 @@ export default function BrandingEditor({ initial }: Props) {
         </section>
 
         <section className="admin-card space-y-4">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Typography</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Typography</p>
           {FONT_SIZES.map((f) => (
             <div key={f.key}>
               <label className="admin-label">{f.label}</label>
@@ -104,7 +104,7 @@ export default function BrandingEditor({ initial }: Props) {
         </section>
 
         <section className="admin-card space-y-4">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Social links</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Social links</p>
           <p className="text-[10px] text-white/40">
             Full profile URL starting with https://. Shown as icons in the site footer; leave
             empty to hide a network.

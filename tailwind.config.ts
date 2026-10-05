@@ -9,10 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'brand-yellow': '#FFCC00',
-        'brand-black': '#000000',
-        'brand-white': '#FFFFFF',
-        'brand-gray': '#111111',
+        // Brand colours from the logo rules v2 (WHY-99). Yellow takes ink
+        // text only — never white or paper on yellow (1.5:1, banned).
+        'brand-yellow': '#FCCC01',
+        ink: '#111110',
+        paper: '#F5F5F0',
       },
       fontFamily: {
         // FiraGO covers both Latin and Georgian in a single font file

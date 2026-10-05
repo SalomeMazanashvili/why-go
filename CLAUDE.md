@@ -48,6 +48,7 @@ Georgian is the primary language. Machine-written Georgian is grammatically plau
 - Prices in **GEL**
 - Fonts must support Georgian script (Firago / BPG / Noto Sans Georgian). Arial Black and Montserrat do **not** — they fall back silently.
 - FiraGO is served from `src/app/fonts/`, subset to Latin + Georgian by `npm run fonts:subset` (`scripts/subset-fonts.sh`, needs `pip3 install fonttools brotli`). Any character outside the subset falls back silently: if the UI gains a new symbol (arrow, currency sign), add its codepoint to the script and re-run. Re-run after bumping `@fontsource/firago`.
+- **Brand colours** (logo rules v2): yellow `#FCCC01`, ink `#111110`, paper `#F5F5F0`, as Tailwind `brand-yellow` / `ink` / `paper`. Never a raw hex, `#FFCC00` or Tailwind `yellow-*`. **Yellow takes ink text only.** Never white or paper on yellow (1.5:1), and never yellow text on a light background.
 - **All Georgian copy uses `თქვენ` (formal plural) consistently across site, emails and error messages.** Never mix `შენ` and `თქვენ` within the same product surface. When wiring founder-supplied strings, check the verb forms match the existing convention before shipping.
 
 ### 4. Security

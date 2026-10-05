@@ -10,7 +10,7 @@ interface Props {
 }
 
 const STATUS_STYLES: Record<ContactStatus, string> = {
-  new: 'text-[#FFCC00] border-[#FFCC00]/40',
+  new: 'text-brand-yellow border-brand-yellow/40',
   replied: 'text-emerald-400 border-emerald-400/40',
   archived: 'text-white/40 border-white/20',
 }

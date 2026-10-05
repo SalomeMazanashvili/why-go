@@ -19,7 +19,7 @@ export default async function DestinationContactsAdminPage() {
     <div className="p-8 lg:p-12">
       <header className="mb-8 flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Destination contacts</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Destination contacts</p>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight">Driver + guide routing</h1>
           <p className="text-white/40 text-sm mt-2 max-w-2xl">
             {connected
@@ -47,7 +47,7 @@ export default async function DestinationContactsAdminPage() {
               <tr key={c.id} className="border-t border-white/5">
                 <td className="px-5 py-4 text-white/80 text-xs">{destMap.get(c.destination_id) ?? '—'}</td>
                 <td className="px-5 py-4">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">
                     {c.contact_type}
                   </span>
                 </td>
@@ -57,7 +57,7 @@ export default async function DestinationContactsAdminPage() {
                 <td className="px-5 py-4 text-right">
                   <Link
                     href={`/admin/destination-contacts/${c.id}`}
-                    className="text-[10px] font-bold tracking-widest uppercase text-white/60 hover:text-[#FFCC00]"
+                    className="text-[10px] font-bold tracking-widest uppercase text-white/60 hover:text-brand-yellow"
                   >
                     Edit →
                   </Link>

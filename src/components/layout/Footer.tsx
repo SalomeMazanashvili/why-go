@@ -11,18 +11,18 @@ export default function Footer({ socials }: { socials: SocialLink[] }) {
   const tFooter = useTranslations('footer')
 
   return (
-    <footer className="bg-black border-t border-white/10 px-6 md:px-10 py-10">
+    <footer className="bg-ink border-t border-white/10 px-6 md:px-10 py-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <p className="font-black text-xl tracking-tight text-white">
-            WHY<span className="text-yellow-400">GO</span>
+            WHY<span className="text-brand-yellow">GO</span>
           </p>
           <p className="text-[10px] tracking-widest uppercase text-white/60 mt-1">{tFooter('tagline')}</p>
         </div>
         <nav aria-label={t('footer_label')} className="flex gap-6 flex-wrap">
           {[['about', t('about')], ['contact', t('contact')]].map(([path, label]) => (
             <Link key={path} href={`/${path}`}
-              className="text-[10px] tracking-widest uppercase text-white/60 hover:text-yellow-400 transition-colors">
+              className="text-[10px] tracking-widest uppercase text-white/60 hover:text-brand-yellow transition-colors">
               {label}
             </Link>
           ))}
@@ -36,7 +36,7 @@ export default function Footer({ socials }: { socials: SocialLink[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.name}
-                  className="flex items-center justify-center w-11 h-11 text-white/60 hover:text-yellow-400 transition-colors"
+                  className="flex items-center justify-center w-11 h-11 text-white/60 hover:text-brand-yellow transition-colors"
                 >
                   <SocialIcon network={s.key} />
                 </a>
