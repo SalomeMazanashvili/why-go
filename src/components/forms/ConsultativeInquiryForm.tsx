@@ -156,22 +156,22 @@ export function ConsultativeInquiryForm({
       <div
         role="status"
         aria-live="polite"
-        className="admin-card border-l-4 border-l-brand-yellow max-w-2xl"
+        className="panel border-l-4 border-l-brand-yellow max-w-2xl"
       >
-        <h2 className="text-2xl font-black text-white mb-3">{t('shared.success_title')}</h2>
-        <p className="text-white/70">{t('shared.success_body')}</p>
+        <h2 className="text-2xl font-black text-fg mb-3">{t('shared.success_title')}</h2>
+        <p className="text-muted">{t('shared.success_body')}</p>
       </div>
     )
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl" noValidate>
-      <h2 className="text-2xl font-black text-white">{t('consultative.heading')}</h2>
+      <h2 className="text-2xl font-black text-fg">{t('consultative.heading')}</h2>
 
       <div
         role="alert"
         aria-live="assertive"
-        className={`min-h-[1.5rem] text-sm ${formError ? 'text-red-400' : ''}`}
+        className={`min-h-[1.5rem] text-sm ${formError ? 'text-danger' : ''}`}
       >
         {formError}
       </div>
@@ -246,7 +246,7 @@ export function ConsultativeInquiryForm({
       </div>
 
       <fieldset className="space-y-3">
-        <legend className="block text-sm font-semibold text-white mb-2">
+        <legend className="block text-sm font-semibold text-fg mb-2">
           {t('consultative.interests')}
         </legend>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -256,9 +256,9 @@ export function ConsultativeInquiryForm({
                 type="checkbox"
                 checked={state.interests.includes(key)}
                 onChange={() => toggleInterest(key)}
-                className="w-4 h-4 accent-brand-yellow"
+                className="w-4 h-4 accent-ink"
               />
-              <span className="text-white">{interestLabels[key]}</span>
+              <span className="text-fg">{interestLabels[key]}</span>
             </label>
           ))}
         </div>
@@ -340,7 +340,7 @@ export function ConsultativeInquiryForm({
         <button type="submit" disabled={formStatus === 'submitting'} className={buttonClass}>
           {formStatus === 'submitting' ? t('shared.sending') : t('shared.submit')}
         </button>
-        <p className="text-sm text-white/60">{t('shared.reply_note')}</p>
+        <p className="text-sm text-muted">{t('shared.reply_note')}</p>
       </div>
     </form>
   )

@@ -121,7 +121,7 @@ export default async function TransferRouteDetailPage(
   })
 
   return (
-    <div className="bg-ink text-white min-h-screen">
+    <div className="surface-light min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -132,8 +132,8 @@ export default async function TransferRouteDetailPage(
       />
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 pt-24 pb-16">
-        <nav className="mb-8 text-[10px] font-bold tracking-widest uppercase text-white/40">
-          <Link href="/transfers" className="hover:text-brand-yellow">
+        <nav className="mb-8 text-[10px] font-bold tracking-widest uppercase text-muted">
+          <Link href="/transfers" className="hover:underline decoration-brand-yellow decoration-2 underline-offset-4">
             ← {tPage('nav_label')}
           </Link>
         </nav>
@@ -142,12 +142,12 @@ export default async function TransferRouteDetailPage(
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
             {label.from}
             <br />
-            <span className="text-brand-yellow">→ {label.to}</span>
+            <span className="underline decoration-brand-yellow decoration-[6px] underline-offset-[10px]">→ {label.to}</span>
           </h1>
         </header>
 
         {/* Facts panel */}
-        <section className="admin-card mb-10 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <section className="panel mb-10 grid grid-cols-2 md:grid-cols-4 gap-6">
           {route.duration_minutes != null && (
             <Fact
               label={tPage('route_facts_duration')}
@@ -175,9 +175,9 @@ export default async function TransferRouteDetailPage(
         {/* Description — 300+ words unique Georgian per CLAUDE.md.
             Rendered as plain paragraphs preserving line breaks. */}
         {description && (
-          <section className="prose prose-invert max-w-none mb-12">
+          <section className="max-w-none mb-12">
             {description.split(/\n\n+/).map((para, i) => (
-              <p key={i} className="text-lg text-white/80 leading-relaxed mb-4 whitespace-pre-wrap">
+              <p key={i} className="text-lg text-fg leading-relaxed mb-4 whitespace-pre-wrap">
                 {para}
               </p>
             ))}
@@ -205,13 +205,13 @@ export default async function TransferRouteDetailPage(
                 <li key={r.id}>
                   <Link
                     href={`/transfers/${r.slug}`}
-                    className="block admin-card hover:border-brand-yellow/50 transition-colors group"
+                    className="block panel hover:border-fg transition-colors group"
                   >
-                    <p className="font-bold text-white group-hover:text-brand-yellow transition-colors">
+                    <p className="font-bold text-fg group-hover:underline decoration-brand-yellow decoration-2 underline-offset-4 transition-colors">
                       {routeLabel(r, loc).combined}
                     </p>
                     {r.price_from != null && (
-                      <p className="text-white/50 text-xs mt-2">
+                      <p className="text-muted text-xs mt-2">
                         {tPage('route_facts_price_from')} {r.currency} {r.price_from}
                       </p>
                     )}
@@ -229,10 +229,10 @@ export default async function TransferRouteDetailPage(
 function Fact({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div>
-      <p className="text-[10px] font-bold tracking-widest uppercase text-white/40 mb-2">
+      <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-2">
         {label}
       </p>
-      <p className={`text-lg font-bold ${accent ? 'text-brand-yellow' : 'text-white'}`}>
+      <p className={`text-lg font-bold ${accent ? 'inline-block bg-brand-yellow text-ink font-bold px-1.5' : 'text-fg'}`}>
         {value}
       </p>
     </div>

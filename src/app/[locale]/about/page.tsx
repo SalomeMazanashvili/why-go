@@ -33,20 +33,22 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
-      <section className="pt-36 pb-20 px-6 md:px-10 bg-ink min-h-screen">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-4">Our Philosophy</p>
-        <h1 className="font-black uppercase text-white leading-none tracking-tight"
+      <section className="pt-36 pb-16 px-6 md:px-10 surface-light border-b border-line">
+        <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">Our Philosophy</p>
+        <h1 className="font-black uppercase text-fg leading-none tracking-tight"
           style={{ fontSize: 'clamp(48px,8vw,96px)', letterSpacing: '-0.04em', lineHeight: 0.88 }}>
-          EXPERIENCE<br />+ DEVELOP<br /><span className="text-brand-yellow">MENT</span>
+          EXPERIENCE<br />+ DEVELOP<br /><span className="bg-brand-yellow text-ink px-[0.08em]">MENT</span>
         </h1>
-        <div className="mt-16 max-w-2xl">
-          <p className="text-base leading-relaxed text-white/70 mb-6">
+      </section>
+      <section className="surface-light px-6 md:px-10 py-16 min-h-[50vh]">
+        <div className="max-w-2xl">
+          <p className="text-base leading-relaxed text-fg mb-6">
             WHYGO was born in Tbilisi with a simple belief: travel should change you. Not just your photo album — but your skills, your language, your perspective on what you&apos;re capable of.
           </p>
-          <p className="text-base leading-relaxed text-white/70 mb-6">
+          <p className="text-base leading-relaxed text-fg mb-6">
             Every tour we design pairs an unforgettable destination with a real skill — a language to learn, a dish to master, a sport to play. We call it Experience + Development.
           </p>
-          <p className="text-base leading-relaxed text-white/70">
+          <p className="text-base leading-relaxed text-fg">
             We&apos;re a boutique Georgian agency. We keep groups small, guides personal, and itineraries honest. No tourist traps, no filler days. Just the places and skills that matter.
           </p>
         </div>

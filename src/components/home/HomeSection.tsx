@@ -16,7 +16,7 @@ export default function HomeSection({
 }) {
   const headingId = `${id}-heading`
   return (
-    <section aria-labelledby={headingId} className="px-6 md:px-10 py-16 md:py-20 border-t border-white/10">
+    <section aria-labelledby={headingId} className="surface-light px-6 md:px-10 py-16 md:py-20 border-t border-line">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-end justify-between gap-4 flex-wrap mb-8 md:mb-10">
           <h2
@@ -29,7 +29,7 @@ export default function HomeSection({
             <Link
               href={viewAll.href}
               aria-describedby={headingId}
-              className="inline-flex items-center min-h-[44px] text-[11px] font-bold tracking-widest uppercase text-white border-b-2 border-brand-yellow hover:text-brand-yellow transition-colors"
+              className="inline-flex items-center min-h-[44px] text-[11px] font-bold tracking-widest uppercase text-fg border-b-2 border-brand-yellow hover:border-fg transition-colors"
             >
               {viewAll.label}
             </Link>

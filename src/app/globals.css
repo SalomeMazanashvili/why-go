@@ -11,9 +11,41 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
+/* Surfaces (WHY-109). A section opts into a surface; shared components use
+   the fg / muted / line / accent tokens and adapt to whichever surface they
+   sit on. `accent` resolves to ink on light, so yellow is never text on a
+   light background. Contrast ratios are against paper and white. */
+.surface-light, .tone-light {
+  --fg: var(--ink);
+  --fg-muted: #57534B;               /* 7.0:1 on paper, 7.6:1 on white */
+  --line: rgba(17, 17, 16, 0.14);
+  --accent-text: var(--ink);
+  --focus: var(--ink);
+  --surface: var(--paper);
+  --surface-raised: #FFFFFF;
+  --danger: #B42318;                 /* 6.0:1 on paper, 6.5:1 on white */
+  --field-border: #8A857C;           /* 3.3:1 on white — WCAG 1.4.11 */
+  color: var(--fg);
+  color-scheme: light;               /* native date pickers, select popups */
+}
+.surface-dark, .tone-dark {
+  --fg: #FFFFFF;
+  --fg-muted: rgba(255, 255, 255, 0.72);
+  --line: rgba(255, 255, 255, 0.14);
+  --accent-text: var(--brand-yellow);
+  --focus: var(--brand-yellow);
+  --surface: var(--ink);
+  --surface-raised: #1C1C1A;
+  --danger: #F87171;
+  --field-border: rgba(255, 255, 255, 0.4);
+  color: var(--fg);
+  color-scheme: dark;
+}
+/* `tone-*` sets the tokens only (content over a photo, the transparent
+   header); `surface-*` also paints the background. */
+.surface-light, .surface-dark { background-color: var(--surface); }
+
 body {
-  background-color: var(--ink);
-  color: #fff;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -33,7 +65,7 @@ body {
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--ink); }
-::-webkit-scrollbar-thumb { background: #FCCC01; }
+::-webkit-scrollbar-thumb { background: var(--brand-yellow); }
 
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -46,6 +78,23 @@ body {
 }
 
 *:focus-visible {
-  outline: 2px solid #FCCC01;
+  outline: 2px solid var(--focus, var(--brand-yellow));
   outline-offset: 2px;
+}
+
+/* A card or fact box that sits on either surface. */
+.panel {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--line);
+  padding: 1.5rem;
+}
+/* Request forms: a white card on paper, marked by a yellow top rule. */
+.request-panel {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--brand-yellow);
+  padding: 1.5rem;
+}
+@media (min-width: 768px) {
+  .request-panel { padding: 2.5rem; }
 }

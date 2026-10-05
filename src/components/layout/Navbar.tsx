@@ -84,7 +84,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${hasBackground ? 'bg-ink/95 backdrop-blur-sm' : ''}`}>
+      <header className={`tone-dark fixed top-0 left-0 w-full z-50 transition-all duration-500 ${hasBackground ? 'bg-ink/95 backdrop-blur-sm' : ''}`}>
         <div className="flex items-center justify-between px-6 md:px-10 py-5">
           <Link href="/" className="text-xl font-black tracking-tight text-white">
             WHY<span className="text-brand-yellow">GO</span>
@@ -133,7 +133,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
             aria-label={t('menu_title')}
             initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
             transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
-            className="fixed inset-0 bg-ink z-[200] flex flex-col justify-center px-10"
+            className="surface-dark fixed inset-0 z-[200] flex flex-col justify-center px-10"
           >
             <button type="button" onClick={() => closeMenu()} aria-label={t('menu_close')}
               className="absolute top-6 right-8 text-4xl text-white font-thin">

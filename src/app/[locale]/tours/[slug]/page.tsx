@@ -93,7 +93,7 @@ export default async function TourDetailPage(
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(trip) }}
       />
-      <section className="relative h-[85vh] flex items-end overflow-hidden">
+      <section className="tone-dark relative h-[85vh] flex items-end overflow-hidden bg-ink">
         <Image
           src={tour.cover_image ?? ''}
           alt={getTourTitle(tour, loc)}
@@ -123,42 +123,42 @@ export default async function TourDetailPage(
         </div>
       </section>
 
-      <section className="bg-white px-6 md:px-10 py-16">
+      <section className="surface-light px-6 md:px-10 py-16">
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
           <div className="md:col-span-2">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-ink/40 mb-4">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">
               About This Experience
             </p>
-            <p className="text-base leading-relaxed text-ink/80">
+            <p className="text-base leading-relaxed text-fg">
               {getTourDescription(tour, loc)}
             </p>
           </div>
-          <div className="bg-ink p-8">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-6">
+          <div className="panel border-t-4 border-t-brand-yellow p-8">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-6">
               Trip Details
             </p>
             <div className="space-y-4">
               <div>
-                <p className="text-[9px] font-bold tracking-widest uppercase text-white/30 mb-1">
+                <p className="text-[9px] font-bold tracking-widest uppercase text-muted mb-1">
                   Starting From
                 </p>
-                <p className="font-black text-brand-yellow text-2xl tracking-tight">
+                <p className="inline-block bg-brand-yellow text-ink font-black text-2xl tracking-tight px-1.5">
                   {formatPrice(tour.price_from, tour.currency)}
                 </p>
               </div>
               {tour.duration_days && (
                 <div>
-                  <p className="text-[9px] font-bold tracking-widest uppercase text-white/30 mb-1">
+                  <p className="text-[9px] font-bold tracking-widest uppercase text-muted mb-1">
                     Duration
                   </p>
-                  <p className="font-bold text-white">{tour.duration_days} days</p>
+                  <p className="font-bold text-fg">{tour.duration_days} days</p>
                 </div>
               )}
               <div>
-                <p className="text-[9px] font-bold tracking-widest uppercase text-white/30 mb-1">
+                <p className="text-[9px] font-bold tracking-widest uppercase text-muted mb-1">
                   Destination
                 </p>
-                <p className="font-bold text-white">{tour.destination}</p>
+                <p className="font-bold text-fg">{tour.destination}</p>
               </div>
             </div>
             <div className="mt-8 space-y-3">
@@ -170,7 +170,7 @@ export default async function TourDetailPage(
               </Link>
               <Link
                 href="/contact"
-                className="block w-full text-center border border-white/20 text-white font-black text-[11px] tracking-widest uppercase py-4 hover:border-brand-yellow hover:text-brand-yellow transition-colors"
+                className="block w-full text-center border border-line text-fg font-black text-[11px] tracking-widest uppercase py-4 hover:border-fg transition-colors"
               >
                 Enquire
               </Link>

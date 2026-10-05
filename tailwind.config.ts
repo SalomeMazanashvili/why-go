@@ -14,6 +14,15 @@ const config: Config = {
         'brand-yellow': '#FCCC01',
         ink: '#111110',
         paper: '#F5F5F0',
+        // Surface tokens (globals.css .surface-light / .surface-dark)
+        fg: 'var(--fg)',
+        muted: 'var(--fg-muted)',
+        line: 'var(--line)',
+        accent: 'var(--accent-text)',
+        surface: 'var(--surface)',
+        raised: 'var(--surface-raised)',
+        danger: 'var(--danger)',
+        field: 'var(--field-border)',
       },
       fontFamily: {
         // FiraGO covers both Latin and Georgian in a single font file
