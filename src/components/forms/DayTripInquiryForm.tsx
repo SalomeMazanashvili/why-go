@@ -164,7 +164,7 @@ export function DayTripInquiryForm({ dayTrips, serviceId }: Props) {
       <div
         role="status"
         aria-live="polite"
-        className="admin-card border-l-4 border-l-[#FFCC00] max-w-2xl"
+        className="admin-card border-l-4 border-l-brand-yellow max-w-2xl"
       >
         <h2 className="text-2xl font-black text-white mb-3">{t('shared.success_title')}</h2>
         <p className="text-white/70">{t('shared.success_body')}</p>

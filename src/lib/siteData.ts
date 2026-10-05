@@ -7,10 +7,10 @@ export type ContentMap = Record<string, { en: string | null; ka: string | null }
 export type SettingsMap = Record<string, string>
 
 export const DEFAULT_SETTINGS: SettingsMap = {
-  color_primary: '#FFCC00',
-  color_background: '#000000',
-  color_surface: '#111111',
-  color_accent: '#FFCC00',
+  color_primary: '#FCCC01',
+  color_background: '#111110',
+  color_surface: '#111110',
+  color_accent: '#FCCC01',
   color_text: '#FFFFFF',
   font_hero_size: '112px',
   font_section_size: '52px',

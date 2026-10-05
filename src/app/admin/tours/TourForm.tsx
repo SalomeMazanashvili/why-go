@@ -91,7 +91,7 @@ export default function TourForm({ initial, mode }: Props) {
   return (
     <form onSubmit={save} className="space-y-8">
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Meta</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Meta</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="admin-label">Slug</label>
@@ -144,7 +144,7 @@ export default function TourForm({ initial, mode }: Props) {
               type="checkbox"
               checked={tour.is_featured}
               onChange={(e) => update('is_featured', e.target.checked)}
-              className="w-4 h-4 accent-[#FFCC00]"
+              className="w-4 h-4 accent-brand-yellow"
             />
             <span className="text-[11px] font-bold tracking-widest uppercase text-white/70">Featured</span>
           </label>
@@ -152,7 +152,7 @@ export default function TourForm({ initial, mode }: Props) {
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">English</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">English</p>
         <div>
           <label className="admin-label">Title</label>
           <input className="admin-input" value={tour.title_en} onChange={(e) => update('title_en', e.target.value)} required />
@@ -177,7 +177,7 @@ export default function TourForm({ initial, mode }: Props) {
       </section>
 
       <section className="admin-card space-y-4">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Georgian</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Georgian</p>
         <div>
           <label className="admin-label">Title</label>
           <input className="admin-input" value={tour.title_ka} onChange={(e) => update('title_ka', e.target.value)} />

@@ -29,7 +29,7 @@ export default function HomeSection({
             <Link
               href={viewAll.href}
               aria-describedby={headingId}
-              className="inline-flex items-center min-h-[44px] text-[11px] font-bold tracking-widest uppercase text-white border-b-2 border-yellow-400 hover:text-yellow-400 transition-colors"
+              className="inline-flex items-center min-h-[44px] text-[11px] font-bold tracking-widest uppercase text-white border-b-2 border-brand-yellow hover:text-brand-yellow transition-colors"
             >
               {viewAll.label}
             </Link>

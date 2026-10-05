@@ -76,7 +76,7 @@ export default async function ExperiencesIndexPage(
   ])
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-ink text-white min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -98,7 +98,7 @@ export default async function ExperiencesIndexPage(
                 <li key={g.key}>
                   <a
                     href={`#${g.key}`}
-                    className="inline-flex items-center min-h-[44px] px-4 border border-white/20 text-sm font-bold hover:border-[#FFCC00] hover:text-[#FFCC00] transition-colors"
+                    className="inline-flex items-center min-h-[44px] px-4 border border-white/20 text-sm font-bold hover:border-brand-yellow hover:text-brand-yellow transition-colors"
                   >
                     {groupLabel(g)}
                   </a>

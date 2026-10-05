@@ -121,7 +121,7 @@ export default async function TransferRouteDetailPage(
   })
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-ink text-white min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
@@ -133,7 +133,7 @@ export default async function TransferRouteDetailPage(
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 pt-24 pb-16">
         <nav className="mb-8 text-[10px] font-bold tracking-widest uppercase text-white/40">
-          <Link href="/transfers" className="hover:text-[#FFCC00]">
+          <Link href="/transfers" className="hover:text-brand-yellow">
             ← {tPage('nav_label')}
           </Link>
         </nav>
@@ -142,7 +142,7 @@ export default async function TransferRouteDetailPage(
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
             {label.from}
             <br />
-            <span className="text-[#FFCC00]">→ {label.to}</span>
+            <span className="text-brand-yellow">→ {label.to}</span>
           </h1>
         </header>
 
@@ -188,7 +188,7 @@ export default async function TransferRouteDetailPage(
         <div className="mb-16">
           <Link
             href={bookHref}
-            className="inline-block bg-[#FFCC00] text-black font-black uppercase tracking-widest text-sm px-8 py-4 hover:bg-yellow-300 transition-colors"
+            className="inline-block bg-brand-yellow text-ink font-black uppercase tracking-widest text-sm px-8 py-4 hover:brightness-110 transition-colors"
           >
             {tPage('route_book_cta')} →
           </Link>
@@ -205,9 +205,9 @@ export default async function TransferRouteDetailPage(
                 <li key={r.id}>
                   <Link
                     href={`/transfers/${r.slug}`}
-                    className="block admin-card hover:border-[#FFCC00]/50 transition-colors group"
+                    className="block admin-card hover:border-brand-yellow/50 transition-colors group"
                   >
-                    <p className="font-bold text-white group-hover:text-[#FFCC00] transition-colors">
+                    <p className="font-bold text-white group-hover:text-brand-yellow transition-colors">
                       {routeLabel(r, loc).combined}
                     </p>
                     {r.price_from != null && (
@@ -232,7 +232,7 @@ function Fact({ label, value, accent }: { label: string; value: string; accent?:
       <p className="text-[10px] font-bold tracking-widest uppercase text-white/40 mb-2">
         {label}
       </p>
-      <p className={`text-lg font-bold ${accent ? 'text-[#FFCC00]' : 'text-white'}`}>
+      <p className={`text-lg font-bold ${accent ? 'text-brand-yellow' : 'text-white'}`}>
         {value}
       </p>
     </div>

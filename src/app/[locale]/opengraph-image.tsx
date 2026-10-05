@@ -20,7 +20,7 @@ export default async function OpenGraphImage() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          background: '#0a0a0a',
+          background: '#111110',
           padding: 80,
           fontFamily: 'sans-serif',
           color: '#ffffff',
@@ -35,7 +35,7 @@ export default async function OpenGraphImage() {
             right: 0,
             width: 24,
             height: '100%',
-            background: '#FFCC00',
+            background: '#FCCC01',
           }}
         />
 
@@ -45,14 +45,14 @@ export default async function OpenGraphImage() {
             position: 'absolute',
             inset: 0,
             backgroundImage:
-              'repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,204,0,0.06) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,204,0,0.06) 80px)',
+              'repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(252,204,1,0.06) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(252,204,1,0.06) 80px)',
           }}
         />
 
         {/* Brand mark */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 0, zIndex: 1 }}>
           <span style={{ fontSize: 140, fontWeight: 900, letterSpacing: '-0.04em' }}>WHY</span>
-          <span style={{ fontSize: 140, fontWeight: 900, letterSpacing: '-0.04em', color: '#FFCC00' }}>GO</span>
+          <span style={{ fontSize: 140, fontWeight: 900, letterSpacing: '-0.04em', color: '#FCCC01' }}>GO</span>
         </div>
 
         {/* Tagline (English only for now — see file header) */}
@@ -62,7 +62,7 @@ export default async function OpenGraphImage() {
               fontSize: 20,
               letterSpacing: '0.3em',
               textTransform: 'uppercase',
-              color: '#FFCC00',
+              color: '#FCCC01',
               fontWeight: 700,
             }}
           >

@@ -33,11 +33,11 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
-      <section className="pt-36 pb-20 px-6 md:px-10 bg-black min-h-screen">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-4">Our Philosophy</p>
+      <section className="pt-36 pb-20 px-6 md:px-10 bg-ink min-h-screen">
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-4">Our Philosophy</p>
         <h1 className="font-black uppercase text-white leading-none tracking-tight"
           style={{ fontSize: 'clamp(48px,8vw,96px)', letterSpacing: '-0.04em', lineHeight: 0.88 }}>
-          EXPERIENCE<br />+ DEVELOP<br /><span className="text-yellow-400">MENT</span>
+          EXPERIENCE<br />+ DEVELOP<br /><span className="text-brand-yellow">MENT</span>
         </h1>
         <div className="mt-16 max-w-2xl">
           <p className="text-base leading-relaxed text-white/70 mb-6">

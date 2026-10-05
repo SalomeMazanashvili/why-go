@@ -64,7 +64,7 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
   }, [])
 
   const colors: Record<ToastKind, string> = {
-    success: 'border-[#FFCC00] text-[#FFCC00]',
+    success: 'border-brand-yellow text-brand-yellow',
     error: 'border-red-400 text-red-400',
     info: 'border-white/40 text-white/80',
   }

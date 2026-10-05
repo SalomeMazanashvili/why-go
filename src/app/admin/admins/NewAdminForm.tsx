@@ -46,7 +46,7 @@ export default function NewAdminForm({ disabled }: Props) {
 
   return (
     <aside className="admin-card space-y-4 self-start">
-      <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">Add admin</p>
+      <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Add admin</p>
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="admin-label">Email</label>

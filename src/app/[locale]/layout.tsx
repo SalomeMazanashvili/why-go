@@ -95,7 +95,7 @@ export default async function LocaleLayout(
 
   return (
     <html lang={locale} className={firago.variable}>
-      <body className="font-sans bg-black text-white antialiased">
+      <body className="font-sans bg-ink text-white antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(orgJsonLd()) }}

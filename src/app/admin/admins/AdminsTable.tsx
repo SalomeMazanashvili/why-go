@@ -116,7 +116,7 @@ export default function AdminsTable({ initial, currentId }: Props) {
                 <td className="px-5 py-4">
                   <p className="font-bold text-white break-all">{a.email}</p>
                   {isMe && (
-                    <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mt-1">You</p>
+                    <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mt-1">You</p>
                   )}
                 </td>
                 <td className="px-5 py-4">

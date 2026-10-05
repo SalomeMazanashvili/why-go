@@ -56,7 +56,7 @@ export default async function AdminHome() {
   return (
     <div className="p-8 lg:p-12">
       <header className="mb-10">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Dashboard</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Dashboard</p>
         <h1 className="text-3xl md:text-4xl font-black tracking-tight">Welcome back</h1>
         <p className="text-white/40 text-sm mt-2">
           {counts.supabase
@@ -77,13 +77,13 @@ export default async function AdminHome() {
           <Link
             key={c.href}
             href={c.href}
-            className="admin-card block hover:border-[#FFCC00]/50 transition-colors group"
+            className="admin-card block hover:border-brand-yellow/50 transition-colors group"
           >
-            <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">
               {c.label}
             </p>
             <p className="text-white/60 text-sm">{c.desc}</p>
-            <p className="mt-4 text-[11px] font-bold tracking-widest uppercase text-white/40 group-hover:text-[#FFCC00] transition-colors">
+            <p className="mt-4 text-[11px] font-bold tracking-widest uppercase text-white/40 group-hover:text-brand-yellow transition-colors">
               Open →
             </p>
           </Link>
@@ -99,7 +99,7 @@ function StatCard({ label, value, accent }: { label: string; value: number; acce
       <p className="text-[10px] font-bold tracking-widest uppercase text-white/40">{label}</p>
       <p
         className={`text-4xl font-black tracking-tight mt-2 ${
-          accent ? 'text-[#FFCC00]' : 'text-white'
+          accent ? 'text-brand-yellow' : 'text-white'
         }`}
       >
         {value}

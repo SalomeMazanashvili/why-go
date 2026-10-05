@@ -24,13 +24,13 @@ export default function ToursGridClient({ tours, locale }: Props) {
     return (
       <section className="bg-white min-h-[60vh] flex items-center justify-center px-6 md:px-10 py-24">
         <div className="text-center max-w-md">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-ink/40 mb-4">
             {t('section_tag')}
           </p>
-          <h2 className="font-black text-3xl md:text-4xl text-black leading-tight tracking-tight mb-4">
+          <h2 className="font-black text-3xl md:text-4xl text-ink leading-tight tracking-tight mb-4">
             No tours available yet
           </h2>
-          <p className="text-sm text-black/60">
+          <p className="text-sm text-ink/60">
             New signature tours are being finalised. Please check back soon.
           </p>
         </div>
@@ -40,14 +40,14 @@ export default function ToursGridClient({ tours, locale }: Props) {
 
   return (
     <>
-      <div className="bg-black/90 border-t border-white/10 px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[69px] z-30 backdrop-blur-sm">
+      <div className="bg-ink/90 border-t border-white/10 px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[69px] z-30 backdrop-blur-sm">
         <button onClick={() => setActiveTag(null)}
-          className={`text-[10px] font-black tracking-widest uppercase px-4 py-2 border transition-colors ${!activeTag ? 'bg-yellow-400 text-black border-yellow-400' : 'text-white/60 border-white/20 hover:border-white/50'}`}>
+          className={`text-[10px] font-black tracking-widest uppercase px-4 py-2 border transition-colors ${!activeTag ? 'bg-brand-yellow text-ink border-brand-yellow' : 'text-white/60 border-white/20 hover:border-white/50'}`}>
           ALL
         </button>
         {tags.map(tag => (
           <button key={tag} onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-            className={`text-[10px] font-black tracking-widest uppercase px-4 py-2 border transition-colors ${activeTag === tag ? 'bg-yellow-400 text-black border-yellow-400' : 'text-white/60 border-white/20 hover:border-white/50'}`}>
+            className={`text-[10px] font-black tracking-widest uppercase px-4 py-2 border transition-colors ${activeTag === tag ? 'bg-brand-yellow text-ink border-brand-yellow' : 'text-white/60 border-white/20 hover:border-white/50'}`}>
             {tag}
           </button>
         ))}
@@ -60,7 +60,7 @@ export default function ToursGridClient({ tours, locale }: Props) {
               <motion.div key={tour.id} layout initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}>
-                <Link href={`/tours/${tour.slug}`} className="group block relative overflow-hidden bg-black">
+                <Link href={`/tours/${tour.slug}`} className="group block relative overflow-hidden bg-ink">
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {tour.cover_image && (
                       <Image src={tour.cover_image} alt={getTourTitle(tour, loc)} fill
@@ -69,11 +69,11 @@ export default function ToursGridClient({ tours, locale }: Props) {
                     )}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent p-6 flex flex-col justify-end">
-                    <p className="text-[9px] font-bold tracking-widest uppercase text-yellow-400 mb-2">{getTourTag(tour, loc)}</p>
+                    <p className="text-[9px] font-bold tracking-widest uppercase text-brand-yellow mb-2">{getTourTag(tour, loc)}</p>
                     <h2 className="font-black text-2xl tracking-tight text-white leading-none">{getTourTitle(tour, loc).toUpperCase()}</h2>
                     <p className="text-xs text-white/50 mt-1.5">{getTourSubtitle(tour, loc)}</p>
                     <div className="flex items-center justify-between mt-4">
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-yellow-400">{formatPrice(tour.price_from, tour.currency)}</span>
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">{formatPrice(tour.price_from, tour.currency)}</span>
                       {tour.duration_days && <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">{tour.duration_days} {t('days')}</span>}
                     </div>
                   </div>

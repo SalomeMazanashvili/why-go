@@ -9,7 +9,7 @@ export default async function NewTourPage() {
   return (
     <div className="p-8 lg:p-12 max-w-4xl">
       <header className="mb-8">
-        <Link href="/admin/tours" className="text-[10px] font-bold tracking-widest uppercase text-white/40 hover:text-[#FFCC00]">
+        <Link href="/admin/tours" className="text-[10px] font-bold tracking-widest uppercase text-white/40 hover:text-brand-yellow">
           ← Tours
         </Link>
         <h1 className="text-3xl md:text-4xl font-black tracking-tight mt-3">New tour</h1>

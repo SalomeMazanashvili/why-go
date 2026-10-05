@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --brand-yellow: #FFCC00;
-  --brand-black: #000000;
-  --brand-white: #FFFFFF;
+  --brand-yellow: #FCCC01;
+  --ink: #111110;
+  --paper: #F5F5F0;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #000;
+  background-color: var(--ink);
   color: #fff;
   -webkit-font-smoothing: antialiased;
 }
@@ -32,8 +32,8 @@ body {
 }
 
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: #FFCC00; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: #FCCC01; }
 
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -46,6 +46,6 @@ body {
 }
 
 *:focus-visible {
-  outline: 2px solid #FFCC00;
+  outline: 2px solid #FCCC01;
   outline-offset: 2px;
 }

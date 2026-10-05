@@ -60,7 +60,7 @@ export default function ContentEditor({ groups, initial }: Props) {
     <div className="space-y-8">
       {groups.map((group) => (
         <section key={group.label} className="admin-card space-y-5">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00]">{group.label}</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">{group.label}</p>
           {group.keys.map((key) => (
             <div key={key} className="border-t border-white/5 pt-4 first:border-0 first:pt-0">
               <p className="text-[11px] font-bold tracking-widest uppercase text-white/60 mb-3">

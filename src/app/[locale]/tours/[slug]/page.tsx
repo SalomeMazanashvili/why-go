@@ -106,11 +106,11 @@ export default async function TourDetailPage(
         <div className="relative z-10 px-6 md:px-10 pb-12 w-full">
           <Link
             href="/tours"
-            className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 hover:text-white transition-colors inline-block mb-4"
+            className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow hover:text-white transition-colors inline-block mb-4"
           >
             ← All Tours
           </Link>
-          <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-3">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-3">
             {getTourTag(tour, loc)}
           </p>
           <h1
@@ -126,15 +126,15 @@ export default async function TourDetailPage(
       <section className="bg-white px-6 md:px-10 py-16">
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
           <div className="md:col-span-2">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-black/40 mb-4">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-ink/40 mb-4">
               About This Experience
             </p>
-            <p className="text-base leading-relaxed text-black/80">
+            <p className="text-base leading-relaxed text-ink/80">
               {getTourDescription(tour, loc)}
             </p>
           </div>
-          <div className="bg-black p-8">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-yellow-400 mb-6">
+          <div className="bg-ink p-8">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-6">
               Trip Details
             </p>
             <div className="space-y-4">
@@ -142,7 +142,7 @@ export default async function TourDetailPage(
                 <p className="text-[9px] font-bold tracking-widest uppercase text-white/30 mb-1">
                   Starting From
                 </p>
-                <p className="font-black text-yellow-400 text-2xl tracking-tight">
+                <p className="font-black text-brand-yellow text-2xl tracking-tight">
                   {formatPrice(tour.price_from, tour.currency)}
                 </p>
               </div>
@@ -164,13 +164,13 @@ export default async function TourDetailPage(
             <div className="mt-8 space-y-3">
               <Link
                 href="/contact"
-                className="block w-full text-center bg-yellow-400 text-black font-black text-[11px] tracking-widest uppercase py-4 hover:bg-yellow-300 transition-colors"
+                className="block w-full text-center bg-brand-yellow text-ink font-black text-[11px] tracking-widest uppercase py-4 hover:brightness-110 transition-colors"
               >
                 Book This Tour →
               </Link>
               <Link
                 href="/contact"
-                className="block w-full text-center border border-white/20 text-white font-black text-[11px] tracking-widest uppercase py-4 hover:border-yellow-400 hover:text-yellow-400 transition-colors"
+                className="block w-full text-center border border-white/20 text-white font-black text-[11px] tracking-widest uppercase py-4 hover:border-brand-yellow hover:text-brand-yellow transition-colors"
               >
                 Enquire
               </Link>

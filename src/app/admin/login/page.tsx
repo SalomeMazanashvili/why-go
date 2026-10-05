@@ -8,7 +8,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
           <p className="text-2xl font-black tracking-tight">
-            WHY<span className="text-[#FFCC00]">GO</span>
+            WHY<span className="text-brand-yellow">GO</span>
           </p>
           <p className="text-[10px] tracking-widest uppercase text-white/40 mt-2">Admin panel</p>
         </div>

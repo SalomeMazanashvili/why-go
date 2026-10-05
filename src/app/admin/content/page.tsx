@@ -29,7 +29,7 @@ export default async function ContentAdminPage() {
   return (
     <div className="p-8 lg:p-12 max-w-4xl">
       <header className="mb-8">
-        <p className="text-[10px] font-bold tracking-widest uppercase text-[#FFCC00] mb-2">Content</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow mb-2">Content</p>
         <h1 className="text-3xl md:text-4xl font-black tracking-tight">Site copy</h1>
         <p className="text-white/40 text-sm mt-2">
           {connected
