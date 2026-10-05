@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
+import { validateSetting } from '@/lib/settingsValidation'
 
 interface Item {
   key: string
@@ -15,13 +16,15 @@ export async function PUT(req: NextRequest) {
     const body = await req.json()
     const items: Item[] = Array.isArray(body?.items) ? body.items : []
     if (items.length === 0) return NextResponse.json({ error: 'No items' }, { status: 400 })
+    const errors: string[] = []
     const rows = items
       .filter((i) => typeof i.key === 'string' && i.key.length > 0)
       .map((i) => ({
         key: i.key,
-        value: i.value ?? null,
+        value: validateSetting(i.key, i.value ?? null, errors),
         updated_at: new Date().toISOString(),
       }))
+    if (errors.length) return NextResponse.json({ error: errors.join(' ') }, { status: 400 })
     const s = getAdminSupabase()
     const { error } = await s.from('site_settings').upsert(rows, { onConflict: 'key' })
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
