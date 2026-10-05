@@ -10,7 +10,12 @@
     "placeholder_name": "e.g. Giorgi Beridze", "placeholder_email": "you@email.com",
     "placeholder_message": "Tell us about your dream trip...",
     "submit": "Send Message", "reply_note": "We reply within 24 hours",
-    "success": "Message sent! We'll be in touch soon.", "error": "Something went wrong. Please try again."
+    "success": "Message sent! We'll be in touch soon.", "error": "Something went wrong. Please try again.",
+    "details_heading": "Talk to us directly",
+    "phone_label": "Phone",
+    "hours_label": "Hours",
+    "whatsapp_cta": "Message us on WhatsApp",
+    "social_heading": "Follow us"
   },
   "footer": { "tagline": "Experience + Development" },
   "inquiry": {
