@@ -4,6 +4,19 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '../_components/ToastProvider'
 import { SOCIAL_NETWORKS } from '@/lib/socialNetworks'
+import { CONTACT_FIELDS, normalizePhone, type ContactKey } from '@/lib/contactInfo'
+
+const CONTACT_LABELS: Record<ContactKey, string> = {
+  contact_phone: 'Phone',
+  contact_whatsapp: 'WhatsApp',
+  contact_hours: 'Opening hours (optional)',
+}
+
+const CONTACT_HINTS: Record<ContactKey, string> = {
+  contact_phone: 'International format. Dials when tapped on a phone.',
+  contact_whatsapp: 'Usually the same number. Opens a WhatsApp chat.',
+  contact_hours: 'In Georgian, as customers should read it. Leave empty if you answer any time.',
+}
 
 type Settings = Record<string, string>
 
@@ -104,10 +117,41 @@ export default function BrandingEditor({ initial }: Props) {
         </section>
 
         <section className="admin-card space-y-4">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Contact</p>
+          <p className="text-[10px] text-white/40">
+            Shown on the contact page. Leave a field empty to hide it.
+          </p>
+          {CONTACT_FIELDS.map((f) => {
+            const value = settings[f.key] ?? ''
+            const invalid = f.kind === 'phone' && value.trim() !== '' && !normalizePhone(value)
+            const hintId = `${f.key}-hint`
+            return (
+              <div key={f.key}>
+                <label className="admin-label" htmlFor={f.key}>{CONTACT_LABELS[f.key]}</label>
+                <input
+                  id={f.key}
+                  type={f.kind === 'phone' ? 'tel' : 'text'}
+                  inputMode={f.kind === 'phone' ? 'tel' : undefined}
+                  className={`admin-input ${f.kind === 'phone' ? 'font-mono' : ''}`}
+                  value={value}
+                  onChange={(e) => update(f.key, e.target.value)}
+                  placeholder={f.kind === 'phone' ? '+995 598 12 34 56' : ''}
+                  aria-invalid={invalid || undefined}
+                  aria-describedby={hintId}
+                />
+                <p id={hintId} className={`text-[10px] mt-1 ${invalid ? 'text-red-400' : 'text-white/40'}`}>
+                  {invalid ? 'Use the full international number, starting with +995.' : CONTACT_HINTS[f.key]}
+                </p>
+              </div>
+            )
+          })}
+        </section>
+
+        <section className="admin-card space-y-4">
           <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Social links</p>
           <p className="text-[10px] text-white/40">
-            Full profile URL starting with https://. Shown as icons in the site footer; leave
-            empty to hide a network.
+            Full profile URL starting with https://. Shown as icons in the site footer and on the
+            contact page; leave empty to hide a network.
           </p>
           {SOCIAL_NETWORKS.map((n) => (
             <div key={n.key}>
