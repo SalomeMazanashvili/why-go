@@ -36,6 +36,15 @@ export interface Destination {
   cover_image: string | null
   is_published: boolean
   sort_order: number
+  // WHY-65 hub sections. Georgian only; founders write them.
+  practical_info_ka: string
+  faq: DestinationFaq[]
+}
+
+// One FAQ entry on a destination hub; feeds FAQPage JSON-LD.
+export interface DestinationFaq {
+  q_ka: string
+  a_ka: string
 }
 
 export interface ServiceCategory {
@@ -214,6 +223,8 @@ export interface News {
   reading_time_min: number
   is_featured: boolean
   published_at: string
+  // WHY-65: the destination hub this post appears on. One per post.
+  destination_id: string | null
 }
 
 // Helpers

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidateContent } from '@/lib/revalidate'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
+import { normalizeFaq } from '@/lib/destinations'
+import { isReservedSlug, RESERVED_TOP_LEVEL_SLUGS } from '@/lib/reservedSlugs'
 import { countServicesByDestination } from '@/lib/services'
 import { countTransferRoutesByDestination } from '@/lib/transferRoutes'
 
@@ -14,13 +16,21 @@ const WRITABLE = [
   'cover_image',
   'is_published',
   'sort_order',
+  'practical_info_ka', 'faq',
 ] as const
+
+// WHY-65: hubs are served at /<slug>, so a slug can't take a site route.
+function reservedSlugError(slug: string) {
+  return `"${slug}" is reserved for a site page and can't be a destination slug. Reserved: ${RESERVED_TOP_LEVEL_SLUGS.join(', ')}`
+}
 
 function pickPayload(body: any) {
   const out: Record<string, any> = {}
   for (const key of WRITABLE) {
     if (key in body) out[key] = body[key]
   }
+  if ('faq' in out) out.faq = normalizeFaq(out.faq)
+  if (typeof out.slug === 'string') out.slug = out.slug.trim().toLowerCase()
   out.updated_at = new Date().toISOString()
   return out
 }
@@ -34,6 +44,9 @@ export async function PUT(req: NextRequest, props: Ctx) {
   try {
     const body = await req.json()
     const payload = pickPayload(body)
+    if (typeof payload.slug === 'string' && isReservedSlug(payload.slug)) {
+      return NextResponse.json({ error: reservedSlugError(payload.slug) }, { status: 400 })
+    }
     const s = getAdminSupabase()
     const { error } = await s.from('destinations').update(payload).eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

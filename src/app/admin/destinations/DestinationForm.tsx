@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
 import ImageUploader from '../_components/ImageUploader'
-import type { Destination } from '@/types'
+import type { Destination, DestinationFaq } from '@/types'
 
 interface Props {
   initial?: Destination | null
@@ -25,6 +25,8 @@ const empty: Destination = {
   cover_image: '',
   is_published: false,
   sort_order: 0,
+  practical_info_ka: '',
+  faq: [],
 }
 
 export default function DestinationForm({ initial, mode }: Props) {
@@ -36,6 +38,16 @@ export default function DestinationForm({ initial, mode }: Props) {
 
   const update = <K extends keyof Destination>(key: K, value: Destination[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
+
+  // FAQ rows. Incomplete rows are dropped on save (normalizeFaq).
+  const updateFaq = (i: number, key: keyof DestinationFaq, value: string) =>
+    setItem((prev) => ({
+      ...prev,
+      faq: prev.faq.map((f, j) => (j === i ? { ...f, [key]: value } : f)),
+    }))
+  const addFaq = () => setItem((prev) => ({ ...prev, faq: [...prev.faq, { q_ka: '', a_ka: '' }] }))
+  const removeFaq = (i: number) =>
+    setItem((prev) => ({ ...prev, faq: prev.faq.filter((_, j) => j !== i) }))
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -96,6 +108,9 @@ export default function DestinationForm({ initial, mode }: Props) {
           <div>
             <label className="admin-label">Slug</label>
             <input className="admin-input" value={item.slug} onChange={(e) => update('slug', e.target.value)} required />
+            <p className="text-[10px] text-white/40 mt-1">
+              The hub URL: whygo.ge/{item.slug || 'barcelona'}. Site page names (tours, transfers, guides…) can't be used.
+            </p>
           </div>
           <div>
             <label className="admin-label">Country</label>
@@ -166,6 +181,56 @@ export default function DestinationForm({ initial, mode }: Props) {
             placeholder="140–160 chars, appears in Google results"
           />
           <p className="text-[10px] text-white/40 mt-1">{item.seo_description_ka.length}/160 recommended</p>
+        </div>
+      </section>
+
+      <section className="admin-card space-y-4">
+        <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Hub page (Georgian)</p>
+        <p className="text-[11px] text-white/50">
+          Shown on the destination hub. The description above is the hub intro; it must reach 300 words before the hub is indexed by Google.
+        </p>
+        <div>
+          <label className="admin-label" htmlFor="practical_info_ka">Practical info</label>
+          <textarea
+            id="practical_info_ka"
+            rows={8}
+            className="admin-input resize-y"
+            value={item.practical_info_ka}
+            onChange={(e) => update('practical_info_ka', e.target.value)}
+            placeholder="Airport, getting around, money, tipping"
+          />
+        </div>
+        <div className="space-y-3">
+          <p className="admin-label">FAQ</p>
+          {item.faq.length === 0 && (
+            <p className="text-[11px] text-white/40">No questions yet. The FAQ section is hidden until one is added.</p>
+          )}
+          {item.faq.map((f, i) => (
+            <div key={i} className="border border-white/10 p-4 space-y-2">
+              <label className="admin-label" htmlFor={`faq-q-${i}`}>Question {i + 1}</label>
+              <input
+                id={`faq-q-${i}`}
+                className="admin-input"
+                value={f.q_ka}
+                onChange={(e) => updateFaq(i, 'q_ka', e.target.value)}
+              />
+              <label className="admin-label" htmlFor={`faq-a-${i}`}>Answer {i + 1}</label>
+              <textarea
+                id={`faq-a-${i}`}
+                rows={3}
+                className="admin-input resize-y"
+                value={f.a_ka}
+                onChange={(e) => updateFaq(i, 'a_ka', e.target.value)}
+              />
+              <button type="button" onClick={() => removeFaq(i)} className="admin-btn admin-btn-ghost">
+                Remove question
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addFaq} className="admin-btn admin-btn-ghost">
+            + Add question
+          </button>
+          <p className="text-[10px] text-white/40">Questions missing an answer are dropped on save.</p>
         </div>
       </section>
 
