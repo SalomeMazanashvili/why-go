@@ -150,5 +150,9 @@
     "section_meeting_point": "Pickup and meeting point",
     "section_gallery": "Photographs",
     "gallery_alt": "{name} — photograph {n}"
+  },
+  "destination_page": {
+    "practical_title": "Practical information",
+    "faq_title": "Questions"
   }
 }

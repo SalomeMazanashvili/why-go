@@ -2,6 +2,8 @@ import type { MetadataRoute } from 'next'
 import { listTours } from '@/lib/tours'
 import { listTransferRoutes } from '@/lib/transferRoutes'
 import { isDayTripIndexable, listDayTrips, listExperiences } from '@/lib/services'
+import { isDestinationIndexable, listDestinations } from '@/lib/destinations'
+import { isReservedSlug } from '@/lib/reservedSlugs'
 import { SITE_URL } from '@/lib/seo'
 
 // WHY-69: Georgian URLs only. English is noindex; whisky-tour is noindex.
@@ -74,8 +76,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }]
       : []
 
+  // WHY-65: destination hubs, only once they carry 300+ words of Georgian.
+  // Below that they're served noindex and kept out of here.
+  const hubEntries: MetadataRoute.Sitemap = (await listDestinations())
+    .filter((d) => !isReservedSlug(d.slug) && isDestinationIndexable(d))
+    .map((d) => ({
+      url: `${SITE_URL}/${d.slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
+
   return [
     ...staticEntries,
+    ...hubEntries,
     ...tourEntries,
     ...transferRouteEntries,
     ...dayTripEntries,

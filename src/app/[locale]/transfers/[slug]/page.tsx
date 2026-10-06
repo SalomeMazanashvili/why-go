@@ -139,6 +139,17 @@ export default async function TransferRouteDetailPage(
         </nav>
 
         <header className="mb-12">
+          {/* WHY-65: every route links back to its city's hub. */}
+          {originDestination?.is_published && originLabel && (
+            <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">
+              <Link
+                href={`/${originDestination.slug}`}
+                className="hover:underline decoration-brand-yellow decoration-2 underline-offset-4"
+              >
+                {originLabel}
+              </Link>
+            </p>
+          )}
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
             {label.from}
             <br />

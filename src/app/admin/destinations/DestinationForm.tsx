@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
 import ImageUploader from '../_components/ImageUploader'
 import type { Destination, DestinationFaq } from '@/types'
+import { destinationWordCount } from '@/lib/destinationIndexing'
+import { MIN_INDEXABLE_WORDS } from '@/lib/seo'
 
 interface Props {
   initial?: Destination | null
@@ -186,9 +188,7 @@ export default function DestinationForm({ initial, mode }: Props) {
 
       <section className="admin-card space-y-4">
         <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Hub page (Georgian)</p>
-        <p className="text-[11px] text-white/50">
-          Shown on the destination hub. The description above is the hub intro; it must reach 300 words before the hub is indexed by Google.
-        </p>
+        <HubStatus item={item} />
         <div>
           <label className="admin-label" htmlFor="practical_info_ka">Practical info</label>
           <textarea
@@ -263,5 +263,39 @@ export default function DestinationForm({ initial, mode }: Props) {
         )}
       </div>
     </form>
+  )
+}
+
+// WHY-65: a hub under 300 words of Georgian is served but kept out of Google
+// (noindex, not in the sitemap). That's the expected state for a new city,
+// so say so plainly instead of leaving it to look broken.
+function HubStatus({ item }: { item: Destination }) {
+  const words = destinationWordCount(item)
+  const url = `/${item.slug || 'slug'}`
+  if (!item.is_published) {
+    return (
+      <p className="text-[11px] text-white/50">
+        Hub page: offline while this destination is a draft. When published it will be at whygo.ge{url}.
+      </p>
+    )
+  }
+  if (words >= MIN_INDEXABLE_WORDS) {
+    return (
+      <p className="text-[11px] text-emerald-400">
+        Hub page: live at whygo.ge{url} and visible to Google ({words} Georgian words).{' '}
+        <a href={url} target="_blank" rel="noreferrer" className="underline">View hub ↗</a>
+      </p>
+    )
+  }
+  return (
+    <div className="border border-white/10 p-4 text-[11px] text-white/70 space-y-1">
+      <p>
+        Hub page: live at whygo.ge{url}, <strong>hidden from Google</strong> until it has {MIN_INDEXABLE_WORDS} words of Georgian.{' '}
+        <a href={url} target="_blank" rel="noreferrer" className="underline">View hub ↗</a>
+      </p>
+      <p className="text-white/50">
+        {words}/{MIN_INDEXABLE_WORDS} words. The description, practical info and FAQ all count. Takes effect when you save.
+      </p>
+    </div>
   )
 }

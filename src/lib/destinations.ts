@@ -23,6 +23,8 @@ function normalize(row: any): Destination {
   }
 }
 
+export { destinationWordCount, isDestinationIndexable } from '@/lib/destinationIndexing'
+
 // Keeps only complete Georgian Q/A pairs, trimmed. Used on read and on admin
 // writes, so a half-filled row in the editor never reaches FAQPage JSON-LD.
 export function normalizeFaq(raw: unknown): DestinationFaq[] {
@@ -133,3 +135,4 @@ export async function getDestinationBySlug(slug: string): Promise<Destination | 
     return null
   }
 }
+
