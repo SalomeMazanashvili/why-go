@@ -17,7 +17,7 @@ export const revalidate = 3600
 // Empty `generateStaticParams` + default `dynamicParams: true` = ISR
 // on-demand: nothing prerendered at build (so CI needs no env), each
 // slug renders on first request and caches for `revalidate` seconds.
-// Admin publish/edit triggers revalidatePath('/', 'layout') to bust.
+// Admin publish/edit triggers revalidateContent() to bust.
 export async function generateStaticParams() {
   return []
 }

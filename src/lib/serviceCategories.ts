@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { ServiceCategory } from '@/types'
 
 const CATEGORY_COLUMNS =
@@ -24,7 +24,7 @@ export async function listServiceCategories(): Promise<ServiceCategory[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('service_categories')
       .select(CATEGORY_COLUMNS)
@@ -86,7 +86,7 @@ export async function getServiceCategoryById(id: string): Promise<ServiceCategor
 export async function getServiceCategoryBySlug(slug: string): Promise<ServiceCategory | null> {
   if (!hasAdminSupabase()) return null
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('service_categories')
       .select(CATEGORY_COLUMNS)

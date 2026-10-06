@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { Destination } from '@/types'
 
 const DESTINATION_COLUMNS =
@@ -29,7 +29,7 @@ export async function listDestinations(): Promise<Destination[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('destinations')
       .select(DESTINATION_COLUMNS)
@@ -77,7 +77,7 @@ export async function getDestinationById(id: string): Promise<Destination | null
     return null
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('destinations')
       .select(DESTINATION_COLUMNS)
@@ -102,7 +102,7 @@ export async function getDestinationBySlug(slug: string): Promise<Destination | 
     return null
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('destinations')
       .select(DESTINATION_COLUMNS)

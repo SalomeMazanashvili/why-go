@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import { countWords, MIN_INDEXABLE_WORDS } from '@/lib/seo'
 import type { Destination, Service, ServiceType } from '@/types'
 
@@ -85,7 +85,7 @@ export async function listServices(): Promise<Service[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('services')
       .select(SERVICE_COLUMNS)
@@ -144,7 +144,7 @@ export async function getServiceById(id: string): Promise<Service | null> {
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
   if (!hasAdminSupabase()) return null
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('services')
       .select(SERVICE_COLUMNS)
@@ -173,7 +173,7 @@ export async function listDayTrips(): Promise<Service[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('services')
       .select(SERVICE_COLUMNS)
@@ -218,7 +218,7 @@ export async function listDayTripsForAdmin(): Promise<Service[]> {
 export async function getDayTripBySlug(slug: string): Promise<Service | null> {
   if (!hasAdminSupabase()) return null
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('services')
       .select(SERVICE_COLUMNS)

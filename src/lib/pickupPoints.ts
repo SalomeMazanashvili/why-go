@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { PickupPoint } from '@/types'
 
 const PICKUP_POINT_COLUMNS =
@@ -23,7 +23,7 @@ function normalize(row: any): PickupPoint {
 export async function listPickupPoints(): Promise<PickupPoint[]> {
   if (!hasAdminSupabase()) return []
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('pickup_points')
       .select(PICKUP_POINT_COLUMNS)

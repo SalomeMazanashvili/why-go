@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { TransferRoute } from '@/types'
 
 const ROUTE_COLUMNS =
@@ -34,7 +34,7 @@ export async function listTransferRoutes(): Promise<TransferRoute[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('transfer_routes')
       .select(ROUTE_COLUMNS)
@@ -93,7 +93,7 @@ export async function getTransferRouteById(id: string): Promise<TransferRoute | 
 export async function getTransferRouteBySlug(slug: string): Promise<TransferRoute | null> {
   if (!hasAdminSupabase()) return null
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('transfer_routes')
       .select(ROUTE_COLUMNS)

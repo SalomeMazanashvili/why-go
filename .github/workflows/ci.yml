@@ -29,5 +29,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Admin writes refresh the public site
+        run: bash scripts/check-revalidate.sh
+
       - name: Build
         run: npm run build

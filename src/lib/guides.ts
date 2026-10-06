@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { Guide } from '@/types'
 
 const GUIDE_COLUMNS =
@@ -28,7 +28,7 @@ export async function listGuides(): Promise<Guide[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('guides')
       .select(GUIDE_COLUMNS)
@@ -90,7 +90,7 @@ export async function getGuideById(id: string): Promise<Guide | null> {
 export async function getGuideBySlug(slug: string): Promise<Guide | null> {
   if (!hasAdminSupabase()) return null
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('guides')
       .select(GUIDE_COLUMNS)

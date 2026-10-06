@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { News } from '@/types'
 
 export type AdminNews = News & {
@@ -40,7 +40,7 @@ export async function listNews(): Promise<AdminNews[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('news')
       .select(COLUMNS)

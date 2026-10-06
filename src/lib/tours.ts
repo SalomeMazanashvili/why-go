@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 import type { Tour } from '@/types'
 
 const TOUR_COLUMNS =
@@ -33,7 +33,7 @@ export async function listTours(): Promise<Tour[]> {
     return []
   }
   try {
-    const s = getAdminSupabase()
+    const s = getContentSupabase()
     const { data, error } = await s
       .from('tours')
       .select(TOUR_COLUMNS)
