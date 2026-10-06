@@ -80,7 +80,7 @@ export default async function TipsPage(props: { params: Promise<{ locale: string
             </div>
             <div className="p-6">
               <p className="text-[9px] font-bold tracking-widest uppercase text-muted mb-2">{article.tag_en}</p>
-              <h3 className="font-black text-lg text-fg leading-tight tracking-tight">{getNewsTitle(article, loc)}</h3>
+              <h2 className="font-black text-lg text-fg leading-tight tracking-tight">{getNewsTitle(article, loc)}</h2>
               <p className="text-sm text-muted mt-3 leading-relaxed line-clamp-2">{getNewsExcerpt(article, loc)}</p>
             </div>
           </Link>
