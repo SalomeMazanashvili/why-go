@@ -14,7 +14,6 @@ export const revalidate = 3600
 
 interface Props {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ pickup?: string }>
 }
 
 export async function generateMetadata(
@@ -44,7 +43,9 @@ function routeLabel(r: TransferRoute, loc: Locale) {
 }
 
 export default async function TransfersLandingPage(props: Props) {
-  const [{ locale }, { pickup }] = await Promise.all([props.params, props.searchParams])
+  // No searchParams here: reading them makes the route dynamic (WHY-104).
+  // The form reads ?pickup= itself on the client.
+  const { locale } = await props.params
   setRequestLocale(locale)
   const loc = locale as Locale
 
@@ -83,7 +84,6 @@ export default async function TransfersLandingPage(props: Props) {
           <TransferInquiryForm
             pickupPoints={pickupPoints}
             destinations={destinations}
-            initialPickupPointId={pickup ?? null}
           />
         </div>
 

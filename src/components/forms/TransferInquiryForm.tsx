@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, useSyncExternalStore } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { FormField, inputClass, buttonClass } from './FormField'
 import { TurnstileWidget } from './TurnstileWidget'
@@ -24,17 +24,17 @@ function pointLabelFor(p: PickupPoint, l: Locale) {
 //   <UUID>        — a real pickup_points.id
 const OTHER = '__other__'
 
+// The query string doesn't change while the form is mounted.
+const subscribeNoop = () => () => {}
+
 interface Props {
   pickupPoints: PickupPoint[]
   destinations: Destination[]
-  // Optional: preselect a pickup point when the form is embedded on a route
-  // page. Route pages deep-link into /transfers with the pickup pre-selected
-  // (WHY-68 route-page follow-up).
-  initialPickupPointId?: string | null
 }
 
 type FormState = {
-  pickup_point_id: string
+  // null until the visitor picks one, so the ?pickup= preselect applies.
+  pickup_point_id: string | null
   pickup_from: string
   pickup_to: string
   travel_date: string
@@ -55,9 +55,9 @@ type FormState = {
   notes: string
 }
 
-function emptyState(initialPickupPointId?: string | null): FormState {
+function emptyState(): FormState {
   return {
-    pickup_point_id: initialPickupPointId ?? '',
+    pickup_point_id: null,
     pickup_from: '',
     pickup_to: '',
     travel_date: '',
@@ -102,7 +102,7 @@ function groupPointsByOrigin(
   return Array.from(groups.values()).sort((a, b) => a.label.localeCompare(b.label))
 }
 
-export function TransferInquiryForm({ pickupPoints, destinations, initialPickupPointId }: Props) {
+export function TransferInquiryForm({ pickupPoints, destinations }: Props) {
   const t = useTranslations('inquiry')
   const locale = useLocale() as Locale
   const errorLabels: Record<string, string> = {
@@ -111,7 +111,20 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
     error_email_format: t('shared.error_email_format'),
   }
 
-  const [state, setState] = useState<FormState>(() => emptyState(initialPickupPointId))
+  const [state, setState] = useState<FormState>(() => emptyState())
+  // Route pages deep-link to /transfers?pickup=<id> (WHY-68). Read it on the
+  // client so /transfers stays ISR instead of rendering per request on
+  // searchParams (WHY-104). The server snapshot is '', so the prerendered
+  // HTML and hydration agree. Only a published pickup point is accepted, and
+  // it applies until the visitor makes their own choice.
+  const urlPickupId = useSyncExternalStore(
+    subscribeNoop,
+    () => new URLSearchParams(window.location.search).get('pickup') ?? '',
+    () => '',
+  )
+  const pickupPointId =
+    state.pickup_point_id ??
+    (pickupPoints.some((p) => p.id === urlPickupId) ? urlPickupId : '')
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [formError, setFormError] = useState<string | null>(null)
@@ -154,7 +167,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
     }))
   }
 
-  const outboundIsOther = state.pickup_point_id === OTHER
+  const outboundIsOther = pickupPointId === OTHER
   const returnIsOther = state.return_pickup_point_id === OTHER
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -162,7 +175,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
     setFormError(null)
 
     const pickupPointIdOrNull =
-      state.pickup_point_id && state.pickup_point_id !== OTHER ? state.pickup_point_id : null
+      pickupPointId && pickupPointId !== OTHER ? pickupPointId : null
     const returnPointIdOrNull =
       state.return_enabled &&
       state.return_pickup_point_id &&
@@ -216,7 +229,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
       })
       if (res.status === 201) {
         setFormStatus('success')
-        setState(emptyState(initialPickupPointId))
+        setState(emptyState())
         return
       }
       if (res.status === 429) {
@@ -267,7 +280,7 @@ export function TransferInquiryForm({ pickupPoints, destinations, initialPickupP
             aria-invalid={invalid}
             aria-describedby={describedBy}
             className={inputClass}
-            value={state.pickup_point_id}
+            value={pickupPointId}
             onChange={(e) => set('pickup_point_id', e.target.value)}
           >
             <option value="">— {t('transfer.pickup_placeholder')} —</option>
