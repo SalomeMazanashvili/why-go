@@ -17,7 +17,7 @@ import {
 } from '@/lib/seo'
 import { getDestinationName, type Locale } from '@/types'
 
-// ISR + revalidatePath('/', 'layout') on admin service writes keeps this in
+// ISR + revalidateContent() on admin service writes keeps this in
 // sync with publishes without a rebuild.
 export const revalidate = 3600
 

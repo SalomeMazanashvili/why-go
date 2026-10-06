@@ -8,7 +8,7 @@ import { canonicalFor, breadcrumbJsonLd, jsonLdScript } from '@/lib/seo'
 import { TransferInquiryForm } from '@/components/forms/TransferInquiryForm'
 import type { Locale, TransferRoute } from '@/types'
 
-// ISR + revalidatePath('/', 'layout') on admin writes keeps this page in
+// ISR + revalidateContent() on admin writes keeps this page in
 // sync with pickup_points + transfer_routes without a rebuild.
 export const revalidate = 3600
 

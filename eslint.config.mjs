@@ -40,6 +40,24 @@ export default [
     },
   },
   {
+    // WHY-103: cache refreshes go through revalidateContent() in
+    // src/lib/revalidate.ts, which expires the Data Cache tag before
+    // re-rendering. A bare revalidatePath re-renders from stale rows.
+    // scripts/check-revalidate.sh (CI) catches a write route that calls
+    // nothing at all.
+    files: ['src/**'],
+    ignores: ['src/lib/revalidate.ts'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        paths: [{
+          name: 'next/cache',
+          importNames: ['revalidatePath', 'revalidateTag', 'updateTag'],
+          message: "Use revalidateContent() from '@/lib/revalidate' so the Data Cache is expired too (WHY-103).",
+        }],
+      }],
+    },
+  },
+  {
     ignores: [
       '.next/**',
       '.vercel/**',

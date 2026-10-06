@@ -7,6 +7,10 @@ import { SITE_URL } from '@/lib/seo'
 // WHY-69: Georgian URLs only. English is noindex; whisky-tour is noindex.
 // Under next-intl `localePrefix: 'as-needed'`, Georgian routes are served
 // unprefixed.
+// WHY-103: admin writes refresh this immediately via revalidateContent();
+// the 1h window is the upper bound if one is ever missed, matching the pages.
+export const revalidate = 3600
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
   const staticPaths = ['/', '/tours', '/tips', '/about', '/contact', '/transfers']

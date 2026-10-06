@@ -1,4 +1,4 @@
-import { hasAdminSupabase, getAdminSupabase } from '@/lib/supabase/admin'
+import { hasAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
 
 export type SiteContentRow = { key: string; value_en: string | null; value_ka: string | null }
 export type SiteSettingRow = { key: string; value: string | null }
@@ -50,7 +50,7 @@ export async function loadSiteContent(): Promise<ContentMap> {
   }
   if (!hasAdminSupabase()) return map
   try {
-    const supabase = getAdminSupabase()
+    const supabase = getContentSupabase()
     const { data } = await supabase.from('site_content').select('key, value_en, value_ka')
     for (const row of (data ?? []) as SiteContentRow[]) {
       map[row.key] = {
@@ -68,7 +68,7 @@ export async function loadSiteSettings(): Promise<SettingsMap> {
   const map: SettingsMap = { ...DEFAULT_SETTINGS }
   if (!hasAdminSupabase()) return map
   try {
-    const supabase = getAdminSupabase()
+    const supabase = getContentSupabase()
     const { data } = await supabase.from('site_settings').select('key, value')
     for (const row of (data ?? []) as SiteSettingRow[]) {
       if (row.value) map[row.key] = row.value

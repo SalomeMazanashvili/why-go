@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
+import { revalidateContent } from '@/lib/revalidate'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 import { countServicesByDestination } from '@/lib/services'
@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest, props: Ctx) {
     const s = getAdminSupabase()
     const { error } = await s.from('destinations').update(payload).eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    revalidatePath('/', 'layout')
+    revalidateContent()
     return NextResponse.json({ success: true })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Server error'
@@ -68,7 +68,7 @@ export async function DELETE(_req: NextRequest, props: Ctx) {
     const s = getAdminSupabase()
     const { error } = await s.from('destinations').delete().eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    revalidatePath('/', 'layout')
+    revalidateContent()
     return NextResponse.json({ success: true })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Server error'
