@@ -95,7 +95,9 @@ The blog post and the sales page are the same page — editorial content sells t
 
 ## Quality gates
 
-**CI, blocking:** TypeScript strict · ESLint · Playwright E2E · axe-core (zero critical) · Lighthouse CI (Performance 90 / SEO 95 / A11y 95)
+**CI, blocking today** (`.github/workflows/ci.yml`): TypeScript strict · ESLint · `next build` · `scripts/check-revalidate.sh` · **translation keys**: messages are typed (`src/global.d.ts`), so a missing `t('…')` key or namespace fails `tsc`, and `src/i18n/messageParity.ts` fails it unless `ka.json` and `en.json` have identical keys. `TODO: Georgian copy needed` values are allowed and only reported (`npm run copy:todo`).
+
+**Not yet in CI (WHY-98, staged):** Playwright E2E · axe-core (zero violations) · Lighthouse CI (Performance 90 / SEO 95 / A11y 95). Until they land, run them by hand, and say in the PR which pages and **which render state** (seeded or empty) were scanned. They need a seeded CI database first, which waits on WHY-100 (does `supabase/schema.sql` match production?).
 
 **Budgets:** LCP < 2.5s · CLS < 0.1 · INP < 200ms, mobile at 4G
 
