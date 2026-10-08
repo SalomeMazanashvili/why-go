@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidateContent } from '@/lib/revalidate'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
+import { numericErrorBody, validateNumericFields } from '@/lib/numericFields'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
 const WRITABLE = [
@@ -31,6 +32,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const payload = pickPayload(body)
+    const numberErrors = validateNumericFields(payload)
+    if (numberErrors) return NextResponse.json(numericErrorBody(numberErrors), { status: 400 })
     if (!payload.slug || !payload.from_name_en || !payload.to_name_en) {
       return NextResponse.json({ error: 'slug, from_name_en and to_name_en are required' }, { status: 400 })
     }

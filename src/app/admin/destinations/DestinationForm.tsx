@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import ImageUploader from '../_components/ImageUploader'
 import type { Destination, DestinationFaq } from '@/types'
 import { destinationWordCount } from '@/lib/destinationIndexing'
@@ -37,6 +39,7 @@ export default function DestinationForm({ initial, mode }: Props) {
   const [item, setItem] = useState<Destination>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof Destination>(key: K, value: Destination[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -64,10 +67,12 @@ export default function DestinationForm({ initial, mode }: Props) {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Destination created' : 'Destination saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/destinations/${data.id}`)
@@ -119,12 +124,12 @@ export default function DestinationForm({ initial, mode }: Props) {
             <input className="admin-input" value={item.country} onChange={(e) => update('country', e.target.value)} placeholder="e.g. Spain, Germany" />
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="sort_order"
+              label="Sort order"
               value={item.sort_order}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <label className="flex items-center gap-3 mt-6">

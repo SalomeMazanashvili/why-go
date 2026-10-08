@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import ImageUploader from '../_components/ImageUploader'
 import type { Guide } from '@/types'
 
@@ -34,6 +36,7 @@ export default function GuideForm({ initial, mode }: Props) {
   const [item, setItem] = useState<Guide>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof Guide>(key: K, value: Guide[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -51,10 +54,12 @@ export default function GuideForm({ initial, mode }: Props) {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Guide created' : 'Guide saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/guides/${data.id}`)
@@ -127,12 +132,12 @@ export default function GuideForm({ initial, mode }: Props) {
             <p className="text-[10px] text-white/40 mt-1">Free text for now. PR C may link this to destinations.</p>
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="sort_order"
+              label="Sort order"
               value={item.sort_order}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <label className="flex items-center gap-3 mt-6">

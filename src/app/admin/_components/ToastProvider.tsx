@@ -47,7 +47,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <Ctx.Provider value={value}>
       {children}
-      <div className="fixed bottom-6 right-6 z-[500] flex flex-col gap-2 pointer-events-none">
+      {/* WHY-106: a persistent live region, so save results (including
+          field errors) are announced. Errors interrupt (role="alert"). */}
+      <div aria-live="polite" className="fixed bottom-6 right-6 z-[500] flex flex-col gap-2 pointer-events-none">
         {toasts.map((t) => (
           <ToastItem key={t.id} toast={t} onDismiss={() => remove(t.id)} />
         ))}
@@ -72,6 +74,7 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
   return (
     <div
       onClick={onDismiss}
+      role={toast.kind === 'error' ? 'alert' : undefined}
       className={`pointer-events-auto cursor-pointer bg-[#111] border-l-4 ${colors[toast.kind]} px-5 py-3 shadow-lg text-[12px] font-bold tracking-wide min-w-[240px] max-w-sm transition-all duration-200 ${
         visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
       }`}

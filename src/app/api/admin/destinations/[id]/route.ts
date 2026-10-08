@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidateContent } from '@/lib/revalidate'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
+import { numericErrorBody, validateNumericFields } from '@/lib/numericFields'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 import { normalizeFaq } from '@/lib/destinations'
 import { isReservedSlug, RESERVED_TOP_LEVEL_SLUGS } from '@/lib/reservedSlugs'
@@ -44,6 +45,8 @@ export async function PUT(req: NextRequest, props: Ctx) {
   try {
     const body = await req.json()
     const payload = pickPayload(body)
+    const numberErrors = validateNumericFields(payload)
+    if (numberErrors) return NextResponse.json(numericErrorBody(numberErrors), { status: 400 })
     if (typeof payload.slug === 'string' && isReservedSlug(payload.slug)) {
       return NextResponse.json({ error: reservedSlugError(payload.slug) }, { status: 400 })
     }

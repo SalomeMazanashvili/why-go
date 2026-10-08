@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import ImageUploader from '../_components/ImageUploader'
 import type { AdminNews } from '@/lib/news'
 import type { Destination } from '@/types'
@@ -34,6 +36,7 @@ export default function NewsForm({ initial, mode, destinations }: Props) {
   const [item, setItem] = useState<AdminNews>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof AdminNews>(key: K, value: AdminNews[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -51,10 +54,12 @@ export default function NewsForm({ initial, mode, destinations }: Props) {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Article created' : 'Article saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/news/${data.id}`)
@@ -103,12 +108,12 @@ export default function NewsForm({ initial, mode, destinations }: Props) {
             <input className="admin-input" value={item.author} onChange={(e) => update('author', e.target.value)} />
           </div>
           <div>
-            <label className="admin-label">Reading time (min)</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="reading_time_min"
+              label="Reading time (min)"
               value={item.reading_time_min}
-              onChange={(e) => update('reading_time_min', Number(e.target.value) || 0)}
+              onChange={(v) => update('reading_time_min', v ?? 0)}
+              error={fieldErrors.reading_time_min}
             />
           </div>
           <div>
