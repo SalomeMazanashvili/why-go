@@ -80,6 +80,12 @@ export default function Navbar({ items }: { items: NavItem[] }) {
 
   const isHome = pathname === '/'
   const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+  // WHY-112: the current page is marked by underline + full-white text, not
+  // colour alone (WCAG 1.4.1), and keeps aria-current="page" for AT.
+  const desktopLinkClass = (current: boolean) =>
+    `text-[15px] font-bold tracking-wide uppercase underline-offset-[10px] decoration-2 decoration-brand-yellow transition-colors ${
+      current ? 'text-white underline' : 'text-white/70 hover:text-brand-yellow'
+    }`
   const hasBackground = !isHome || scrolled
 
   return (
@@ -90,11 +96,11 @@ export default function Navbar({ items }: { items: NavItem[] }) {
             WHY<span className="text-brand-yellow">GO</span>
           </Link>
 
-          <nav aria-label={t('primary_label')} className="hidden md:flex items-center gap-8">
+          <nav aria-label={t('primary_label')} className="hidden md:flex items-center gap-5 lg:gap-8">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href}
                 aria-current={isCurrent(link.href) ? 'page' : undefined}
-                className="text-[11px] font-bold tracking-widest uppercase text-white/60 hover:text-brand-yellow transition-colors">
+                className={desktopLinkClass(isCurrent(link.href))}>
                 {link.label}
               </Link>
             ))}
@@ -102,7 +108,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
 
           <div className="flex items-center gap-4">
             <button onClick={switchLocale}
-              className="text-[11px] font-black tracking-widest bg-brand-yellow text-ink px-3 py-2 hover:brightness-110 transition-colors">
+              className="min-h-[44px] min-w-[44px] text-[11px] font-black tracking-widest bg-brand-yellow text-ink px-3 hover:brightness-110 transition-colors">
               {currentLocale === 'en' ? 'ქარ' : 'ENG'}
             </button>
             <button
@@ -112,7 +118,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-haspopup="dialog"
-              className="flex flex-col gap-1.5 md:hidden"
+              className="flex flex-col items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] -mr-2 md:hidden"
               onClick={() => setMenuOpen(true)}
             >
               <span aria-hidden="true" className="block w-7 h-0.5 bg-white" />
@@ -136,7 +142,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
             className="surface-dark fixed inset-0 z-[200] flex flex-col justify-center px-10"
           >
             <button type="button" onClick={() => closeMenu()} aria-label={t('menu_close')}
-              className="absolute top-6 right-8 text-4xl text-white font-thin">
+              className="absolute top-4 right-6 flex items-center justify-center w-11 h-11 text-4xl text-white font-thin">
               <span aria-hidden="true">×</span>
             </button>
             <nav aria-label={t('primary_label')} className="flex flex-col gap-2">
@@ -146,7 +152,9 @@ export default function Navbar({ items }: { items: NavItem[] }) {
                   transition={{ delay: 0.1 + i * 0.08 }}>
                   <Link href={link.href} onClick={() => closeMenu(false)}
                     aria-current={isCurrent(link.href) ? 'page' : undefined}
-                    className="block text-[clamp(36px,8vw,60px)] font-black leading-tight tracking-tight text-white hover:text-brand-yellow transition-colors uppercase">
+                    className={`block text-[clamp(36px,8vw,60px)] font-black leading-tight tracking-tight uppercase transition-colors underline-offset-[12px] decoration-4 decoration-brand-yellow ${
+                      isCurrent(link.href) ? 'text-white underline' : 'text-white/80 hover:text-brand-yellow'
+                    }`}>
                     {link.label}
                   </Link>
                 </motion.div>
