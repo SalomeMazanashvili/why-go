@@ -32,5 +32,10 @@ jobs:
       - name: Admin writes refresh the public site
         run: bash scripts/check-revalidate.sh
 
+      # Missing translation keys fail the Typecheck step above (WHY-98 PR A).
+      # TODO placeholders are expected; this only reports how many remain.
+      - name: Georgian copy still TODO (report only)
+        run: bash scripts/count-todo-copy.sh
+
       - name: Build
         run: npm run build
