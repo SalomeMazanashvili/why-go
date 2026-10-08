@@ -9,9 +9,13 @@ import { SITE_URL } from '@/lib/seo'
 // WHY-69: Georgian URLs only. English is noindex; whisky-tour is noindex.
 // Under next-intl `localePrefix: 'as-needed'`, Georgian routes are served
 // unprefixed.
-// WHY-103: admin writes refresh this immediately via revalidateContent();
-// the 1h window is the upper bound if one is ever missed, matching the pages.
-export const revalidate = 3600
+// WHY-103: rendered per request. As ISR (revalidate = 3600) Vercel cached it
+// outside the page cache: on 2026-10-08 it was 27.5h old and still listed a
+// deleted route, while the route's own page already 404'd. Nothing reached
+// it, not revalidateContent() and not the 1h window. Its reads still go
+// through the tagged Data Cache (getContentSupabase), so this costs no extra
+// Supabase queries, and an admin write expires them at once.
+export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
