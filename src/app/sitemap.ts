@@ -12,9 +12,12 @@ import { SITE_URL } from '@/lib/seo'
 // WHY-103: rendered per request. As ISR (revalidate = 3600) Vercel cached it
 // outside the page cache: on 2026-10-08 it was 27.5h old and still listed a
 // deleted route, while the route's own page already 404'd. Nothing reached
-// it, not revalidateContent() and not the 1h window. Its reads still go
-// through the tagged Data Cache (getContentSupabase), so this costs no extra
-// Supabase queries, and an admin write expires them at once.
+// it, not revalidateContent() and not the 1h window.
+//
+// force-dynamic also means fetchCache = 'force-no-store', which overrides the
+// tags and 1h cap getContentSupabase() sets: every request reads Supabase
+// directly (a handful of small published-row selects). Fine for a file
+// crawlers fetch a few times a day, and it can never be stale.
 export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
