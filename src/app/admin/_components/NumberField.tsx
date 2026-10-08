@@ -39,7 +39,7 @@ export default function NumberField({
         type="number"
         inputMode={rule.integer ? 'numeric' : 'decimal'}
         min={rule.min}
-        step={step ?? (rule.integer ? '1' : 'any')}
+        step={step ?? ('step' in rule && rule.step ? String(rule.step) : rule.integer ? '1' : 'any')}
         required={!rule.nullable}
         className="admin-input"
         value={value ?? ''}

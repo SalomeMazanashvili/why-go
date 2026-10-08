@@ -14,6 +14,8 @@ export interface NumericRule {
   // (default 5) are required.
   nullable: boolean
   label: string
+  // Allowed increment for decimals, e.g. 0.5 for half-hour durations.
+  step?: number
 }
 
 export const NUMERIC_RULES = {
@@ -21,12 +23,19 @@ export const NUMERIC_RULES = {
   price_from: { integer: false, min: 0, nullable: true, label: 'Price' },
   duration_days: { integer: true, min: 1, nullable: true, label: 'Duration (days)' },
   duration_minutes: { integer: true, min: 1, nullable: true, label: 'Duration (minutes)' },
-  duration_hours: { integer: false, min: 0.5, nullable: true, label: 'Duration (hours)' },
+  // Half-hour steps: 0.5, 1, 1.5… Museum slots, cooking classes and wine
+  // tours are often 1.5h. Matches services_duration_hours_half CHECK.
+  duration_hours: { integer: false, min: 0.5, step: 0.5, nullable: true, label: 'Duration (hours)' },
   min_group_size: { integer: true, min: 1, nullable: true, label: 'Min group size' },
   max_group_size: { integer: true, min: 1, nullable: true, label: 'Max group size' },
   max_passengers: { integer: true, min: 1, nullable: true, label: 'Max passengers' },
   reading_time_min: { integer: true, min: 1, nullable: false, label: 'Reading time' },
 } satisfies Record<string, NumericRule>
+
+function offStep(n: number, step: number): boolean {
+  const k = n / step
+  return Math.abs(k - Math.round(k)) > 1e-9
+}
 
 export type NumericField = keyof typeof NUMERIC_RULES
 export type FieldErrors = Partial<Record<string, string>>
@@ -55,6 +64,8 @@ export function validateNumericFields(payload: Record<string, unknown>): FieldEr
       errors[field] = `${rule.label} must be a number.`
     } else if ((rule.integer && !Number.isInteger(n)) || n < rule.min) {
       errors[field] = ruleMessage(rule)
+    } else if ('step' in rule && rule.step && offStep(n, rule.step)) {
+      errors[field] = `${rule.label} must be in steps of ${rule.step} (e.g. ${rule.step * 3}).`
     } else {
       payload[field] = n
     }

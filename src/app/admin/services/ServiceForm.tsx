@@ -241,7 +241,7 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
           <div>
             <NumberField
               field="duration_hours"
-              label="Duration (hours)" step="0.5"
+              label="Duration (hours)"
               value={item.duration_hours}
               onChange={(v) => update('duration_hours', v)}
               error={fieldErrors.duration_hours}
