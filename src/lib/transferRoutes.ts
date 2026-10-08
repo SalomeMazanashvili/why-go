@@ -2,10 +2,11 @@ import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/su
 import type { TransferRoute } from '@/types'
 
 const ROUTE_COLUMNS =
-  'id, slug, from_destination_id, to_destination_id, from_name_en, from_name_ka, to_name_en, to_name_ka, description_en, description_ka, seo_title_ka, seo_description_ka, price_from, currency, duration_minutes, vehicle_type, max_passengers, is_published, sort_order'
+  'id, slug, from_destination_id, to_destination_id, from_name_en, from_name_ka, to_name_en, to_name_ka, description_en, description_ka, seo_title_ka, seo_description_ka, price_from, currency, duration_minutes, vehicle_type, max_passengers, is_published, sort_order, updated_at'
 
 function normalize(row: any): TransferRoute {
   return {
+    updated_at: row.updated_at ?? null,
     id: String(row.id),
     slug: row.slug ?? '',
     from_destination_id: row.from_destination_id ?? null,

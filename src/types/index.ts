@@ -1,6 +1,8 @@
 export type Locale = 'en' | 'ka'
 
 export interface Tour {
+  // Row's last edit; the sitemap's lastmod (WHY-103).
+  updated_at?: string | null
   id: string
   slug: string
   title_en: string
@@ -24,6 +26,8 @@ export interface Tour {
 }
 
 export interface Destination {
+  // Row's last edit; the sitemap's lastmod (WHY-103).
+  updated_at?: string | null
   id: string
   slug: string
   name_en: string
@@ -81,6 +85,8 @@ export interface Guide {
 export type ServiceType = 'day_trip' | 'guide' | 'experience'
 
 export interface Service {
+  // Row's last edit; the sitemap's lastmod (WHY-103).
+  updated_at?: string | null
   id: string
   slug: string
   destination_id: string | null
@@ -121,6 +127,8 @@ export interface Service {
 }
 
 export interface TransferRoute {
+  // Row's last edit; the sitemap's lastmod (WHY-103).
+  updated_at?: string | null
   id: string
   slug: string
   from_destination_id: string | null

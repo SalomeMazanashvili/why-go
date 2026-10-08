@@ -3,7 +3,7 @@ import { countWords, MIN_INDEXABLE_WORDS } from '@/lib/seo'
 import type { Destination, Service, ServiceType } from '@/types'
 
 const SERVICE_COLUMNS =
-  'id, slug, destination_id, category_id, service_type, name_en, name_ka, short_description_en, short_description_ka, description_en, description_ka, seo_title_ka, seo_description_ka, route_en, route_ka, included_en, included_ka, what_to_bring_en, what_to_bring_ka, meeting_point_en, meeting_point_ka, gallery, departure_times, price_from, currency, duration_hours, min_group_size, max_group_size, cover_image, is_published, is_featured, sort_order'
+  'id, slug, destination_id, category_id, service_type, name_en, name_ka, short_description_en, short_description_ka, description_en, description_ka, seo_title_ka, seo_description_ka, route_en, route_ka, included_en, included_ka, what_to_bring_en, what_to_bring_ka, meeting_point_en, meeting_point_ka, gallery, departure_times, price_from, currency, duration_hours, min_group_size, max_group_size, cover_image, is_published, is_featured, sort_order, updated_at'
 
 const SERVICE_TYPES: ServiceType[] = ['day_trip', 'guide', 'experience']
 
@@ -44,6 +44,7 @@ export function validateServiceWriteFields(
 
 function normalize(row: any): Service {
   return {
+    updated_at: row.updated_at ?? null,
     id: String(row.id),
     slug: row.slug ?? '',
     destination_id: row.destination_id ?? null,
