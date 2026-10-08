@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/adminAuth'
-import { listDestinationsForAdmin } from '@/lib/destinations'
+import { destinationWordCount, listDestinationsForAdmin } from '@/lib/destinations'
+import { MIN_INDEXABLE_WORDS } from '@/lib/seo'
 import { hasAdminSupabase } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
@@ -33,6 +34,7 @@ export default async function DestinationsAdminPage() {
               <th className="text-left px-5 py-3">Country</th>
               <th className="text-left px-5 py-3">Slug</th>
               <th className="text-left px-5 py-3">Status</th>
+              <th className="text-left px-5 py-3">Hub in Google</th>
               <th className="px-5 py-3"></th>
             </tr>
           </thead>
@@ -54,6 +56,16 @@ export default async function DestinationsAdminPage() {
                     <span className="text-[10px] font-bold tracking-widest uppercase text-white/40">Draft</span>
                   )}
                 </td>
+                <td className="px-5 py-4 text-xs">
+                  {/* WHY-65: hubs under 300 Georgian words are noindex by design. */}
+                  {destinationWordCount(d) >= MIN_INDEXABLE_WORDS ? (
+                    <span className="text-emerald-400">Indexed</span>
+                  ) : (
+                    <span className="text-white/50">
+                      Hidden · {destinationWordCount(d)}/{MIN_INDEXABLE_WORDS} words
+                    </span>
+                  )}
+                </td>
                 <td className="px-5 py-4 text-right">
                   <Link
                     href={`/admin/destinations/${d.id}`}
@@ -66,7 +78,7 @@ export default async function DestinationsAdminPage() {
             ))}
             {items.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-5 py-10 text-center text-white/40 text-sm">
+                <td colSpan={6} className="px-5 py-10 text-center text-white/40 text-sm">
                   No destinations yet.
                 </td>
               </tr>

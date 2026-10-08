@@ -150,5 +150,9 @@
     "section_meeting_point": "შეხვედრის ადგილი",
     "section_gallery": "ფოტოები",
     "gallery_alt": "ფოტო {n}"
+  },
+  "destination_page": {
+    "practical_title": "TODO: Georgian copy needed (practical info heading)",
+    "faq_title": "TODO: Georgian copy needed (FAQ heading)"
   }
 }

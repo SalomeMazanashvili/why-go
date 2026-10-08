@@ -87,9 +87,9 @@ export async function ToursSection({ tours, locale }: { tours: Tour[]; locale: L
 }
 
 // §3 ქალაქები — the homepage is where destination hubs get internal links.
-// Until hubs exist (WHY-65) each city links to its group on /experiences, so
-// only cities with a cover image AND at least one linkable experience show:
-// a tile must never lead to a missing anchor or a 404.
+// Each tile links to the city's hub (WHY-65). Still only cities with a cover
+// image and at least one linkable experience, so a tile never leads to a hub
+// with nothing on it.
 export async function CitiesSection({
   destinations,
   experiences,
@@ -109,7 +109,7 @@ export async function CitiesSection({
         {cities.map((d) => (
           <li key={d.id}>
             <Link
-              href={`/experiences#${d.slug}`}
+              href={`/${d.slug}`}
               className={`group relative block overflow-hidden bg-ink tone-dark ${cities.length === 1 ? 'aspect-[4/3] md:aspect-[21/9]' : 'aspect-[4/5]'}`}
             >
               <Image

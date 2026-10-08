@@ -154,9 +154,15 @@ export default async function DayTripDetailPage(
         </p>
 
         <header className="mb-10">
-          {destinationName && (
+          {/* WHY-65: every day trip links back to its city's hub. */}
+          {destination && destinationName && (
             <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">
-              {destinationName}
+              <Link
+                href={`/${destination.slug}`}
+                className="hover:underline decoration-brand-yellow decoration-2 underline-offset-4"
+              >
+                {destinationName}
+              </Link>
             </p>
           )}
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">

@@ -273,3 +273,17 @@ export function countWords(...texts: Array<string | null | undefined>): number {
 export function jsonLdScript(payload: object): string {
   return JSON.stringify(payload).replace(/</g, '\\u003c')
 }
+
+// WHY-65: FAQPage JSON-LD for a destination hub. Only call it with complete
+// Q/A pairs (normalizeFaq) and only when there is at least one.
+export function faqPageJsonLd(items: Array<{ q: string; a: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  }
+}
