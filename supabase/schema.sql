@@ -429,3 +429,39 @@ ALTER TABLE services ADD COLUMN IF NOT EXISTS gallery TEXT[] DEFAULT '{}';
 -- customer states a preference, not a booking time. Empty array hides the
 -- field entirely rather than inventing slots.
 ALTER TABLE services ADD COLUMN IF NOT EXISTS departure_times TEXT[] DEFAULT '{}';
+
+-- Applied to production 2026-10-07 (migration why65_destination_hub_plumbing),
+-- verified via information_schema.columns + pg_constraint.
+-- WHY-65 PR A: destination hub plumbing
+
+-- Practical info (airport, transport, money, tipping) and FAQ for the hub.
+-- FAQ is a JSON array of {"q_ka": "...", "a_ka": "..."}; it feeds FAQPage
+-- JSON-LD. Georgian only: English is scaffolded, not published.
+ALTER TABLE destinations
+  ADD COLUMN IF NOT EXISTS practical_info_ka TEXT,
+  ADD COLUMN IF NOT EXISTS faq JSONB NOT NULL DEFAULT '[]'::jsonb;
+
+ALTER TABLE destinations
+  DROP CONSTRAINT IF EXISTS destinations_faq_is_array,
+  ADD CONSTRAINT destinations_faq_is_array CHECK (jsonb_typeof(faq) = 'array');
+
+-- Hubs live at /[slug], beside the site's own top-level routes. A destination
+-- slug equal to one of them would be shadowed by the static route (or shadow
+-- a future one). Reserve every current and planned top-level segment; the
+-- admin API checks the same list (src/lib/reservedSlugs.ts).
+ALTER TABLE destinations
+  DROP CONSTRAINT IF EXISTS destinations_slug_not_reserved,
+  ADD CONSTRAINT destinations_slug_not_reserved CHECK (slug NOT IN (
+    'en', 'ka',
+    'tours', 'transfers', 'day-trips', 'experiences', 'guides',
+    'tips', 'blog', 'about', 'contact', 'destinations', 'services',
+    'terms', 'privacy', 'cookies',
+    'admin', 'api', 'whisky-tour',
+    'sitemap.xml', 'robots.txt', 'icon.png', 'favicon.ico', '-', '_next'
+  ));
+
+-- One destination per blog post, for the hub's related-posts section.
+ALTER TABLE news
+  ADD COLUMN IF NOT EXISTS destination_id UUID REFERENCES destinations(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS news_destination_id_idx ON news (destination_id);

@@ -6,10 +6,12 @@ import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
 import ImageUploader from '../_components/ImageUploader'
 import type { AdminNews } from '@/lib/news'
+import type { Destination } from '@/types'
 
 interface Props {
   initial?: AdminNews | null
   mode: 'create' | 'edit'
+  destinations: Destination[]
 }
 
 const empty: AdminNews = {
@@ -23,9 +25,10 @@ const empty: AdminNews = {
   is_featured: false,
   is_published: true,
   published_at: new Date().toISOString(),
+  destination_id: null,
 }
 
-export default function NewsForm({ initial, mode }: Props) {
+export default function NewsForm({ initial, mode, destinations }: Props) {
   const router = useRouter()
   const toast = useToast()
   const [item, setItem] = useState<AdminNews>(initial ?? empty)
@@ -118,6 +121,25 @@ export default function NewsForm({ initial, mode }: Props) {
                 update('published_at', e.target.value ? new Date(e.target.value).toISOString() : new Date().toISOString())
               }
             />
+          </div>
+          <div>
+            <label className="admin-label" htmlFor="news-destination">Destination</label>
+            <select
+              id="news-destination"
+              className="admin-input"
+              value={item.destination_id ?? ''}
+              onChange={(e) => update('destination_id', e.target.value || null)}
+            >
+              <option value="">— None —</option>
+              {destinations.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name_ka || d.name_en} {d.country ? `(${d.country})` : ''}
+                </option>
+              ))}
+            </select>
+            <p className="text-[10px] text-white/40 mt-1">
+              The post is listed on this city's hub page.
+            </p>
           </div>
           <div className="md:col-span-2">
             <ImageUploader

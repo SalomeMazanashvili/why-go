@@ -8,7 +8,7 @@ export type AdminNews = News & {
 }
 
 const COLUMNS =
-  'id, slug, title_en, excerpt_en, content_en, tag_en, title_ka, excerpt_ka, content_ka, tag_ka, cover_image, author, reading_time_min, is_featured, is_published, published_at'
+  'id, slug, title_en, excerpt_en, content_en, tag_en, title_ka, excerpt_ka, content_ka, tag_ka, cover_image, author, reading_time_min, is_featured, is_published, published_at, destination_id'
 
 function normalize(row: any): AdminNews {
   return {
@@ -30,6 +30,7 @@ function normalize(row: any): AdminNews {
     // treated as a draft, so it never accidentally leaks to the public site.
     is_published: row.is_published ?? false,
     published_at: row.published_at ?? new Date().toISOString(),
+    destination_id: row.destination_id ?? null,
   }
 }
 

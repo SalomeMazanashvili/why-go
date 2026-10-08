@@ -1,8 +1,8 @@
 import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
-import type { Destination } from '@/types'
+import type { Destination, DestinationFaq } from '@/types'
 
 const DESTINATION_COLUMNS =
-  'id, slug, name_en, name_ka, country, description_en, description_ka, seo_title_ka, seo_description_ka, cover_image, is_published, sort_order'
+  'id, slug, name_en, name_ka, country, description_en, description_ka, seo_title_ka, seo_description_ka, cover_image, is_published, sort_order, practical_info_ka, faq'
 
 function normalize(row: any): Destination {
   return {
@@ -18,7 +18,21 @@ function normalize(row: any): Destination {
     cover_image: row.cover_image ?? null,
     is_published: row.is_published ?? false,
     sort_order: row.sort_order ?? 0,
+    practical_info_ka: row.practical_info_ka ?? '',
+    faq: normalizeFaq(row.faq),
   }
+}
+
+// Keeps only complete Georgian Q/A pairs, trimmed. Used on read and on admin
+// writes, so a half-filled row in the editor never reaches FAQPage JSON-LD.
+export function normalizeFaq(raw: unknown): DestinationFaq[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((f: any) => ({
+      q_ka: typeof f?.q_ka === 'string' ? f.q_ka.trim() : '',
+      a_ka: typeof f?.a_ka === 'string' ? f.a_ka.trim() : '',
+    }))
+    .filter((f) => f.q_ka && f.a_ka)
 }
 
 // Public-facing list. Filters to published rows only — matches the RLS

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { requireAdmin } from '@/lib/adminAuth'
 import { getNewsById } from '@/lib/news'
+import { listDestinationsForAdmin } from '@/lib/destinations'
 import NewsForm from '../NewsForm'
 
 export const dynamic = 'force-dynamic'
@@ -13,7 +14,7 @@ interface Params {
 export default async function EditNewsPage(props: Params) {
   const params = await props.params;
   await requireAdmin()
-  const item = await getNewsById(params.id)
+  const [item, destinations] = await Promise.all([getNewsById(params.id), listDestinationsForAdmin()])
   if (!item) notFound()
   return (
     <div className="p-8 lg:p-12 max-w-4xl">
@@ -25,7 +26,7 @@ export default async function EditNewsPage(props: Params) {
           {item.title_en || 'Untitled article'}
         </h1>
       </header>
-      <NewsForm mode="edit" initial={item} />
+      <NewsForm mode="edit" initial={item} destinations={destinations} />
     </div>
   )
 }

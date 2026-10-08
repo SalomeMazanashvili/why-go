@@ -9,6 +9,7 @@ const WRITABLE = [
   'title_ka', 'excerpt_ka', 'content_ka', 'tag_ka',
   'cover_image', 'author', 'reading_time_min',
   'is_featured', 'is_published', 'published_at',
+  'destination_id',
 ] as const
 
 function pickPayload(body: any) {
@@ -16,6 +17,8 @@ function pickPayload(body: any) {
   for (const key of WRITABLE) {
     if (key in body) out[key] = body[key]
   }
+  // WHY-65: '' from the admin select means "no destination".
+  if ('destination_id' in out && !out.destination_id) out.destination_id = null
   out.updated_at = new Date().toISOString()
   return out
 }
