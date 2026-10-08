@@ -20,20 +20,26 @@ import { SITE_URL } from '@/lib/seo'
 // crawlers fetch a few times a day, and it can never be stale.
 export const dynamic = 'force-dynamic'
 
+// lastmod: a database-driven URL uses its own row's updated_at. Static and
+// index pages omit it (valid per the sitemap protocol): stamping them with
+// the request time told Google the whole site changed on every crawl.
+// Never call new Date() in this file.
+function lastmod(updatedAt: string | null | undefined) {
+  return updatedAt ? { lastModified: updatedAt } : {}
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date()
   const staticPaths = ['/', '/tours', '/tips', '/about', '/contact', '/transfers']
 
   const staticEntries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: `${SITE_URL}${path === '/' ? '' : path}`,
-    lastModified: now,
     changeFrequency: 'weekly',
     priority: path === '/' ? 1.0 : 0.7,
   }))
 
   const tourEntries: MetadataRoute.Sitemap = (await listTours()).map((tour) => ({
     url: `${SITE_URL}/tours/${tour.slug}`,
-    lastModified: now,
+    ...lastmod(tour.updated_at),
     changeFrequency: 'monthly',
     priority: 0.6,
   }))
@@ -43,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const transferRouteEntries: MetadataRoute.Sitemap = (await listTransferRoutes()).map(
     (route) => ({
       url: `${SITE_URL}/transfers/${route.slug}`,
-      lastModified: now,
+      ...lastmod(route.updated_at),
       changeFrequency: 'monthly',
       priority: 0.6,
     }),
@@ -58,14 +64,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(dayTrips.length > 0
       ? [{
           url: `${SITE_URL}/day-trips`,
-          lastModified: now,
           changeFrequency: 'weekly' as const,
           priority: 0.7,
         }]
       : []),
     ...indexableDayTrips.map((trip) => ({
       url: `${SITE_URL}/day-trips/${trip.slug}`,
-      lastModified: now,
+      ...lastmod(trip.updated_at),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     })),
@@ -77,7 +82,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     (await listExperiences()).length > 0
       ? [{
           url: `${SITE_URL}/experiences`,
-          lastModified: now,
           changeFrequency: 'weekly' as const,
           priority: 0.7,
         }]
@@ -89,7 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((d) => !isReservedSlug(d.slug) && isDestinationIndexable(d))
     .map((d) => ({
       url: `${SITE_URL}/${d.slug}`,
-      lastModified: now,
+      ...lastmod(d.updated_at),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }))

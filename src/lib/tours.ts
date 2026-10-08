@@ -2,10 +2,11 @@ import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/su
 import type { Tour } from '@/types'
 
 const TOUR_COLUMNS =
-  'id, slug, title_en, subtitle_en, description_en, tag_en, title_ka, subtitle_ka, description_ka, tag_ka, destination, price_from, currency, duration_days, cover_image, is_featured, sort_order, expert_credential_ka'
+  'id, slug, title_en, subtitle_en, description_en, tag_en, title_ka, subtitle_ka, description_ka, tag_ka, destination, price_from, currency, duration_days, cover_image, is_featured, sort_order, expert_credential_ka, updated_at'
 
 function normalize(row: any): Tour {
   return {
+    updated_at: row.updated_at ?? null,
     id: String(row.id),
     slug: row.slug ?? '',
     title_en: row.title_en ?? '',
