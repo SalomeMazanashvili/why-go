@@ -9,6 +9,7 @@
     "lint": "eslint src",
     "test:rls": "bash scripts/test-rls.sh",
     "check:revalidate": "bash scripts/check-revalidate.sh",
+    "copy:todo": "bash scripts/count-todo-copy.sh",
     "fonts:subset": "bash scripts/subset-fonts.sh"
   },
   "dependencies": {
