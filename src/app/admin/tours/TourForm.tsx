@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import ImageUploader from '../_components/ImageUploader'
 import type { Tour } from '@/types'
 
@@ -33,6 +35,7 @@ export default function TourForm({ initial, mode }: Props) {
   const [tour, setTour] = useState<Tour>(initial ?? emptyTour)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof Tour>(key: K, value: Tour[K]) =>
     setTour((prev) => ({ ...prev, [key]: value }))
@@ -50,10 +53,12 @@ export default function TourForm({ initial, mode }: Props) {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Tour created' : 'Tour saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/tours/${data.id}`)
@@ -102,12 +107,12 @@ export default function TourForm({ initial, mode }: Props) {
             <input className="admin-input" value={tour.destination} onChange={(e) => update('destination', e.target.value)} required />
           </div>
           <div>
-            <label className="admin-label">Price from</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={tour.price_from ?? ''}
-              onChange={(e) => update('price_from', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="price_from"
+              label="Price from"
+              value={tour.price_from}
+              onChange={(v) => update('price_from', v)}
+              error={fieldErrors.price_from}
             />
           </div>
           <div>
@@ -115,21 +120,21 @@ export default function TourForm({ initial, mode }: Props) {
             <input className="admin-input" value={tour.currency} onChange={(e) => update('currency', e.target.value.toUpperCase())} />
           </div>
           <div>
-            <label className="admin-label">Duration (days)</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={tour.duration_days ?? ''}
-              onChange={(e) => update('duration_days', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="duration_days"
+              label="Duration (days)"
+              value={tour.duration_days}
+              onChange={(v) => update('duration_days', v)}
+              error={fieldErrors.duration_days}
             />
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={tour.sort_order ?? 0}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+            <NumberField
+              field="sort_order"
+              label="Sort order"
+              value={tour.sort_order}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <div className="md:col-span-2">

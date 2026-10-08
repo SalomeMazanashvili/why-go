@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import type { TransferRoute, Destination } from '@/types'
 
 interface Props {
@@ -40,6 +42,7 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
   const [item, setItem] = useState<TransferRoute>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof TransferRoute>(key: K, value: TransferRoute[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -57,10 +60,12 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Route created' : 'Route saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/transfer-routes/${data.id}`)
@@ -112,12 +117,12 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
             />
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="sort_order"
+              label="Sort order"
               value={item.sort_order}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <div>
@@ -151,13 +156,12 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
             </select>
           </div>
           <div>
-            <label className="admin-label">Price from</label>
-            <input
-              type="number"
-              step="0.01"
-              className="admin-input"
-              value={item.price_from ?? ''}
-              onChange={(e) => update('price_from', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="price_from"
+              label="Price from" step="0.01"
+              value={item.price_from}
+              onChange={(v) => update('price_from', v)}
+              error={fieldErrors.price_from}
             />
           </div>
           <div>
@@ -170,21 +174,21 @@ export default function TransferRouteForm({ initial, mode, destinations }: Props
             />
           </div>
           <div>
-            <label className="admin-label">Duration (minutes)</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={item.duration_minutes ?? ''}
-              onChange={(e) => update('duration_minutes', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="duration_minutes"
+              label="Duration (minutes)"
+              value={item.duration_minutes}
+              onChange={(v) => update('duration_minutes', v)}
+              error={fieldErrors.duration_minutes}
             />
           </div>
           <div>
-            <label className="admin-label">Max passengers</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={item.max_passengers ?? ''}
-              onChange={(e) => update('max_passengers', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="max_passengers"
+              label="Max passengers"
+              value={item.max_passengers}
+              onChange={(v) => update('max_passengers', v)}
+              error={fieldErrors.max_passengers}
             />
           </div>
           <div>

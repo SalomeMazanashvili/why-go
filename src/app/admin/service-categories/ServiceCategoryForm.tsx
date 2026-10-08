@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import type { ServiceCategory } from '@/types'
 
 interface Props {
@@ -29,6 +31,7 @@ export default function ServiceCategoryForm({ initial, mode }: Props) {
   const [item, setItem] = useState<ServiceCategory>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof ServiceCategory>(key: K, value: ServiceCategory[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -46,10 +49,12 @@ export default function ServiceCategoryForm({ initial, mode }: Props) {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Category created' : 'Category saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/service-categories/${data.id}`)
@@ -103,12 +108,12 @@ export default function ServiceCategoryForm({ initial, mode }: Props) {
             />
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="sort_order"
+              label="Sort order"
               value={item.sort_order}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <label className="flex items-center gap-3 mt-6">

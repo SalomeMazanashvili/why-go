@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidateContent } from '@/lib/revalidate'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
+import { numericErrorBody, validateNumericFields } from '@/lib/numericFields'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 
 const WRITABLE = [
@@ -35,6 +36,8 @@ export async function PUT(req: NextRequest, props: Ctx) {
   try {
     const body = await req.json()
     const payload = pickPayload(body)
+    const numberErrors = validateNumericFields(payload)
+    if (numberErrors) return NextResponse.json(numericErrorBody(numberErrors), { status: 400 })
     const s = getAdminSupabase()
     const { error } = await s.from('transfer_routes').update(payload).eq('id', params.id)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

@@ -465,3 +465,5 @@ ALTER TABLE news
   ADD COLUMN IF NOT EXISTS destination_id UUID REFERENCES destinations(id) ON DELETE SET NULL;
 
 CREATE INDEX IF NOT EXISTS news_destination_id_idx ON news (destination_id);
+
+-- WHY-106 numeric CHECK constraints: see supabase/migrations/20261008_why106_numeric_checks.sql

@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import type { PickupPoint, Destination } from '@/types'
 
 interface Props {
@@ -30,6 +32,7 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
   const [item, setItem] = useState<PickupPoint>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof PickupPoint>(key: K, value: PickupPoint[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -47,10 +50,12 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Pickup point created' : 'Pickup point saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/pickup-points/${data.id}`)
@@ -110,22 +115,21 @@ export default function PickupPointForm({ initial, mode, destinations }: Props) 
             </p>
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="sort_order"
+              label="Sort order"
               value={item.sort_order}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <div>
-            <label className="admin-label">From price (indicative)</label>
-            <input
-              type="number"
-              step="0.01"
-              className="admin-input"
-              value={item.price_from ?? ''}
-              onChange={(e) => update('price_from', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="price_from"
+              label="From price (indicative)" step="0.01"
+              value={item.price_from}
+              onChange={(v) => update('price_from', v)}
+              error={fieldErrors.price_from}
             />
             <p className="text-[10px] text-white/40 mt-1">
               Real floor for the smallest vehicle from this pickup. Never a lower number to look competitive.

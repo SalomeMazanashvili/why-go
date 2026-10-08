@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
+import NumberField from '../_components/NumberField'
+import type { FieldErrors } from '@/lib/numericFields'
 import ImageUploader from '../_components/ImageUploader'
 import type { Service, ServiceType, Destination, ServiceCategory } from '@/types'
 
@@ -61,6 +63,7 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
   const [item, setItem] = useState<Service>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const update = <K extends keyof Service>(key: K, value: Service[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -111,10 +114,12 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        setFieldErrors(data.fieldErrors ?? {})
         toast.error(data.error || 'Save failed')
         setSaving(false)
         return
       }
+      setFieldErrors({})
       toast.success(mode === 'create' ? 'Service created' : 'Service saved')
       if (mode === 'create' && data.id) {
         router.push(`/admin/services/${data.id}`)
@@ -207,22 +212,21 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
             </select>
           </div>
           <div>
-            <label className="admin-label">Sort order</label>
-            <input
-              type="number"
-              className="admin-input"
+            <NumberField
+              field="sort_order"
+              label="Sort order"
               value={item.sort_order}
-              onChange={(e) => update('sort_order', Number(e.target.value) || 0)}
+              onChange={(v) => update('sort_order', v ?? 0)}
+              error={fieldErrors.sort_order}
             />
           </div>
           <div>
-            <label className="admin-label">Price from</label>
-            <input
-              type="number"
-              step="0.01"
-              className="admin-input"
-              value={item.price_from ?? ''}
-              onChange={(e) => update('price_from', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="price_from"
+              label="Price from" step="0.01"
+              value={item.price_from}
+              onChange={(v) => update('price_from', v)}
+              error={fieldErrors.price_from}
             />
           </div>
           <div>
@@ -235,31 +239,30 @@ export default function ServiceForm({ initial, mode, destinations, categories }:
             />
           </div>
           <div>
-            <label className="admin-label">Duration (hours)</label>
-            <input
-              type="number"
-              step="0.5"
-              className="admin-input"
-              value={item.duration_hours ?? ''}
-              onChange={(e) => update('duration_hours', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="duration_hours"
+              label="Duration (hours)"
+              value={item.duration_hours}
+              onChange={(v) => update('duration_hours', v)}
+              error={fieldErrors.duration_hours}
             />
           </div>
           <div>
-            <label className="admin-label">Min group size</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={item.min_group_size ?? ''}
-              onChange={(e) => update('min_group_size', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="min_group_size"
+              label="Min group size"
+              value={item.min_group_size}
+              onChange={(v) => update('min_group_size', v)}
+              error={fieldErrors.min_group_size}
             />
           </div>
           <div>
-            <label className="admin-label">Max group size</label>
-            <input
-              type="number"
-              className="admin-input"
-              value={item.max_group_size ?? ''}
-              onChange={(e) => update('max_group_size', e.target.value ? Number(e.target.value) : null)}
+            <NumberField
+              field="max_group_size"
+              label="Max group size"
+              value={item.max_group_size}
+              onChange={(v) => update('max_group_size', v)}
+              error={fieldErrors.max_group_size}
             />
           </div>
           <div className="flex items-center gap-6 mt-6">
