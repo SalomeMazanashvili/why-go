@@ -97,7 +97,10 @@ export default function Navbar({ items }: { items: NavItem[] }) {
             WHY<span className="text-brand-yellow">GO</span>
           </Link>
 
-          <nav aria-label={t('primary_label')} className="hidden md:flex items-center gap-5 lg:gap-8">
+          {/* WHY-113: the full row needs ~1000px once Contact sits beside the
+              five 15px links (measured: 0px slack at 768, 89px each side at
+              1024), so below lg the ☰ menu takes over. */}
+          <nav aria-label={t('primary_label')} className="hidden lg:flex items-center gap-8">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href}
                 aria-current={isCurrent(link.href) ? 'page' : undefined}
@@ -107,9 +110,20 @@ export default function Navbar({ items }: { items: NavItem[] }) {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* WHY-113: Contact is the one yellow button, set apart from the
+                product links. Yellow takes ink text only. */}
+            <Link href="/contact"
+              aria-current={isCurrent('/contact') ? 'page' : undefined}
+              className={`hidden lg:inline-flex items-center min-h-[44px] px-5 bg-brand-yellow text-ink text-[15px] font-black tracking-wide uppercase hover:brightness-110 transition-colors decoration-2 underline-offset-4 decoration-ink ${
+                isCurrent('/contact') ? 'underline' : ''
+              }`}>
+              {t('contact')}
+            </Link>
+            {/* The language switch steps back to an outline so it doesn't
+                compete with Contact. */}
             <button onClick={switchLocale}
-              className="min-h-[44px] min-w-[44px] text-[11px] font-black tracking-widest bg-brand-yellow text-ink px-3 hover:brightness-110 transition-colors">
+              className="min-h-[44px] min-w-[44px] text-[11px] font-black tracking-widest border border-white/50 text-white px-3 hover:border-brand-yellow hover:text-brand-yellow transition-colors">
               {currentLocale === 'en' ? 'ქარ' : 'ENG'}
             </button>
             <button
@@ -119,7 +133,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-haspopup="dialog"
-              className="flex flex-col items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] -mr-2 md:hidden"
+              className="flex flex-col items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] -mr-2 lg:hidden"
               onClick={() => setMenuOpen(true)}
             >
               <span aria-hidden="true" className="block w-7 h-0.5 bg-white" />
@@ -161,6 +175,18 @@ export default function Navbar({ items }: { items: NavItem[] }) {
                 </motion.div>
               ))}
             </nav>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + navLinks.length * 0.08 }}
+              className="mt-12">
+              <Link href="/contact" onClick={() => closeMenu(false)}
+                aria-current={isCurrent('/contact') ? 'page' : undefined}
+                className={`flex items-center justify-center w-full min-h-[56px] bg-brand-yellow text-ink text-xl font-black tracking-wide uppercase decoration-2 underline-offset-4 decoration-ink ${
+                  isCurrent('/contact') ? 'underline' : ''
+                }`}>
+                {t('contact')}
+              </Link>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
