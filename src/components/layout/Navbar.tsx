@@ -80,11 +80,12 @@ export default function Navbar({ items }: { items: NavItem[] }) {
 
   const isHome = pathname === '/'
   const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
-  // WHY-112: the current page is marked by underline + full-white text, not
-  // colour alone (WCAG 1.4.1), and keeps aria-current="page" for AT.
+  // WHY-112: the current page is marked by weight (900 vs 700, both loaded
+  // FiraGO weights) plus a yellow underline, not colour alone (WCAG 1.4.1),
+  // and keeps aria-current="page" for assistive tech.
   const desktopLinkClass = (current: boolean) =>
-    `text-[15px] font-bold tracking-wide uppercase underline-offset-[10px] decoration-2 decoration-brand-yellow transition-colors ${
-      current ? 'text-white underline' : 'text-white/70 hover:text-brand-yellow'
+    `text-[15px] tracking-wide uppercase underline-offset-[10px] decoration-2 decoration-brand-yellow transition-colors ${
+      current ? 'font-black text-white underline' : 'font-bold text-white/70 hover:text-brand-yellow'
     }`
   const hasBackground = !isHome || scrolled
 
@@ -152,8 +153,8 @@ export default function Navbar({ items }: { items: NavItem[] }) {
                   transition={{ delay: 0.1 + i * 0.08 }}>
                   <Link href={link.href} onClick={() => closeMenu(false)}
                     aria-current={isCurrent(link.href) ? 'page' : undefined}
-                    className={`block text-[clamp(36px,8vw,60px)] font-black leading-tight tracking-tight uppercase transition-colors underline-offset-[12px] decoration-4 decoration-brand-yellow ${
-                      isCurrent(link.href) ? 'text-white underline' : 'text-white/80 hover:text-brand-yellow'
+                    className={`block text-[clamp(36px,8vw,60px)] leading-tight tracking-tight uppercase transition-colors underline-offset-[12px] decoration-4 decoration-brand-yellow ${
+                      isCurrent(link.href) ? 'font-black text-white underline' : 'font-bold text-white/80 hover:text-brand-yellow'
                     }`}>
                     {link.label}
                   </Link>
