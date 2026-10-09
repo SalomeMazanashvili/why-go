@@ -6,9 +6,9 @@ import { listNews } from '@/lib/news'
 //   ტურები · ტრანსფერები · გამოცდილება · გიდები · ბლოგი
 // An item only appears when its page has published content — the same rule
 // as the homepage sections — so the menu never links to a 404 or an empty
-// page. About and contact live in the footer.
+// page. Contact is a separate button in the header (WHY-113), not an item.
 
-export type NavKey = 'tours' | 'transfers' | 'experiences' | 'guides' | 'blog'
+export type NavKey = 'tours' | 'transfers' | 'experiences' | 'guides' | 'blog' | 'about'
 
 export interface NavItem {
   key: NavKey
@@ -18,6 +18,12 @@ export interface NavItem {
 // /guides doesn't exist until WHY-84. Flip this when that page ships; from
 // then on the item follows the published-guides rule like the others.
 export const GUIDES_PAGE_LIVE = false
+
+// WHY-113: About joins the main nav only once /about is founder-written
+// Georgian with a real meta description. Today its body is hardcoded English
+// and its meta description is a TODO, so it stays footer-only. Flip this when
+// the page is rewritten.
+export const ABOUT_PAGE_READY = false
 
 export async function getNavItems(): Promise<NavItem[]> {
   const [tours, experiences, news] = await Promise.all([
@@ -33,6 +39,7 @@ export async function getNavItems(): Promise<NavItem[]> {
     { key: 'experiences', href: '/experiences', show: experiences.length > 0 },
     { key: 'guides', href: '/guides', show: GUIDES_PAGE_LIVE },
     { key: 'blog', href: '/tips', show: news.length > 0 },
+    { key: 'about', href: '/about', show: ABOUT_PAGE_READY },
   ]
   return items.filter((i) => i.show).map(({ key, href }) => ({ key, href }))
 }
