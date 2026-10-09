@@ -467,3 +467,4 @@ ALTER TABLE news
 CREATE INDEX IF NOT EXISTS news_destination_id_idx ON news (destination_id);
 
 -- WHY-106 numeric CHECK constraints: see supabase/migrations/20261008_why106_numeric_checks.sql
+-- WHY-114 whisky_tour_leads (RLS on, no policies): see supabase/migrations/20261009_why114_whisky_tour_leads_lockdown.sql
