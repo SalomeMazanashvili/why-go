@@ -33,9 +33,10 @@ ALTER TABLE tours ENABLE ROW LEVEL SECURITY;
 ALTER TABLE news ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public read tours" ON tours FOR SELECT USING (is_active = true);
-CREATE POLICY "Public read news" ON news FOR SELECT USING (is_published = true);
-CREATE POLICY "Anyone insert contact" ON contact_submissions FOR INSERT WITH CHECK (true);
+-- Policy names match production (WHY-100 drift audit, 2026-10-09).
+CREATE POLICY "Public can read active tours" ON tours FOR SELECT USING (is_active = true);
+CREATE POLICY "Public can read published news" ON news FOR SELECT USING (is_published = true);
+CREATE POLICY "Anyone can insert contact" ON contact_submissions FOR INSERT WITH CHECK (true);
 
 -- Admin-managed content (editable text keyed by slug)
 CREATE TABLE IF NOT EXISTS site_content (
@@ -468,3 +469,4 @@ CREATE INDEX IF NOT EXISTS news_destination_id_idx ON news (destination_id);
 
 -- WHY-106 numeric CHECK constraints: see supabase/migrations/20261008_why106_numeric_checks.sql
 -- WHY-114 whisky_tour_leads (RLS on, no policies): see supabase/migrations/20261009_why114_whisky_tour_leads_lockdown.sql
+-- WHY-100 recorded production-only objects: see supabase/migrations/20261009_why100_record_prod_drift.sql
