@@ -7,8 +7,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        // /en and /whisky-tour are noindex via meta tags (crawl-time
-        // signal). Blocking /admin and /api at the robots level prevents
+        // /en is noindex via meta tags (crawl-time signal; /whisky-tour now
+        // 308s to /tours, WHY-114). Blocking /admin and /api at the robots level prevents
         // wasteful crawls of routes that will 401 or 405 anyway.
         disallow: ['/admin', '/api'],
       },

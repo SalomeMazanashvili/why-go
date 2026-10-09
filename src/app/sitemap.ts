@@ -6,7 +6,7 @@ import { isDestinationIndexable, listDestinations } from '@/lib/destinations'
 import { isReservedSlug } from '@/lib/reservedSlugs'
 import { SITE_URL } from '@/lib/seo'
 
-// WHY-69: Georgian URLs only. English is noindex; whisky-tour is noindex.
+// WHY-69: Georgian URLs only. English is noindex.
 // Under next-intl `localePrefix: 'as-needed'`, Georgian routes are served
 // unprefixed.
 // WHY-103: rendered per request. As ISR (revalidate = 3600) Vercel cached it
