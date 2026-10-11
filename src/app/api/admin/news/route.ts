@@ -4,6 +4,7 @@ import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { numericErrorBody, validateNumericFields } from '@/lib/numericFields'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 import { checkRelatedForSave, saveRelatedRefs } from '@/lib/serviceLinks'
+import { slugError } from '@/lib/slug'
 
 const WRITABLE = [
   'slug',
@@ -32,6 +33,9 @@ export async function POST(req: NextRequest) {
     const payload = pickPayload(body)
     const numberErrors = validateNumericFields(payload)
     if (numberErrors) return NextResponse.json(numericErrorBody(numberErrors), { status: 400 })
+    // WHY-120: Latin slugs only.
+    const badSlug = slugError(payload.slug)
+    if (badSlug) return NextResponse.json({ error: badSlug, fieldErrors: { slug: badSlug } }, { status: 400 })
     if (!payload.slug || !payload.title_en) {
       return NextResponse.json({ error: 'slug and title_en are required' }, { status: 400 })
     }
