@@ -15,7 +15,6 @@ export async function generateMetadata(
   const canonical = canonicalFor(loc, '/tours')
   return {
     title: t('tours'),
-    description: 'TODO: 140-160 char Georgian meta description for tours listing (founders to write).',
     alternates: { canonical },
     openGraph: { url: canonical, images: DEFAULT_OG_IMAGES },
   }

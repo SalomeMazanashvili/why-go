@@ -38,11 +38,9 @@ export async function generateMetadata(
   const canonical = canonicalFor(loc, '/experiences')
   return {
     title: t('index_title'),
-    description: t('index_meta_description'),
     alternates: { canonical },
     openGraph: {
       title: t('index_title'),
-      description: t('index_meta_description'),
       url: canonical,
       type: 'website',
       images: DEFAULT_OG_IMAGES,

@@ -11,7 +11,6 @@ export async function generateMetadata(
   const canonical = canonicalFor(loc, '/about')
   return {
     title: t('about'),
-    description: 'TODO: 140-160 char Georgian meta description for about (founders to write).',
     alternates: { canonical },
     openGraph: { url: canonical, images: DEFAULT_OG_IMAGES },
   }
