@@ -98,3 +98,10 @@ body {
 @media (min-width: 768px) {
   .request-panel { padding: 2.5rem; }
 }
+
+/* WHY-79 hero plane: a one-time entrance, never looping, and none at all
+   under prefers-reduced-motion (the resting state is the final one). */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-drift { animation: hero-drift 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+}
+@keyframes hero-drift { from { opacity: 0; transform: translate(-3%, 3%); } }
