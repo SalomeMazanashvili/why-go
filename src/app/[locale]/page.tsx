@@ -30,7 +30,6 @@ export async function generateMetadata(
     // Homepage uses the layout's default title (SITE_NAME) — no override so
     // the template `%s · WHYGO` isn't applied to just `WHYGO · WHYGO`.
     title: SITE_NAME,
-    description: 'TODO: 140-160 char Georgian meta description for the home page (founders to write).',
     alternates: { canonical },
     openGraph: { url: canonical },
   }

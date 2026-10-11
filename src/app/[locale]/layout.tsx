@@ -62,7 +62,6 @@ export async function generateMetadata(
   return {
     metadataBase: new URL(SITE_URL),
     title: { template: `%s · ${SITE_NAME}`, default: SITE_NAME },
-    description: 'TODO: 140-160 char Georgian site description (founders to write).',
     alternates: { canonical: canonicalFor(loc, '/') },
     robots: loc === 'en' ? { index: false, follow: true } : undefined,
     openGraph: {
