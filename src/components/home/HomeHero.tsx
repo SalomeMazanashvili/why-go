@@ -4,6 +4,8 @@ import { Link } from '@/i18n/navigation'
 import HeroArtFlight from './hero/HeroArtFlight'
 import HeroArtRoutes from './hero/HeroArtRoutes'
 import HeroArtScale from './hero/HeroArtScale'
+import { HeroNightBackdrop, HeroNightClocks } from './hero/HeroArtNight'
+import type { ClockCity } from '@/lib/cityClocks'
 
 // WHY-67 §1. Shorter than the viewport (~78svh) so the next section peeks —
 // a deliberate scroll cue. One headline, one supporting line, one CTA.
@@ -12,10 +14,11 @@ import HeroArtScale from './hero/HeroArtScale'
 //
 // WHY-79 companion: `variant` picks the graphic treatment behind it. 'grid'
 // is what ships today; 'flight' / 'routes' / 'scale' are directions A–C,
-// previewed at /hero-preview and not yet chosen. All of them are inline SVG
+// previewed at /hero-preview and not yet chosen. 'night' is D, added
+// after review (C's plane + the Night on Earth clock wall). All of them are inline SVG
 // (aria-hidden, no requests, never the LCP element); the headline sits
 // above them and keeps 4.5:1+.
-export type HeroVariant = 'grid' | 'flight' | 'routes' | 'scale'
+export type HeroVariant = 'grid' | 'flight' | 'routes' | 'scale' | 'night'
 
 // The established highlight block (as on /contact): <mark>…</mark> in the
 // message wraps a word in yellow with ink text, never white on yellow.
@@ -27,8 +30,11 @@ export default async function HomeHero({
   locale,
   variant = 'grid',
   title,
+  clockCities = [],
 }: {
   locale: string
+  // Direction D: Tbilisi + published destinations (lib/cityClocks).
+  clockCities?: ClockCity[]
   variant?: HeroVariant
   // Preview only: a stand-in headline to test one- and three-line lengths.
   title?: ReactNode
@@ -48,6 +54,8 @@ export default async function HomeHero({
       )}
       {variant === 'flight' && <HeroArtFlight />}
       {variant === 'scale' && <HeroArtScale />}
+      {variant === 'night' && <HeroNightBackdrop />}
+      {variant === 'night' && clockCities.length > 1 && <HeroNightClocks cities={clockCities} />}
       {/* B lives in the free space above the text, never behind it. */}
       {variant === 'routes' && (
         <div className="relative flex-1 min-h-0 -mx-6 md:-mx-10 mb-8 md:mb-10">

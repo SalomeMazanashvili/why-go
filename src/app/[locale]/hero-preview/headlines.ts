@@ -14,6 +14,7 @@ export type HeadlineKey = keyof typeof HEADLINES | 'placeholder'
 export const HEADLINE_KEYS: HeadlineKey[] = ['placeholder', 'one', 'three']
 
 export const VARIANTS = [
+  { key: 'night', label: 'D — Night on Earth (new)' },
   { key: 'flight', label: 'A — Flight geometry' },
   { key: 'routes', label: 'B — Route arcs' },
   { key: 'scale', label: 'C — Scale' },

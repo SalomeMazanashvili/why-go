@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import HomeHero, { type HeroVariant } from '@/components/home/HomeHero'
+import { listDestinations } from '@/lib/destinations'
+import { clockCities } from '@/lib/cityClocks'
 import { HEADLINES, HEADLINE_KEYS, VARIANTS, type HeadlineKey } from '../headlines'
 
 // WHY-79 preview only (not for merge): one hero, as the homepage renders
 // it, with the next section peeking below. Loaded in iframes by the board.
-//   ?v=flight|routes|scale|grid  &h=placeholder|one|three  &mark=1
+//   ?v=night|flight|routes|scale|grid  &h=placeholder|one|three  &mark=1
 export const metadata: Metadata = { title: 'Hero preview', robots: { index: false, follow: false } }
 
 export default async function HeroPreviewFrame(props: {
@@ -17,7 +19,10 @@ export default async function HeroPreviewFrame(props: {
   setRequestLocale(locale)
   const variant = (VARIANTS.find((x) => x.key === sp.v)?.key ?? 'flight') as HeroVariant
   const h = (HEADLINE_KEYS.includes(sp.h as HeadlineKey) ? sp.h : 'placeholder') as HeadlineKey
-  const t = await getTranslations({ locale, namespace: 'home' })
+  const [t, destinations] = await Promise.all([
+    getTranslations({ locale, namespace: 'home' }),
+    listDestinations(),
+  ])
 
   let title: React.ReactNode = undefined
   if (h !== 'placeholder') {
@@ -38,7 +43,7 @@ export default async function HeroPreviewFrame(props: {
 
   return (
     <>
-      <HomeHero locale={locale} variant={variant} title={title} />
+      <HomeHero locale={locale} variant={variant} title={title} clockCities={clockCities(destinations)} />
       {/* Stand-in for section 2, so the peek below the hero is visible. */}
       <section className="surface-light px-6 md:px-10 py-16 md:py-20 border-t border-line">
         <div className="max-w-6xl mx-auto">
