@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import type { Locale } from '@/types'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { listTours } from '@/lib/tours'
 import { DEFAULT_OG_IMAGES, breadcrumbJsonLd, canonicalFor, jsonLdScript } from '@/lib/seo'
 import ContactSection from '@/components/sections/ContactSection'
 import ContactDetails from '@/components/sections/ContactDetails'
@@ -29,8 +28,7 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
   const { locale } = await props.params
   setRequestLocale(locale)
 
-  const [tours, tNav, settings] = await Promise.all([
-    listTours(),
+  const [tNav, settings] = await Promise.all([
     getTranslations({ locale, namespace: 'nav' }),
     loadSiteSettings(),
   ])
@@ -47,7 +45,6 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
       />
       <div>
         <ContactSection
-          tours={tours}
           locale={locale as Locale}
           details={<ContactDetails info={contactInfoFrom(settings)} socials={socialLinksFrom(settings)} />}
         />

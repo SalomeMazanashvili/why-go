@@ -1,38 +1,51 @@
 'use client'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import type { Tour, Locale } from '@/types'
-import { getTourTitle } from '@/types'
+import type { Locale } from '@/types'
 import { FormField, inputClass, buttonClass } from '@/components/forms/FormField'
 
 // /contact only. Light surface, request-panel card, and the shared FormField
 // primitives so every control has a real <label> (WHY-109).
+// WHY-121: phone is required (it's how the founders confirm), email is
+// optional, and the tour dropdown is gone (it rendered "—": nothing fed it).
+type Field = 'full_name' | 'phone' | 'email' | 'message'
+type ErrorKey = 'error_required' | 'error_phone_format' | 'error_email_format'
+const EMPTY = { full_name: '', phone: '', email: '', message: '' }
+
 export default function ContactSection({
-  tours,
   locale,
   details,
 }: {
-  tours: Tour[]
   locale: Locale
   // Server-rendered ContactDetails (WHY-111); null when nothing is set.
   details?: React.ReactNode
 }) {
   const t = useTranslations('contact')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [form, setForm] = useState({ full_name: '', email: '', tour_slug: '', message: '' })
+  const tShared = useTranslations('inquiry.shared')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'rate_limited'>('idle')
+  const [form, setForm] = useState(EMPTY)
+  const [errors, setErrors] = useState<Partial<Record<Field, ErrorKey>>>({})
+  const errorText = (f: Field) => (errors[f] ? tShared(errors[f]!) : null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
+    setErrors({})
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, language: locale }),
       })
+      if (res.status === 429) return setStatus('rate_limited')
+      if (res.status === 400) {
+        const data = await res.json().catch(() => ({}))
+        setErrors(data.fieldErrors ?? {})
+        return setStatus('error')
+      }
       if (!res.ok) throw new Error()
       setStatus('success')
-      setForm({ full_name: '', email: '', tour_slug: '', message: '' })
+      setForm(EMPTY)
     } catch {
       setStatus('error')
     }
@@ -53,40 +66,35 @@ export default function ContactSection({
       <div className={details ? 'mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start max-w-5xl' : 'max-w-2xl'}>
         {details && <div className="lg:order-2">{details}</div>}
         <form onSubmit={handleSubmit} className={`request-panel space-y-2 ${details ? 'lg:order-1' : 'mt-12'}`}>
+          <FormField label={t('name')} required error={errorText('full_name')}>
+            {({ id, describedBy, invalid }) => (
+              <input id={id} aria-describedby={describedBy} aria-invalid={invalid || undefined} autoComplete="name"
+                value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })}
+                className={inputClass} placeholder={t('placeholder_name')} required minLength={2} maxLength={120} />
+            )}
+          </FormField>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-            <FormField label={t('name')} required>
-              {({ id, describedBy }) => (
-                <input id={id} aria-describedby={describedBy} autoComplete="name"
-                  value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })}
-                  className={inputClass} placeholder={t('placeholder_name')} required minLength={2} />
+            <FormField label={tShared('phone')} required error={errorText('phone')}>
+              {({ id, describedBy, invalid }) => (
+                <input id={id} aria-describedby={describedBy} aria-invalid={invalid || undefined} type="tel" autoComplete="tel"
+                  inputMode="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
+                  className={inputClass} required minLength={7} maxLength={30} />
               )}
             </FormField>
-            <FormField label={t('email')} required>
-              {({ id, describedBy }) => (
-                <input id={id} aria-describedby={describedBy} type="email" autoComplete="email"
+            <FormField label={t('email')} error={errorText('email')}>
+              {({ id, describedBy, invalid }) => (
+                <input id={id} aria-describedby={describedBy} aria-invalid={invalid || undefined} type="email" autoComplete="email"
                   value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                  className={inputClass} placeholder={t('placeholder_email')} required />
+                  className={inputClass} placeholder={t('placeholder_email')} />
               )}
             </FormField>
           </div>
-          <FormField label={t('interest')}>
-            {({ id, describedBy }) => (
-              <select id={id} aria-describedby={describedBy}
-                value={form.tour_slug} onChange={e => setForm({ ...form, tour_slug: e.target.value })}
-                className={inputClass + ' cursor-pointer'}>
-                <option value="">—</option>
-                {tours.map(tour => (
-                  <option key={tour.slug} value={tour.slug}>{getTourTitle(tour, locale)}</option>
-                ))}
-              </select>
-            )}
-          </FormField>
-          <FormField label={t('message')} required>
-            {({ id, describedBy }) => (
-              <textarea id={id} aria-describedby={describedBy}
+          <FormField label={t('message')} required error={errorText('message')}>
+            {({ id, describedBy, invalid }) => (
+              <textarea id={id} aria-describedby={describedBy} aria-invalid={invalid || undefined}
                 value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
                 rows={4} className={inputClass + ' resize-none'} placeholder={t('placeholder_message')}
-                required minLength={10} />
+                required minLength={10} maxLength={4000} />
             )}
           </FormField>
           <div className="flex items-center gap-6 pt-2 flex-wrap">
@@ -94,8 +102,8 @@ export default function ContactSection({
               {status === 'loading' ? '...' : `${t('submit')} →`}
             </button>
             <p role="status" aria-live="polite"
-              className={`text-sm ${status === 'error' ? 'text-danger' : 'text-muted'}`}>
-              {status === 'success' ? t('success') : status === 'error' ? t('error') : t('reply_note')}
+              className={`text-sm ${status === 'error' || status === 'rate_limited' ? 'text-danger' : 'text-muted'}`}>
+              {status === 'success' ? t('success') : status === 'rate_limited' ? tShared('error_rate_limited') : status === 'error' ? t('error') : t('reply_note')}
             </p>
           </div>
         </form>

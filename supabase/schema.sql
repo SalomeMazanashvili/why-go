@@ -36,7 +36,7 @@ ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
 -- Policy names match production (WHY-100 drift audit, 2026-10-09).
 CREATE POLICY "Public can read active tours" ON tours FOR SELECT USING (is_active = true);
 CREATE POLICY "Public can read published news" ON news FOR SELECT USING (is_published = true);
-CREATE POLICY "Anyone can insert contact" ON contact_submissions FOR INSERT WITH CHECK (true);
+-- "Anyone can insert contact" dropped in WHY-121 (supabase/migrations/20261011_why121_contact_phone.sql).
 
 -- Admin-managed content (editable text keyed by slug)
 CREATE TABLE IF NOT EXISTS site_content (
@@ -470,3 +470,4 @@ CREATE INDEX IF NOT EXISTS news_destination_id_idx ON news (destination_id);
 -- WHY-106 numeric CHECK constraints: see supabase/migrations/20261008_why106_numeric_checks.sql
 -- WHY-114 whisky_tour_leads (RLS on, no policies): see supabase/migrations/20261009_why114_whisky_tour_leads_lockdown.sql
 -- WHY-100 recorded production-only objects: see supabase/migrations/20261009_why100_record_prod_drift.sql
+-- WHY-121 contact_submissions.phone (required, E.164), email optional, anon insert policy dropped: see supabase/migrations/20261011_why121_contact_phone.sql
