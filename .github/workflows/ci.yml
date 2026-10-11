@@ -39,3 +39,65 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  # WHY-98 PR B: build the site against a throwaway, seeded database and
+  # check every template renders its populated state. Local Supabase in
+  # Docker, never a hosted project; schema from supabase/schema.sql +
+  # migrations (WHY-100: proven to match production); hand-written fixtures
+  # from tests/ci/seed.mjs; inquiries never seeded.
+  seeded:
+    name: seeded build + smoke (local Supabase)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install
+        run: npm ci
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # A scratch project outside the repo, so the CLI doesn't try to apply
+      # supabase/migrations on its own before schema.sql exists.
+      - name: Start local Supabase
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir sb && cd sb
+          supabase init
+          supabase start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,postgres-meta
+          supabase status -o env | sed -E 's/^([A-Z_]+)="?([^"]*)"?$/\1=\2/' | grep -E '^(API_URL|DB_URL|ANON_KEY|SERVICE_ROLE_KEY)=' >> "$GITHUB_ENV"
+
+      - name: Apply schema.sql and migrations
+        run: |
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f supabase/schema.sql
+          for f in $(ls supabase/migrations/*.sql | sort); do
+            echo "applying $f"
+            psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f "$f"
+          done
+          psql "$DB_URL" -q -c "NOTIFY pgrst, 'reload schema'"
+
+      - name: Seed CI fixtures
+        run: node tests/ci/seed.mjs
+
+      - name: Build against the seeded database
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ env.API_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ env.ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ env.SERVICE_ROLE_KEY }}
+        run: npm run build
+
+      - name: Serve and smoke-test
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ env.API_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ env.ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ env.SERVICE_ROLE_KEY }}
+        run: |
+          npx next start -p 3000 > next.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 1; done
+          BASE=http://localhost:3000 node tests/ci/smoke.mjs || { echo "--- next.log"; tail -50 next.log; exit 1; }
