@@ -67,7 +67,7 @@ export default async function TransfersLandingPage(props: Props) {
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
 
-      <div className="max-w-3xl mx-auto px-6 md:px-12 pt-24 pb-16">
+      <div className="max-w-3xl mx-auto px-6 md:px-12 pt-page pb-16">
         <header className="mb-12">
           <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">
             {tPage('nav_label')}

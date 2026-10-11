@@ -131,7 +131,7 @@ export default async function TransferRouteDetailPage(
         dangerouslySetInnerHTML={{ __html: jsonLdScript(service) }}
       />
 
-      <div className="max-w-4xl mx-auto px-6 md:px-12 pt-24 pb-16">
+      <div className="max-w-4xl mx-auto px-6 md:px-12 pt-page pb-16">
         <nav className="mb-8 text-[10px] font-bold tracking-widest uppercase text-muted">
           <Link href="/transfers" className="hover:underline decoration-brand-yellow decoration-2 underline-offset-4">
             ← {tPage('nav_label')}

@@ -39,7 +39,7 @@ export default function ContactSection({
   }
 
   return (
-    <section className="surface-light pt-32 pb-20 px-6 md:px-10">
+    <section className="surface-light pt-page-lg pb-20 px-6 md:px-10">
       <div className="max-w-2xl">
         <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">{t('label')}</p>
         <h1 className="font-black uppercase text-fg leading-none tracking-tight"

@@ -6,10 +6,21 @@
   --brand-yellow: #FCCC01;
   --ink: #111110;
   --paper: #F5F5F0;
+  /* WHY-122: the fixed header's height, the one source of truth for what
+     sits under it. 84px is its rendered height at every breakpoint; Navbar
+     overwrites it with the measured height, so browser zoom or text scaling
+     that makes the header taller pushes page content down with it. */
+  --header-h: 84px;
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* Anchor jumps (#request, the city jump links) land below the header. */
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+
+/* WHY-122: top padding for a page's first section: header height plus a
+   fixed gap, so no page's heading can start under the header. */
+.pt-page { padding-top: calc(var(--header-h) + 2.5rem); }
+.pt-page-lg { padding-top: calc(var(--header-h) + 3.5rem); }
 
 /* Surfaces (WHY-109). A section opts into a surface; shared components use
    the fg / muted / line / accent tokens and adapt to whichever surface they

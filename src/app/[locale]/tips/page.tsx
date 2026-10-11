@@ -43,7 +43,7 @@ export default async function TipsPage(props: { params: Promise<{ locale: string
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
         />
-        <section className="pt-36 pb-20 px-6 md:px-10 surface-light min-h-screen">
+        <section className="pt-page-lg pb-20 px-6 md:px-10 surface-light min-h-screen">
           <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">Travel Intelligence</p>
           <h1 className="font-black uppercase text-fg leading-none tracking-tight mb-8"
             style={{ fontSize: 'clamp(48px,8vw,80px)', letterSpacing: '-0.04em' }}>
@@ -63,7 +63,7 @@ export default async function TipsPage(props: { params: Promise<{ locale: string
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
-      <section className="pt-36 pb-20 px-6 md:px-10 surface-light min-h-screen">
+      <section className="pt-page-lg pb-20 px-6 md:px-10 surface-light min-h-screen">
       <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">Travel Intelligence</p>
       <h1 className="font-black uppercase text-fg leading-none tracking-tight mb-16"
         style={{ fontSize: 'clamp(48px,8vw,80px)', letterSpacing: '-0.04em' }}>

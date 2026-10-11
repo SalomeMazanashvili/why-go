@@ -144,7 +144,7 @@ export default async function DayTripDetailPage(
         />
       )}
 
-      <article className="max-w-3xl mx-auto px-6 md:px-12 pt-24 pb-16">
+      <article className="max-w-3xl mx-auto px-6 md:px-12 pt-page pb-16">
         {/* A single back link, not a landmark — a second unlabelled <nav>
             next to the header's fails axe landmark-unique. */}
         <p className="mb-8 text-[10px] font-bold tracking-widest uppercase text-muted">
@@ -269,7 +269,7 @@ export default async function DayTripDetailPage(
         )}
       </article>
 
-      <section id="request" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 scroll-mt-24">
+      <section id="request" className="max-w-3xl mx-auto px-6 md:px-12 pb-24">
         <div className="request-panel">
           <DayTripInquiryForm dayTrips={[trip]} serviceId={trip.id} />
         </div>
