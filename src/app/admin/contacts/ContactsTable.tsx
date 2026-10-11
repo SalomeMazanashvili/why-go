@@ -69,8 +69,7 @@ export default function ContactsTable({ initial }: Props) {
       <table className="w-full text-sm">
         <thead className="bg-[#0a0a0a] text-white/40 text-[10px] font-bold tracking-widest uppercase">
           <tr>
-            <th className="text-left px-5 py-3">Name / email</th>
-            <th className="text-left px-5 py-3">Tour</th>
+            <th className="text-left px-5 py-3">Name / phone</th>
             <th className="text-left px-5 py-3">Received</th>
             <th className="text-left px-5 py-3">Status</th>
             <th className="px-5 py-3"></th>
@@ -87,9 +86,9 @@ export default function ContactsTable({ initial }: Props) {
                 >
                   <td className="px-5 py-4">
                     <p className="font-bold text-white">{c.full_name}</p>
-                    <p className="text-white/40 text-xs mt-1">{c.email}</p>
+                    {c.phone && <p className="text-white/60 text-xs mt-1">{c.phone}</p>}
+                    {c.email && <p className="text-white/40 text-xs mt-1">{c.email}</p>}
                   </td>
-                  <td className="px-5 py-4 text-white/70">{c.tour_slug || '—'}</td>
                   <td className="px-5 py-4 text-white/60 text-xs">{formatDateTime(c.created_at)}</td>
                   <td className="px-5 py-4">
                     <span
@@ -104,7 +103,7 @@ export default function ContactsTable({ initial }: Props) {
                 </tr>
                 {isOpen && (
                   <tr className="border-t border-white/5 bg-[#0a0a0a]">
-                    <td colSpan={5} className="px-5 py-5">
+                    <td colSpan={4} className="px-5 py-5">
                       <div className="mb-4">
                         <p className="admin-label mb-2">Message</p>
                         <p className="text-white/80 text-sm whitespace-pre-wrap">
@@ -136,13 +135,32 @@ export default function ContactsTable({ initial }: Props) {
                         >
                           Archive
                         </button>
-                        <a
-                          href={`mailto:${c.email}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="admin-btn admin-btn-ghost ml-auto"
-                        >
-                          Reply →
-                        </a>
+                        {/* Phone first: it's how requests are confirmed (WHY-121). */}
+                        {c.phone && (
+                          <a
+                            href={`https://wa.me/${c.phone.replace(/^\+/, '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="admin-btn admin-btn-ghost ml-auto"
+                          >
+                            WhatsApp →
+                          </a>
+                        )}
+                        {c.phone && (
+                          <a href={`tel:${c.phone}`} onClick={(e) => e.stopPropagation()} className="admin-btn admin-btn-ghost">
+                            Call
+                          </a>
+                        )}
+                        {c.email && (
+                          <a
+                            href={`mailto:${c.email}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className={`admin-btn admin-btn-ghost ${c.phone ? '' : 'ml-auto'}`}
+                          >
+                            Email →
+                          </a>
+                        )}
                       </div>
                     </td>
                   </tr>

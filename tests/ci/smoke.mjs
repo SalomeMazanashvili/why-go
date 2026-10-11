@@ -63,6 +63,25 @@ for (const [path, must, mustNot, noindex] of PAGES) {
   }
 }
 
+// WHY-121: /contact takes a required phone, optional email, no tour dropdown.
+// Posts go to the throwaway CI database only.
+{
+  const page = (await get('/contact')).body
+  if (!/<input[^>]*type="tel"[^>]*required/.test(page)) fail('/contact: no required phone (type="tel") input')
+  if (/<select/.test(page)) fail('/contact: the tour dropdown (<select>) is still there')
+  if (/<input[^>]*type="email"[^>]*required/.test(page)) fail('/contact: email is still required')
+  const post = (body) =>
+    fetch(BASE + '/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  const base = { full_name: 'CI Fixture', message: 'CI fixture message, not a real request.', language: 'ka' }
+  const noPhone = await post(base)
+  const noPhoneBody = await noPhone.json().catch(() => ({}))
+  if (noPhone.status !== 400 || !noPhoneBody.fieldErrors?.phone) fail(`/api/contact without phone: HTTP ${noPhone.status}, expected 400 with a phone error`)
+  const ok = await post({ ...base, phone: '555 12 34 56' })
+  if (ok.status !== 201) fail(`/api/contact with phone, no email: HTTP ${ok.status}, expected 201`)
+  const sneaky = await post({ ...base, phone: '555 12 34 56', status: 'replied', tour_slug: '' })
+  if (sneaky.status !== 201) fail(`/api/contact ignores unknown fields: HTTP ${sneaky.status}, expected 201`)
+}
+
 // Sitemap: indexable fixtures listed with their row's updated_at as lastmod;
 // thin ones and drafts absent; static pages carry no lastmod (WHY-103).
 const sm = await get('/sitemap.xml')

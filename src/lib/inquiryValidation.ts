@@ -15,20 +15,20 @@ export function normalizePhone(input: string): string {
   return input
 }
 
-const phoneSchema = z
+export const phoneSchema = z
   .string()
   .trim()
   .transform(normalizePhone)
   .refine((v) => /^\+[0-9]{7,15}$/.test(v), { message: 'error_phone_format' })
 
-const emailSchema = z
+export const emailSchema = z
   .string()
   .trim()
   .email('error_email_format')
   .optional()
   .or(z.literal(''))
 
-const nameSchema = z.string().trim().min(2, 'error_required')
+export const nameSchema = z.string().trim().min(2, 'error_required')
 
 // Nullable Supabase UUIDs from destination/service pickers.
 const uuidOrNull = z.string().uuid().nullish().or(z.literal(''))
@@ -200,3 +200,14 @@ export function validateInquiryPayload(body: unknown) {
   }
   return { ok: false as const, error: 'Unknown service_type' }
 }
+
+// WHY-121: the /contact form. Phone is required (it's how the founders
+// confirm); email is optional; no tour dropdown.
+export const contactSchema = z.object({
+  full_name: nameSchema.pipe(z.string().max(120)),
+  phone: phoneSchema,
+  email: emailSchema,
+  message: z.string().trim().min(10, 'error_required').max(4000),
+  language: z.enum(['ka', 'en']).optional(),
+})
+export type ContactPayload = z.infer<typeof contactSchema>
