@@ -4,6 +4,7 @@ import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { numericErrorBody, validateNumericFields } from '@/lib/numericFields'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
 import { checkRelatedForSave, saveRelatedRefs } from '@/lib/serviceLinks'
+import { slugError } from '@/lib/slug'
 
 const WRITABLE = [
   'slug',
@@ -36,6 +37,11 @@ export async function PUT(req: NextRequest, props: Ctx) {
     const payload = pickPayload(body)
     const numberErrors = validateNumericFields(payload)
     if (numberErrors) return NextResponse.json(numericErrorBody(numberErrors), { status: 400 })
+    // WHY-120: Latin slugs only (checked whenever the slug is sent).
+    if ('slug' in payload) {
+      const badSlug = slugError(payload.slug)
+      if (badSlug) return NextResponse.json({ error: badSlug, fieldErrors: { slug: badSlug } }, { status: 400 })
+    }
     const s = getAdminSupabase()
     // WHY-118: check the related services against the published state the
     // article will have after this save.

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useToast } from '../_components/ToastProvider'
 import NumberField from '../_components/NumberField'
 import type { FieldErrors } from '@/lib/numericFields'
+import { SLUG_MAX, SLUG_MIN, SLUG_PATTERN, suggestSlug } from '@/lib/slug'
 import ImageUploader from '../_components/ImageUploader'
 import type { AdminNews } from '@/lib/news'
 import type { Destination } from '@/types'
@@ -134,8 +135,33 @@ export default function NewsForm({ initial, mode, destinations, relatedOptions, 
         <p className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">Meta</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="admin-label">Slug</label>
-            <input className="admin-input" value={item.slug} onChange={(e) => update('slug', e.target.value)} required />
+            <label className="admin-label" htmlFor="news-slug">Slug (the URL)</label>
+            <div className="flex gap-2">
+              <input
+                id="news-slug"
+                className="admin-input"
+                value={item.slug}
+                onChange={(e) => update('slug', e.target.value.toLowerCase())}
+                required
+                pattern={SLUG_PATTERN}
+                minLength={SLUG_MIN}
+                maxLength={SLUG_MAX}
+                aria-invalid={Boolean(fieldErrors.slug) || undefined}
+                aria-describedby="news-slug-help"
+              />
+              <button
+                type="button"
+                className="admin-btn admin-btn-ghost whitespace-nowrap"
+                disabled={!item.title_ka && !item.title_en}
+                onClick={() => update('slug', suggestSlug(item.title_ka || item.title_en))}
+              >
+                Suggest
+              </button>
+            </div>
+            <p id="news-slug-help" className={`text-[10px] mt-1 ${fieldErrors.slug ? 'text-red-400' : 'text-white/40'}`}>
+              {fieldErrors.slug ??
+                'Latin only, so links stay readable in WhatsApp and Instagram: a–z, 0–9, hyphens, 3–6 words. Suggest transliterates the Georgian title. Don\'t change it after publishing: old links break.'}
+            </p>
           </div>
           <div>
             <label className="admin-label">Author</label>
