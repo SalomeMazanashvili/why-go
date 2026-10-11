@@ -9,12 +9,21 @@ import type { FieldErrors } from '@/lib/numericFields'
 import ImageUploader from '../_components/ImageUploader'
 import type { AdminNews } from '@/lib/news'
 import type { Destination } from '@/types'
+import type { RelatedRef } from '@/lib/serviceLinks'
+import type { RelatedOption } from './relatedOptions'
+
+// Mirrors MIN_RELATED_SERVICES in lib/serviceLinks (that module is server-only).
+const MIN_RELATED = 2
 
 interface Props {
   initial?: AdminNews | null
   mode: 'create' | 'edit'
   destinations: Destination[]
+  relatedOptions: RelatedOption[]
+  initialRelated?: RelatedRef[]
 }
+
+const refId = (r: RelatedRef) => ('service_id' in r ? r.service_id : r.transfer_route_id)
 
 const empty: AdminNews = {
   id: '',
@@ -25,18 +34,37 @@ const empty: AdminNews = {
   author: 'WHYGO Team',
   reading_time_min: 5,
   is_featured: false,
-  is_published: true,
+  // WHY-118: drafts first; publishing needs 2+ related services.
+  is_published: false,
   published_at: new Date().toISOString(),
   destination_id: null,
 }
 
-export default function NewsForm({ initial, mode, destinations }: Props) {
+export default function NewsForm({ initial, mode, destinations, relatedOptions, initialRelated = [] }: Props) {
   const router = useRouter()
   const toast = useToast()
   const [item, setItem] = useState<AdminNews>(initial ?? empty)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  // WHY-118: ids of the picked services, in display order.
+  const [related, setRelated] = useState<string[]>(initialRelated.map(refId))
+  const optionById = new Map(relatedOptions.map((o) => [o.id, o]))
+  const liveCount = related.filter((id) => optionById.get(id)?.live).length
+  const move = (i: number, d: -1 | 1) =>
+    setRelated((prev) => {
+      const next = [...prev]
+      ;[next[i], next[i + d]] = [next[i + d], next[i]]
+      return next
+    })
+  // Same-city options first in the picker.
+  const unpicked = relatedOptions
+    .filter((o) => !related.includes(o.id))
+    .sort((a, b) => {
+      const here = (o: RelatedOption) => (item.destination_id && o.destinationIds.includes(item.destination_id) ? 0 : 1)
+      return here(a) - here(b)
+    })
+  const groups = [...new Set(unpicked.map((o) => o.group))]
 
   const update = <K extends keyof AdminNews>(key: K, value: AdminNews[K]) =>
     setItem((prev) => ({ ...prev, [key]: value }))
@@ -50,7 +78,13 @@ export default function NewsForm({ initial, mode, destinations }: Props) {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item),
+        body: JSON.stringify({
+          ...item,
+          related: related.flatMap((id) => {
+            const o = optionById.get(id)
+            return o ? [o.ref] : []
+          }),
+        }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -225,12 +259,80 @@ export default function NewsForm({ initial, mode, destinations }: Props) {
         </div>
         <div>
           <label className="admin-label">Content</label>
+          <p className="text-[10px] text-white/40 mb-1">
+            Blank line between paragraphs. Start a paragraph with ## for a subheading. Indexed by
+            Google from 300 words, with a Georgian title and excerpt.
+          </p>
           <textarea
             rows={10}
             className="admin-input resize-y font-mono text-[13px]"
             value={item.content_ka}
             onChange={(e) => update('content_ka', e.target.value)}
           />
+        </div>
+      </section>
+
+      <section className="admin-card space-y-4" aria-labelledby="news-related-heading">
+        <div>
+          <p id="news-related-heading" className="text-[10px] font-bold tracking-widest uppercase text-brand-yellow">
+            Related services
+          </p>
+          <p className="text-[11px] text-white/50 mt-2 leading-relaxed">
+            The services this article is about, shown under it in this order. A published article
+            needs at least {MIN_RELATED} that are published and have a page. If one is unpublished
+            later, the article simply stops linking to it. Same-city services are listed first.
+          </p>
+        </div>
+        <p
+          className={`text-[11px] font-bold tracking-widest uppercase ${liveCount >= MIN_RELATED ? 'text-emerald-400' : 'text-amber-400'}`}
+          aria-live="polite"
+        >
+          {liveCount} live of {MIN_RELATED} needed to publish
+        </p>
+        {related.length > 0 && (
+          <ol className="space-y-2">
+            {related.map((id, i) => {
+              const o = optionById.get(id)
+              return (
+                <li key={id} className="flex items-center gap-3 border border-white/10 px-3 py-2">
+                  <span className="text-white/40 text-xs w-5">{i + 1}.</span>
+                  <span className="flex-1 text-sm">
+                    <span className="text-white/40 text-[10px] uppercase tracking-widest mr-2">{o?.group ?? 'Deleted'}</span>
+                    {o?.label ?? id}
+                    {o?.note && <span className="ml-2 text-amber-400 text-[10px] uppercase tracking-widest">{o.note}</span>}
+                  </span>
+                  <button type="button" className="admin-btn admin-btn-ghost px-2 py-1 text-xs" disabled={i === 0}
+                    onClick={() => move(i, -1)} aria-label={`Move ${o?.label ?? 'item'} up`}>↑</button>
+                  <button type="button" className="admin-btn admin-btn-ghost px-2 py-1 text-xs" disabled={i === related.length - 1}
+                    onClick={() => move(i, 1)} aria-label={`Move ${o?.label ?? 'item'} down`}>↓</button>
+                  <button type="button" className="admin-btn admin-btn-ghost px-2 py-1 text-xs"
+                    onClick={() => setRelated((prev) => prev.filter((x) => x !== id))} aria-label={`Remove ${o?.label ?? 'item'}`}>
+                    Remove
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+        )}
+        <div>
+          <label className="admin-label" htmlFor="news-related-add">Add a service</label>
+          <select
+            id="news-related-add"
+            className="admin-input"
+            value=""
+            onChange={(e) => e.target.value && setRelated((prev) => [...prev, e.target.value])}
+          >
+            <option value="">— Choose —</option>
+            {groups.map((g) => (
+              <optgroup key={g} label={g}>
+                {unpicked.filter((o) => o.group === g).map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {o.label}{o.note ? ` — ${o.note}` : ''}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
         </div>
       </section>
 

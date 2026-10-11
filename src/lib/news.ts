@@ -1,4 +1,5 @@
 import { hasAdminSupabase, getAdminSupabase, getContentSupabase } from '@/lib/supabase/admin'
+import { countWords, MIN_INDEXABLE_WORDS } from '@/lib/seo'
 import type { News } from '@/types'
 
 export type AdminNews = News & {
@@ -8,7 +9,7 @@ export type AdminNews = News & {
 }
 
 const COLUMNS =
-  'id, slug, title_en, excerpt_en, content_en, tag_en, title_ka, excerpt_ka, content_ka, tag_ka, cover_image, author, reading_time_min, is_featured, is_published, published_at, destination_id'
+  'id, slug, title_en, excerpt_en, content_en, tag_en, title_ka, excerpt_ka, content_ka, tag_ka, cover_image, author, reading_time_min, is_featured, is_published, published_at, destination_id, updated_at'
 
 function normalize(row: any): AdminNews {
   return {
@@ -31,6 +32,7 @@ function normalize(row: any): AdminNews {
     is_published: row.is_published ?? false,
     published_at: row.published_at ?? new Date().toISOString(),
     destination_id: row.destination_id ?? null,
+    updated_at: row.updated_at ?? null,
   }
 }
 
@@ -101,4 +103,38 @@ export async function getNewsById(id: string): Promise<AdminNews | null> {
     console.error('[news] getNewsById threw', id, err)
     return null
   }
+}
+
+// WHY-118: public lookup for /tips/[slug]. Published only; a draft 404s.
+export async function getNewsBySlug(slug: string): Promise<AdminNews | null> {
+  if (!hasAdminSupabase()) return null
+  try {
+    const s = getContentSupabase()
+    const { data, error } = await s
+      .from('news')
+      .select(COLUMNS)
+      .eq('slug', slug)
+      .eq('is_published', true)
+      .maybeSingle()
+    if (error) {
+      console.error('[news] getNewsBySlug query failed', slug, error)
+      return null
+    }
+    return data ? normalize(data) : null
+  } catch (err) {
+    console.error('[news] getNewsBySlug threw', slug, err)
+    return null
+  }
+}
+
+// Rule 5 for articles: indexed only with a Georgian title, a Georgian
+// excerpt (the meta description) and 300+ words of Georgian body. Below
+// that the page is served noindex and kept out of the sitemap. Shared by
+// the page and the sitemap so they can't disagree.
+export function isNewsIndexable(n: AdminNews): boolean {
+  return (
+    Boolean(n.title_ka?.trim()) &&
+    Boolean(n.excerpt_ka?.trim()) &&
+    countWords(n.content_ka) >= MIN_INDEXABLE_WORDS
+  )
 }

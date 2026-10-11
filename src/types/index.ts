@@ -233,6 +233,7 @@ export interface News {
   published_at: string
   // WHY-65: the destination hub this post appears on. One per post.
   destination_id: string | null
+  updated_at?: string | null
 }
 
 // Helpers

@@ -4,6 +4,7 @@ import { listTransferRoutes } from '@/lib/transferRoutes'
 import { isDayTripIndexable, listDayTrips, listExperiences } from '@/lib/services'
 import { isDestinationIndexable, listDestinations } from '@/lib/destinations'
 import { isReservedSlug } from '@/lib/reservedSlugs'
+import { isNewsIndexable, listNews } from '@/lib/news'
 import { SITE_URL } from '@/lib/seo'
 
 // WHY-69: Georgian URLs only. English is noindex.
@@ -98,6 +99,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }))
 
+  // WHY-118: articles, under the same Georgian title/excerpt/300-word check
+  // the article page uses for its robots tag.
+  const articleEntries: MetadataRoute.Sitemap = (await listNews())
+    .filter(isNewsIndexable)
+    .map((n) => ({
+      url: `${SITE_URL}/tips/${n.slug}`,
+      ...lastmod(n.updated_at),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }))
+
   return [
     ...staticEntries,
     ...hubEntries,
@@ -105,5 +117,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...transferRouteEntries,
     ...dayTripEntries,
     ...experienceEntries,
+    ...articleEntries,
   ]
 }

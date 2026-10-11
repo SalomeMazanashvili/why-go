@@ -470,3 +470,4 @@ CREATE INDEX IF NOT EXISTS news_destination_id_idx ON news (destination_id);
 -- WHY-106 numeric CHECK constraints: see supabase/migrations/20261008_why106_numeric_checks.sql
 -- WHY-114 whisky_tour_leads (RLS on, no policies): see supabase/migrations/20261009_why114_whisky_tour_leads_lockdown.sql
 -- WHY-100 recorded production-only objects: see supabase/migrations/20261009_why100_record_prod_drift.sql
+-- WHY-118 news_related_services + set_news_related_services(): see supabase/migrations/20261011_why118_news_related_services.sql
