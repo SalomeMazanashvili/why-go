@@ -287,3 +287,32 @@ export function faqPageJsonLd(items: Array<{ q: string; a: string }>) {
     })),
   }
 }
+
+// WHY-118: BlogPosting JSON-LD for /tips/[slug]. dateModified comes from the
+// row's updated_at (falls back to datePublished), never the request time.
+export function blogPostingJsonLd(input: {
+  locale: 'en' | 'ka'
+  path: string
+  headline: string
+  description: string
+  image: string | null
+  author: string
+  datePublished: string
+  dateModified?: string | null
+}) {
+  const url = canonicalFor(input.locale, input.path)
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: input.headline,
+    description: input.description,
+    url,
+    mainEntityOfPage: url,
+    inLanguage: input.locale,
+    ...(input.image ? { image: [input.image] } : {}),
+    datePublished: input.datePublished,
+    dateModified: input.dateModified || input.datePublished,
+    author: { '@type': 'Organization', name: input.author || SITE_NAME, url: SITE_URL },
+    publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+  }
+}

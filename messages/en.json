@@ -153,5 +153,10 @@
   "destination_page": {
     "practical_title": "Practical information",
     "faq_title": "Questions"
+  },
+  "article_page": {
+    "reading_time": "{minutes} min read",
+    "related_title": "Arrange it with us",
+    "also_in_title": "Also in {city}"
   }
 }

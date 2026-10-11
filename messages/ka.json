@@ -153,5 +153,10 @@
   "destination_page": {
     "practical_title": "TODO: Georgian copy needed (practical info heading)",
     "faq_title": "TODO: Georgian copy needed (FAQ heading)"
+  },
+  "article_page": {
+    "reading_time": "TODO: Georgian copy needed (reading time, e.g. 5 min; {minutes} is the number)",
+    "related_title": "TODO: Georgian copy needed (heading over the services this article is about)",
+    "also_in_title": "TODO: Georgian copy needed (spec §9 example: ბარსელონაში ასევე შეგვიძლია; {city} is the city name in the nominative, so the text may leave it out)"
   }
 }

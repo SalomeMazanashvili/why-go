@@ -3,6 +3,7 @@ import { revalidateContent } from '@/lib/revalidate'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { numericErrorBody, validateNumericFields } from '@/lib/numericFields'
 import { getAdminSupabase, hasAdminSupabase } from '@/lib/supabase/admin'
+import { checkRelatedForSave, saveRelatedRefs } from '@/lib/serviceLinks'
 
 const WRITABLE = [
   'slug',
@@ -34,9 +35,20 @@ export async function POST(req: NextRequest) {
     if (!payload.slug || !payload.title_en) {
       return NextResponse.json({ error: 'slug and title_en are required' }, { status: 400 })
     }
+    // WHY-118: new articles default to published (column default).
+    const related = await checkRelatedForSave(body, payload.is_published !== false)
+    if (!related.ok) return NextResponse.json({ error: related.error }, { status: 400 })
     const s = getAdminSupabase()
     const { data, error } = await s.from('news').insert(payload).select('id').single()
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (related.refs) {
+      const relatedError = await saveRelatedRefs(data.id, related.refs)
+      if (relatedError) {
+        // Don't leave a published article without its links.
+        await s.from('news').delete().eq('id', data.id)
+        return NextResponse.json({ error: relatedError }, { status: 500 })
+      }
+    }
     revalidateContent()
     return NextResponse.json({ success: true, id: data?.id })
   } catch (err) {

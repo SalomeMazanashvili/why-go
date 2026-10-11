@@ -85,13 +85,13 @@ try {
      VALUES ('ci-category', 'CI category', $1, true, 1) RETURNING id`, [FIXTURE])
 
   // Indexable day trip (300+ Georgian words across its editorial fields).
-  await db.query(
+  const dayTrip = await one(
     `INSERT INTO services (slug, destination_id, category_id, service_type, name_en, short_description_en,
        description_en, description_ka, route_ka, included_ka, what_to_bring_ka, meeting_point_ka,
        price_from, currency, duration_hours, min_group_size, max_group_size, cover_image, gallery,
        is_published, is_featured, sort_order)
      VALUES ('ci-day-trip-indexable', $1, $2, 'day_trip', 'CI fixture day trip (indexable)', $3,
-       $3, $4, $5, $6, $7, $8, 120, 'GEL', 7.5, 2, 8, $9, ARRAY[$9, $9], true, true, 1)`,
+       $3, $4, $5, $6, $7, $8, 120, 'GEL', 7.5, 2, 8, $9, ARRAY[$9, $9], true, true, 1) RETURNING id`,
     [cityA.id, category.id, FIXTURE, georgian(220), georgian(60),
       [sentences[0], sentences[1], sentences[2]].join('\n'), [sentences[3], sentences[4]].join('\n'), sentences[5], IMG],
   )
@@ -103,9 +103,15 @@ try {
     [cityB.id, category.id, FIXTURE, georgian(30), IMG],
   )
   // Experience: published but no detail page yet (WHY-85), so never linked.
-  await db.query(
+  const experience = await one(
     `INSERT INTO services (slug, destination_id, service_type, name_en, description_en, is_published)
-     VALUES ('ci-experience', $1, 'experience', 'CI fixture experience', $2, true)`, [cityA.id, FIXTURE])
+     VALUES ('ci-experience', $1, 'experience', 'CI fixture experience', $2, true) RETURNING id`, [cityA.id, FIXTURE])
+  // Unpublished day trip that article A still has picked (WHY-118): the
+  // article must drop the link rather than point at its 404.
+  const draftTrip = await one(
+    `INSERT INTO services (slug, destination_id, category_id, service_type, name_en, description_ka, is_published, sort_order)
+     VALUES ('ci-day-trip-draft', $1, $2, 'day_trip', 'CI fixture day trip (unpublished)', $3, false, 3) RETURNING id`,
+    [cityA.id, category.id, georgian(30)])
 
   for (const p of [['ci-airport-t1', 'CI Airport T1', 1], ['ci-airport-t2', 'CI Airport T2', 2]]) {
     await db.query(
@@ -114,14 +120,15 @@ try {
   }
 
   // Two routes, so the /transfers route list renders (it needs 2+).
+  const routeIds = {}
   for (const [slug, to, n] of [['ci-route-a-centre', 'CI City A centre', 1], ['ci-route-a-b', 'CI City B', 2]]) {
-    await db.query(
+    routeIds[slug] = (await one(
       `INSERT INTO transfer_routes (slug, from_destination_id, to_destination_id, from_name_en, to_name_en,
          description_en, description_ka, price_from, currency, duration_minutes, vehicle_type, max_passengers,
          is_published, sort_order)
-       VALUES ($1, $2, $3, 'CI Airport', $4, $5, $6, 40, 'GEL', 45, 'Sedan', 3, true, $7)`,
+       VALUES ($1, $2, $3, 'CI Airport', $4, $5, $6, 40, 'GEL', 45, 'Sedan', 3, true, $7) RETURNING id`,
       [slug, cityA.id, n === 2 ? cityB.id : cityA.id, to, FIXTURE, georgian(310), n],
-    )
+    )).id
   }
 
   await db.query(
@@ -131,19 +138,32 @@ try {
     [FIXTURE, georgian(150), IMG],
   )
 
-  // Two published articles (the /tips grid and the hub's post list), one draft.
-  for (const [slug, title, pub, dest] of [
-    ['ci-article-a', 'CI fixture article A', true, cityA.id],
-    ['ci-article-b', 'CI fixture article B', true, null],
-    ['ci-article-draft', 'CI fixture draft', false, cityA.id],
+  // Articles (WHY-118): A is indexable (Georgian title + excerpt + 300+
+  // words) with related services picked; B is thin (noindex, no hub, no
+  // picks); the draft must 404. A's Georgian title is a founder nav label.
+  const articles = {}
+  for (const [slug, title, titleKa, body, pub, dest] of [
+    ['ci-article-a', 'CI fixture article A', get('nav.tips'), georgian(320), true, cityA.id],
+    ['ci-article-b', 'CI fixture article B', null, georgian(120), true, null],
+    ['ci-article-draft', 'CI fixture draft', null, georgian(320), false, cityA.id],
   ]) {
-    await db.query(
-      `INSERT INTO news (slug, title_en, excerpt_en, content_en, content_ka, excerpt_ka, tag_en, cover_image,
+    articles[slug] = (await one(
+      `INSERT INTO news (slug, title_en, title_ka, excerpt_en, content_en, content_ka, excerpt_ka, tag_en, cover_image,
          is_published, destination_id, reading_time_min)
-       VALUES ($1, $2, $3, $3, $4, $5, 'Fixture', $6, $7, $8, 4)`,
-      [slug, title, FIXTURE, georgian(200), sentences[0], IMG, pub, dest],
-    )
+       VALUES ($1, $2, $3, $4, $4, $5, $6, 'Fixture', $7, $8, $9, 4) RETURNING id`,
+      [slug, title, titleKa, FIXTURE, body, sentences[0], IMG, pub, dest],
+    )).id
   }
+  // A's picks, in order: one live route, the unpublished trip (dropped), the
+  // live trip, the page-less experience (dropped). So 2 render, and the §9
+  // block below shows the city's remaining route (ci-route-a-b) only.
+  const picks = [
+    { transfer_route_id: routeIds['ci-route-a-centre'] },
+    { service_id: draftTrip.id },
+    { service_id: dayTrip.id },
+    { service_id: experience.id },
+  ]
+  await db.query('SELECT set_news_related_services($1, $2)', [articles['ci-article-a'], JSON.stringify(picks)])
 
   // Published guide: not shown until WHY-84 (GUIDES_PAGE_LIVE), seeded so it is ready.
   await db.query(
@@ -163,6 +183,7 @@ const counts = await db.query(`
   SELECT 'pickup_points', count(*)::int FROM pickup_points UNION ALL
   SELECT 'tours', count(*)::int FROM tours UNION ALL
   SELECT 'news', count(*)::int FROM news UNION ALL
+  SELECT 'news_related_services', count(*)::int FROM news_related_services UNION ALL
   SELECT 'guides', count(*)::int FROM guides UNION ALL
   SELECT 'inquiries', count(*)::int FROM inquiries`)
 console.log('Seeded:', counts.rows.map((r) => `${r.t}=${r.n}`).join(' '))

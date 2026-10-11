@@ -261,6 +261,10 @@ const SERVICE_DETAIL_BASE: Partial<Record<ServiceType, string>> = {
   day_trip: '/day-trips',
 }
 
+export function hasDetailPage(type: ServiceType): boolean {
+  return SERVICE_DETAIL_BASE[type] !== undefined
+}
+
 export function serviceHref(service: Service): string | null {
   const base = SERVICE_DETAIL_BASE[service.service_type]
   return base ? `${base}/${service.slug}` : null

@@ -2,6 +2,9 @@ import Link from 'next/link'
 import { requireAdmin } from '@/lib/adminAuth'
 import { listNewsForAdmin } from '@/lib/news'
 import { hasAdminSupabase } from '@/lib/supabase/admin'
+import { listRelatedRefsForAdmin, MIN_RELATED_SERVICES } from '@/lib/serviceLinks'
+import { listDestinationsForAdmin } from '@/lib/destinations'
+import { listRelatedOptions } from './relatedOptions'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,7 +18,15 @@ function formatDate(iso: string) {
 
 export default async function NewsAdminPage() {
   await requireAdmin()
-  const items = await listNewsForAdmin()
+  const [items, refsByNews, destinations] = await Promise.all([
+    listNewsForAdmin(),
+    listRelatedRefsForAdmin(),
+    listDestinationsForAdmin(),
+  ])
+  // WHY-118: how many picked services would render right now.
+  const live = new Set((await listRelatedOptions(destinations)).filter((o) => o.live).map((o) => o.id))
+  const liveLinks = (id: string) =>
+    (refsByNews.get(id) ?? []).filter((r) => live.has('service_id' in r ? r.service_id : r.transfer_route_id)).length
   const connected = hasAdminSupabase()
 
   return (
@@ -41,6 +52,7 @@ export default async function NewsAdminPage() {
               <th className="text-left px-5 py-3">Published</th>
               <th className="text-left px-5 py-3">Status</th>
               <th className="text-left px-5 py-3">Featured</th>
+              <th className="text-left px-5 py-3">Services</th>
               <th className="px-5 py-3"></th>
             </tr>
           </thead>
@@ -66,6 +78,17 @@ export default async function NewsAdminPage() {
                     <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">No</span>
                   )}
                 </td>
+                <td className="px-5 py-4">
+                  {/* A published article below 2 lost a link to an unpublish. */}
+                  <span
+                    className={`text-[10px] font-bold tracking-widest uppercase ${
+                      n.is_published && liveLinks(n.id) < MIN_RELATED_SERVICES ? 'text-amber-400' : 'text-white/60'
+                    }`}
+                  >
+                    {liveLinks(n.id)} live
+                    {n.is_published && liveLinks(n.id) < MIN_RELATED_SERVICES ? ` · needs ${MIN_RELATED_SERVICES}` : ''}
+                  </span>
+                </td>
                 <td className="px-5 py-4 text-right">
                   <Link
                     href={`/admin/news/${n.id}`}
@@ -78,7 +101,7 @@ export default async function NewsAdminPage() {
             ))}
             {items.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-5 py-10 text-center text-white/40 text-sm">
+                <td colSpan={6} className="px-5 py-10 text-center text-white/40 text-sm">
                   No articles yet.
                 </td>
               </tr>

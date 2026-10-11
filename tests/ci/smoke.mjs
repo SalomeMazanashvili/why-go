@@ -8,9 +8,8 @@ const BASE = process.env.BASE ?? 'http://localhost:3000'
 
 // Links known to be broken, each with the ticket that fixes it. The check
 // fails if a listed link starts working, so the entry gets removed.
-const KNOWN_BROKEN = [
-  { pattern: /^\/tips\/[^/]+$/, ticket: 'WHY-118: no /tips/[slug] route; /tips, the homepage and hubs link to it' },
-]
+// (WHY-118 removed the last one: /tips/[slug] exists now.)
+const KNOWN_BROKEN = []
 
 const failures = []
 const warnings = []
@@ -37,8 +36,16 @@ const PAGES = [
   ['/day-trips', ['CI fixture day trip (indexable)', 'CI fixture day trip (thin)'], [], false],
   ['/day-trips/ci-day-trip-indexable', ['CI fixture day trip (indexable)'], [], false],
   ['/day-trips/ci-day-trip-thin', ['CI fixture day trip (thin)'], [], true],
-  ['/tips', ['CI fixture article A', 'CI fixture article B'], ['No articles yet', 'CI fixture draft'], false],
-  ['/ci-city-a', ['CI City A', 'CI City A centre', 'CI fixture day trip (indexable)', 'CI fixture article A'], [], false],
+  ['/tips', ['href="/tips/ci-article-a"', 'href="/tips/ci-article-b"'], ['No articles yet', 'ci-article-draft'], false],
+  // WHY-118: A renders its live picks (route, day trip) and drops the
+  // unpublished trip and the page-less experience it also picked; the §9
+  // block lists the city's other route. B is thin: noindex, no blocks.
+  ['/tips/ci-article-a',
+    ['article-related', 'href="/transfers/ci-route-a-centre"', 'href="/day-trips/ci-day-trip-indexable"',
+      'article-also-in', 'href="/transfers/ci-route-a-b"', 'href="/ci-city-a"', '"@type":"BlogPosting"'],
+    ['ci-day-trip-draft', 'CI fixture day trip (unpublished)', 'CI fixture experience'], false],
+  ['/tips/ci-article-b', ['CI fixture article B'], ['article-related', 'article-also-in'], true],
+  ['/ci-city-a', ['CI City A', 'CI City A centre', 'CI fixture day trip (indexable)', 'href="/tips/ci-article-a"'], ['ci-article-draft'], false],
   ['/ci-city-b', ['CI City B'], [], true],
   ['/contact', [], [], false],
   ['/about', [], [], false],
@@ -63,6 +70,13 @@ for (const [path, must, mustNot, noindex] of PAGES) {
   }
 }
 
+// Pages that must not exist: the draft article, and the unpublished day trip
+// article A picked (proves the dropped link would have been a 404).
+for (const path of ['/tips/ci-article-draft', '/day-trips/ci-day-trip-draft']) {
+  const r = await get(path)
+  if (r.status !== 404) fail(`${path}: HTTP ${r.status}, expected 404`)
+}
+
 // Sitemap: indexable fixtures listed with their row's updated_at as lastmod;
 // thin ones and drafts absent; static pages carry no lastmod (WHY-103).
 const sm = await get('/sitemap.xml')
@@ -72,12 +86,12 @@ const entries = [...sm.body.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => ({
   lastmod: m[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1],
 }))
 const byLoc = new Map(entries.map((e) => [e.loc, e]))
-for (const p of ['/ci-city-a', '/tours/ci-tour', '/transfers/ci-route-a-centre', '/transfers/ci-route-a-b', '/day-trips/ci-day-trip-indexable']) {
+for (const p of ['/ci-city-a', '/tours/ci-tour', '/transfers/ci-route-a-centre', '/transfers/ci-route-a-b', '/day-trips/ci-day-trip-indexable', '/tips/ci-article-a']) {
   const e = byLoc.get(p)
   if (!e) fail(`sitemap: missing ${p}`)
   else if (!e.lastmod || Number.isNaN(Date.parse(e.lastmod))) fail(`sitemap: ${p} has no row lastmod`)
 }
-for (const p of ['/ci-city-b', '/day-trips/ci-day-trip-thin', '/tips/ci-article-draft']) if (byLoc.has(p)) fail(`sitemap: must not list ${p}`)
+for (const p of ['/ci-city-b', '/day-trips/ci-day-trip-thin', '/tips/ci-article-b', '/tips/ci-article-draft']) if (byLoc.has(p)) fail(`sitemap: must not list ${p}`)
 for (const p of ['/', '/tours', '/tips', '/about', '/contact', '/transfers', '/day-trips', '/experiences']) {
   if (byLoc.get(p)?.lastmod) fail(`sitemap: static ${p} must not carry lastmod`)
 }
