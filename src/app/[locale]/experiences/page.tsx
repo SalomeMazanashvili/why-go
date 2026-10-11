@@ -80,7 +80,7 @@ export default async function ExperiencesIndexPage(
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
 
-      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-24 pb-16">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-page pb-16">
         <header className="mb-12 max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
             {t('index_title')}
@@ -108,7 +108,7 @@ export default async function ExperiencesIndexPage(
 
         <div className="space-y-16">
           {groups.map((g) => (
-            <section key={g.key} id={g.key} aria-labelledby={`${g.key}-heading`} className="scroll-mt-24">
+            <section key={g.key} id={g.key} aria-labelledby={`${g.key}-heading`}>
               <h2 id={`${g.key}-heading`} className="text-2xl md:text-3xl font-black tracking-tight mb-6">
                 {groupLabel(g)}
               </h2>

@@ -40,7 +40,7 @@ export default function ToursGridClient({ tours, locale }: Props) {
 
   return (
     <>
-      <div className="surface-light bg-paper/95 border-y border-line px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[69px] z-30 backdrop-blur-sm">
+      <div className="surface-light bg-paper/95 border-y border-line px-6 md:px-10 py-5 flex gap-3 flex-wrap sticky top-[var(--header-h)] z-30 backdrop-blur-sm">
         <button onClick={() => setActiveTag(null)}
           className={`text-[10px] font-black tracking-widest uppercase px-4 py-2 border transition-colors ${!activeTag ? 'bg-brand-yellow text-ink border-brand-yellow' : 'text-muted border-line hover:border-fg hover:text-fg'}`}>
           ALL

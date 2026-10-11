@@ -78,7 +78,7 @@ export default async function DayTripsIndexPage(
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
 
-      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-24 pb-16">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-page pb-16">
         <header className="mb-12 max-w-3xl">
           <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">
             {t('nav_label')}
@@ -109,7 +109,7 @@ export default async function DayTripsIndexPage(
 
         <div className="space-y-16">
           {groups.map((g) => (
-            <section key={g.key} id={g.key} aria-labelledby={`${g.key}-heading`} className="scroll-mt-24">
+            <section key={g.key} id={g.key} aria-labelledby={`${g.key}-heading`}>
               <h2 id={`${g.key}-heading`} className="text-2xl md:text-3xl font-black tracking-tight mb-6">
                 {groupLabel(g)}
               </h2>

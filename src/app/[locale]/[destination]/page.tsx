@@ -154,7 +154,7 @@ export default async function DestinationHubPage(
         />
       )}
 
-      <article className="max-w-4xl mx-auto px-6 md:px-12 pt-24 pb-16">
+      <article className="max-w-4xl mx-auto px-6 md:px-12 pt-page pb-16">
         <header className="mb-10">
           {d.country && (
             <p className="text-[10px] font-bold tracking-widest uppercase text-accent mb-3">

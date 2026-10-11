@@ -32,7 +32,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
-      <section className="pt-36 pb-16 px-6 md:px-10 surface-light border-b border-line">
+      <section className="pt-page-lg pb-16 px-6 md:px-10 surface-light border-b border-line">
         <p className="text-[10px] font-bold tracking-widest uppercase text-muted mb-4">Our Philosophy</p>
         <h1 className="font-black uppercase text-fg leading-none tracking-tight"
           style={{ fontSize: 'clamp(48px,8vw,96px)', letterSpacing: '-0.04em', lineHeight: 0.88 }}>

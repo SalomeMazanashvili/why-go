@@ -14,6 +14,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
   const [scrolled, setScrolled] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuPanelRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
   // Focus goes back to the menu button when the menu is dismissed (close
   // button, Escape) but not after following a link — the new page owns focus.
   const returnFocusRef = useRef(true)
@@ -22,6 +23,20 @@ export default function Navbar({ items }: { items: NavItem[] }) {
     const onScroll = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // WHY-122: publish the header's real height as --header-h (globals.css), so
+  // page padding, anchor jumps and sticky bars follow it if zoom or text
+  // scaling makes the header taller than its usual 84px.
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const root = document.documentElement
+    const ro = new ResizeObserver(() => {
+      root.style.setProperty('--header-h', `${Math.round(el.getBoundingClientRect().height)}px`)
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
 
   const closeMenu = useCallback((returnFocus = true) => {
@@ -91,7 +106,7 @@ export default function Navbar({ items }: { items: NavItem[] }) {
 
   return (
     <>
-      <header className={`tone-dark fixed top-0 left-0 w-full z-50 transition-all duration-500 ${hasBackground ? 'bg-ink/95 backdrop-blur-sm' : ''}`}>
+      <header ref={headerRef} className={`tone-dark fixed top-0 left-0 w-full z-50 transition-all duration-500 ${hasBackground ? 'bg-ink/95 backdrop-blur-sm' : ''}`}>
         <div className="flex items-center justify-between px-6 md:px-10 py-5">
           <Link href="/" className="text-xl font-black tracking-tight text-white">
             WHY<span className="text-brand-yellow">GO</span>
